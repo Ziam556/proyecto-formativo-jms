@@ -1,0 +1,122 @@
+:root {
+    --primary-50:  #FCFAFC;
+    --primary-100: #F3ECF3;
+    --primary-200: #E5D8E7;
+    --primary-300: #D4BED7;
+    --primary-400: #C2A2C6;
+    --primary-500: #AE84B3;
+    --primary-600: #9C68A2;
+    --primary-700: #8B4E92;
+    --primary-800: #7D3A86;
+    --primary-900: #742C7D;
+    --primary-950: #71277A;
+
+    /* Secundary */
+    --secundary-50:  #FBFEFF;
+    --secundary-100: #F0FDFE;
+    --secundary-200: #DFFAFE;
+    --secundary-300: #CAF7FD;
+    --secundary-400: #B3F4FC;
+    --secundary-500: #9CF0FC;
+    --secundary-600: #85EDFB;
+    --secundary-700: #70EAFA;
+    --secundary-800: #5FE7FA;
+    --secundary-900: #54E6F9;
+    --secundary-950: #50E5F9;
+
+    /* Tertiary */
+    --tertiary-50:  #F9FAFB;
+    --tertiary-100: #E9EDEF;
+    --tertiary-200: #D0D9DF;
+    --tertiary-300: #B2C1CA;
+    --tertiary-400: #91A6B2;
+    --tertiary-500: #6E899A;
+    --tertiary-600: #4D6E82;
+    --tertiary-700: #2F566D;
+    --tertiary-800: #16425D;
+    --tertiary-900: #063551;
+    --tertiary-950: #00304D;
+
+    /* Quaternary */
+    --quaternary-50:  #F5FAF2;
+    --quaternary-100: #E1F2D8;
+    --quaternary-200: #CDE9BF;
+    --quaternary-300: #B9E0A5;
+    --quaternary-400: #A5D88C;
+    --quaternary-500: #92CF72;
+    --quaternary-600: #7EC759;
+    --quaternary-700: #6ABE3F;
+    --quaternary-800: #56B526;
+    --quaternary-900: #42AD0C;
+    --quaternary-950: #39A900;
+
+    /* Quinary */
+    --quinary-50:  #ECF5F0;
+    --quinary-100: #D7EADF;
+    --quinary-200: #BDDCCA;
+    --quinary-300: #9FCCB2;
+    --quinary-400: #80BC99;
+    --quinary-500: #60AB7F;
+    --quinary-600: #429B67;
+    --quinary-700: #288D52;
+    --quinary-800: #138241;
+    --quinary-900: #057B36;
+    --quinary-950: #007832;
+
+    /* Senatorial */
+    --senatorial-50:  #FEFDF8;
+    --senatorial-100: #FEF9E6;
+    --senatorial-200: #FEF2CC;
+    --senatorial-300: #FEECB3;
+    --senatorial-400: #FEE599;
+    --senatorial-500: #FEDD80;
+    --senatorial-600: #FED666;
+    --senatorial-700: #FEC74D;
+    --senatorial-800: #FDC833;
+    --senatorial-900: #FDC11A;
+    --senatorial-950: #FDC300;
+
+    /* Neutrals */
+    --neutrals-50:  #FFFFFF;
+    --neutrals-100: #000000;
+    --neutrals-200: #181818;
+    --neutrals-300: #242424;
+    --neutrals-400: #3D3D3D;
+    --neutrals-500: #878787;
+    --neutrals-600: #9F9F9F;
+    --neutrals-700: #B8B8B8;
+    --neutrals-800: #D1D1D1;
+    --neutrals-900: #E9E9E9;
+    --neutrals-950: #F6F6F6;
+
+     /* Font-family */
+    --main-font: Work Sans, Arial, sasn-serif;
+    --secondary-font: Calibri, Helvetica, Arial;
+
+    /* Font weights crudos */
+    --font-weight-light: 300;    
+    --font-weight-regular: 400;
+    --font-weight-bold: 700;
+
+    /* Font variants */
+    --regular-variant: regular;
+    --medium-variant: medium;
+    ---semi-bold-variant: semi-bold;
+
+    /* Font-size */
+
+    --fs-xxxxl: 5rem; /* Ultra grande */
+    --fs-xxxl: 4rem; /* Super grande */
+    --fs-xxl: 3rem; /* Extra grande */
+    --fs-xl: 2.5rem; /* Muy grande */
+    --fs-lg: 2rem; /* Grande */
+    --fs-md: 1.5rem; /* Mediano */
+    --fs-sm: 1.25rem; /* Pequeño */
+    --fs-xs: 1rem; /* Base */
+    --fs-xxs: 0.875rem; /* Muy pequeño 14px */
+    --fs-xxxs: 0.75rem;/* Extra extra pequeño 12px */
+    --fs-xxxxs: 0.5rem;/* Minimo 8px */
+
+
+
+}    

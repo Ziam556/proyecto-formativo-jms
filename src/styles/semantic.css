@@ -1,0 +1,72 @@
+:root {
+
+
+    /* =================== LIGHT THEME =================== */
+
+    /* ======BRAND====== */
+
+    --semantic-brand: var(--primary-800);
+    --semantic-brand-hover: var(--primary-950); /* Generalmente es de un tono mas alto que el brand */
+
+    --semantic-brand-soft: var( --primary-200);
+    --semantic-brand-soft-hover: var(--primary-400); 
+
+    /* ======BACKGROUND====== */
+
+    --semantic-background: var(--color-white);    /* Fondo de toda la aplicacion*/
+    
+    --semantic-surface: var(--color-gray-200);   /* Fondo de modales, cards, containers*/
+
+    --semantic-surface-muted: var(--color-gray-400); /* Zonas secundarias, con menos importancia*/
+
+    --semantic-surface-inverse: var(--color-black);
+
+
+    /* ======TEXT====== */
+
+    --semantic-text-primary: var(--color-gray-900); /* Color principal de lectura, titulos, texto base del documento */
+    
+    --semantic-text-secondary: var(--color-gray-700); /* Texto menos dominante */
+
+    --semantic-text-muted: var(--color-gray-500); /* texto deshabilitado por ejemplo */
+
+    --semantic-text-inverse: var(--color-gray-50); /* texto sobre fondos oscuros */
+
+
+    /* ======BORDER====== */
+
+    --semantic-border: var(--color-gray-400); /* Borde principal de todos los componentes */
+    --semantic-border-strong: var(--color-gray-700); /* Bordes mas fuertes */ 
+
+
+    /* ======FOCUS====== */
+
+    --semantic-focus-ring: var(--primary-500); 
+    --semantic-focus-border: var(--primary-700); 
+
+    /* ======STATE====== */
+
+    --semantic-success: var(--secondary-950);
+    --semantic-warning: var( --senatorial-950);
+    --semantic-error: var(--secondary-950);
+
+    /* ======TYPOGRAPHY====== */
+
+    --semantic-font-size-h1: var(--fs-lg);
+    --semantic-font-size-h2: var(--fs-md);
+    --semantic-font-size-h3: var(--fs-sm);
+    --semantic-font-size-body: var(--fs-xs);
+    --semantic-font-size-medium: var(--fs-xxs);
+    --semantic-font-size-small: var(--fs-xxxs);
+    --semantic-font-size-caption: var(--fs-xxxxs);
+
+    /* ======FONT WEIGHT====== */
+
+    --semantic-font-weight-heading: var(--font-weight-light);
+    --semantic-font-weight-body: var(--font-weight-normal);
+    --semantic-font-weight-label: var(--font-weight-bold);
+
+
+    /* ======DARK THEME====== */
+
+}
