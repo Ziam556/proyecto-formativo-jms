@@ -1,0 +1,14 @@
+[
+    {
+        "id": "L",
+        "label": "Largo"
+    },
+    {
+        "id": "A",
+        "label": "Ancho"
+    },
+    {
+        "id": "P",
+        "label": "Profundidad"
+    }
+]
