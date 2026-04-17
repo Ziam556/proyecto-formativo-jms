@@ -4,6 +4,7 @@ import { materialSchema } from "../../returnable-material/schemas/materialSchema
 
 export default function UserRegisterForm() {
 
+    // Estado del formulario con los campos de identificacion del material
     const [ formData, setFormData ] = useState({
         materialBrand: "",
         materialModel: "",
@@ -11,8 +12,10 @@ export default function UserRegisterForm() {
         materialImage: "",
     });
 
+    // Estado para los errores de validacion
     const [errors, setErrors] = useState({});
 
+    // Actualiza el campo correspondiente en formData cada vez que el usuario escribe
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -21,11 +24,12 @@ export default function UserRegisterForm() {
         }))
     }
 
+    // Valida el formulario con Zod al hacer submit
+    // Si hay errores los mapea por campo y los guarda en el estado errors
+    // Si es exitoso limpia los errores y procesa los datos
     const handleSubmit = (e) => {
         e.preventDefault()
-
         const result = materialSchema.safeParse(formData);
-        
         if (!result.success) {
             const fieldErrors = {};
             result.error.issues.forEach((issue) => {
@@ -51,30 +55,36 @@ export default function UserRegisterForm() {
             >
                 <div className="grid grid-cols-2 gap-6 my-0 mx-auto">
 
+                    {/* Identificacion del material */}
                     <Input
+                        label="Marca"
                         name="materialBrand"
-                        placeholder="Marca"
+                        placeholder="Ingrese la marca"
                         value={formData.materialBrand}
                         onChange={handleChange}
                         error={errors.materialBrand}
                     />
                     <Input
+                        label="Modelo"
                         name="materialModel"
-                        placeholder="Modelo"
+                        placeholder="Ingrese el modelo"
                         value={formData.materialModel}
                         onChange={handleChange}
                         error={errors.materialModel}
                     />
                     <Input
+                        label="Serial"
                         name="materialSerial"
-                        placeholder="Serial"
+                        placeholder="Ingrese el serial"
                         value={formData.materialSerial}
                         onChange={handleChange}
                         error={errors.materialSerial}
                     />
+                    {/* Campo para subir o referenciar la imagen del material */}
                     <Input
+                        label="Imagen"
                         name="materialImage"
-                        placeholder="Imagen"
+                        placeholder="Ingrese la imagen"
                         value={formData.materialImage}
                         onChange={handleChange}
                         error={errors.materialImage}
@@ -82,19 +92,8 @@ export default function UserRegisterForm() {
 
                     {/* Actions */}
                     <div className="flex items-end justify-end gap-6">
-                        <Button
-                            variant="secondary"
-                            size="sm"
-                        >
-                            Cancelar
-                        </Button>
-
-                        <Button
-                            variant="primary"
-                            size="md"
-                        >
-                            Siguiente
-                        </Button>
+                        <Button variant="secondary" size="sm">Cancelar</Button>
+                        <Button variant="primary" size="md">Siguiente</Button>
                     </div>
 
                 </div>

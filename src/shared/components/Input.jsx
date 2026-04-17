@@ -1,4 +1,5 @@
 export default function Input({
+    label,
     type = "text",
     error,
     ...props
@@ -6,8 +7,25 @@ export default function Input({
     return (
         <div className="w-[320px]">
 
+            {/* Label opcional, se pone rojo si hay error */}
+            {label && (
+                <label
+                    className={`
+                        block
+                        text-[8px]
+                        mb-1
+                        place-self-start
+                        ${error ? "text-red-600" : "text-text-primary"}
+                    `}>
+                    {label}
+                </label>
+            )}
+
+            {/* Contenedor del input con altura fija de 48px */}
             <div className="relative h-12 flex items-center">
 
+                {/* Area invisible que redirige el foco al input real
+                    se omite en type="date" para no bloquear el calendario nativo */}
                 {type !== "date" && (
                     <div 
                         className="absolute inset-0"
@@ -18,6 +36,7 @@ export default function Input({
                     />
                 )}
 
+                {/* Input real, recibe cualquier prop adicional con ...props */}
                 <input
                     type={type}
                     className={`
@@ -41,6 +60,8 @@ export default function Input({
             </div>
 
             <div></div>
+
+            {/* Mensaje de error visible solo si hay error */}
             {error && <p className="text-caption text-red-600 place-self-start">{error}</p>}
 
         </div>

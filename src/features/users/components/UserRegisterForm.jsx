@@ -1,13 +1,16 @@
 import { useState, useEffect} from 'react'
 import { getDocumentTypes, getUserTypes } from "@/features/users/services/selectService"
 import { userSchema } from "../schemas/userSchema";
-import { Input, Button, Select } from "@/shared";
-
+import { Input, Button, Select, DatePicker } from "@/shared";
 
 export default function UserRegisterForm() {
 
+    // Estados para las opciones de los selects
+    // Se cargan desde archivos JSON a traves de los servicios
     const [documentTypes, setDocumentTypes] = useState([]);
     const [userTypes, setUserTypes] = useState([]);
+
+    // Estado del formulario con todos sus campos inicializados en vacio
     const [ formData, setFormData ] = useState({
         userName: "",
         userEmail: "",
@@ -16,16 +19,24 @@ export default function UserRegisterForm() {
         userType: "",
         userDocumentNumber: "",
         userPassword: "",
+        userAddress: "",
+        userEmailVerification: "",
+        userEmailInstitutional: "",
+        startDate: "",
+        endDate: "",
     });
 
+    // Estado para los errores de validacion, se llena cuando Zod encuentra campos invalidos
     const [ errors, setErrors] = useState({});
 
+    // Al montar el componente se cargan las opciones de los selects en paralelo
     useEffect(() => {
         getDocumentTypes().then(setDocumentTypes)
         getUserTypes().then(setUserTypes)
     }, [])
 
-
+    // Funcion generica que actualiza cualquier campo del formulario
+    // Usa el atributo name del input para saber cual campo actualizar
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -34,12 +45,12 @@ export default function UserRegisterForm() {
         }))
     }
 
+    // Valida el formulario completo con Zod al hacer submit
+    // Si hay errores los mapea por campo y los guarda en el estado errors
+    // Si la validacion es exitosa limpia los errores y procesa los datos
     const handleSubmit = (e) => {
-
         e.preventDefault()
-
         const result = userSchema.safeParse(formData);
-        
         if (!result.success) {
             const fieldErrors = {};
             result.error.issues.forEach((issue) => {
@@ -65,22 +76,28 @@ export default function UserRegisterForm() {
             >
                 <div className="grid grid-cols-2 gap-6 my-0 mx-auto">
                     
+                    {/* Informacion personal */}
                     <Input
+                        label="Nombre"
                         name="userName"
-                        placeholder="Nombre"
+                        placeholder="Ingrese su nombre"
                         value={formData.userName}
                         onChange={handleChange}
                         error={errors.userName}
                     />
                     <Input
+                        label="Correo electrónico"
                         name="userEmail"
-                        placeholder="Correo electrónico"
+                        placeholder="Ingrese su correo"
                         type="email"
                         value={formData.userEmail}
                         onChange={handleChange}
                         error={errors.userEmail}
                     />
+
+                    {/* Documento */}
                     <Select
+                        label="Tipo de documento"
                         name="userDocumentType"
                         value={formData.userDocumentType}
                         options={documentTypes}
@@ -89,37 +106,47 @@ export default function UserRegisterForm() {
                         placeholder="Tipo de documento"
                     />
                     <Input
+                        label="Confirmación de correo electrónico"
                         name="userEmailVerification"
                         type="email"
-                        placeholder="Confirmación de correo electrónico"
-                        value={formData.userEmail}
+                        placeholder="Confirme su correo"
+                        value={formData.userEmailVerification}
                         onChange={handleChange}
-                        error={errors.userEmail}
+                        error={errors.userEmailVerification}
                     />
                     <Input
+                        label="Número de documento"
                         name="userDocumentNumber"
-                        placeholder="Número de documento"
+                        placeholder="Ingrese su número de documento"
                         value={formData.userDocumentNumber}
                         onChange={handleChange}
                         error={errors.userDocumentNumber}
                     />
                     <Input
+                        label="Correo institucional (opcional)"
                         name="userEmailInstitutional"
                         type="email"
-                        placeholder="Correo institucional (opcional)"
-                        value={formData.userEmail}
+                        placeholder="Ingrese su correo institucional"
+                        value={formData.userEmailInstitutional}
                         onChange={handleChange}
-                        error={errors.userEmail}
+                        error={errors.userEmailInstitutional}
                     />
-                    <Input
-                        name="startDate"
-                        type="date"
+
+                    {/* Fechas de vinculacion del usuario al sistema
+                        startDate: fecha en que el usuario empieza a tener acceso
+                        endDate: fecha en que el usuario pierde el acceso
+                        DatePicker convierte la fecha seleccionada a formato YYYY-MM-DD
+                        para que sea compatible con handleChange y el schema de Zod */}
+                    <DatePicker 
                         label="Fecha inicio"
+                        name="startDate"
+                        placeholder="Fecha inicio"
                         value={formData.startDate}
                         onChange={handleChange}
                         error={errors.startDate}
                     />
                     <Select
+                        label="Tipo de usuario"
                         name="userType"
                         value={formData.userType}
                         options={userTypes}
@@ -127,59 +154,50 @@ export default function UserRegisterForm() {
                         error={errors.userType}
                         placeholder="Tipo de usuario"
                     />
-                    <Input
+                    <DatePicker
+                        label="Fecha finalización"
                         name="endDate"
-                        type="date"
                         placeholder="Fecha finalización"
                         value={formData.endDate}
                         onChange={handleChange}
                         error={errors.endDate}
                     />
+
+                    {/* Seguridad y contacto */}
                     <Input
+                        label="Contraseña"
                         name="userPassword"
-                        placeholder="Contraseña"
+                        placeholder="Ingrese su contraseña"
                         value={formData.userPassword}
                         type="password"
                         onChange={handleChange}
                         error={errors.userPassword}
                     />
                     <Input
+                        label="Dirección"
                         name="userAddress"
-                        placeholder="Dirección"
+                        placeholder="Ingrese su dirección"
                         value={formData.userAddress}
                         onChange={handleChange}
                         error={errors.userAddress}
                     />
                     <Input
+                        label="Número telefónico de contacto"
                         name="userPhone"
-                        placeholder="Número telefónico de contacto"
+                        placeholder="Ingrese su teléfono"
                         value={formData.userPhone}
                         type="tel"
                         onChange={handleChange}
                         error={errors.userPhone}
                     />
-                    
 
                     {/* Actions */}
                     <div className="flex items-end justify-end gap-6">
-                        <Button
-                            variant="secondary"
-                            size="sm"
-                        >
-                            Cancelar
-                        </Button>
-
-                        <Button
-                            variant="primary"
-                            size="md"
-                        >
-                            Guardar
-                        </Button>
-
+                        <Button variant="secondary" size="sm">Cancelar</Button>
+                        <Button variant="primary" size="md">Guardar</Button>
                     </div>
-                
-                </div>
 
+                </div>
             </form>
         </div>
     );
