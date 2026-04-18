@@ -2,6 +2,8 @@ import UserRegisterForm from "../components/UserRegisterForm";
 import CreateReturnable1 from "../../returnable-material/components/CreateReturnable-1";
 import CreateReturnable2 from "../../returnable-material/components/CreateReturnable-2";
 import CreateReturnable3 from "../../returnable-material/components/CreateReturnable-3";
+import ConsumableMaterialEdit from "../../consumable-material/components/ConsumableMaterialEdit";
+import EditReturnableMaterial from "../../returnable-material/components/EditReturnableMaterial";
 
 
 export default function CreateUserPage(){
@@ -22,7 +24,14 @@ export default function CreateUserPage(){
             <br />
             <CreateReturnable3/>
             <br />
-            
+            =================================================================================================================================
+            <br />
+            <ConsumableMaterialEdit/>
+            <br />
+            =================================================================================================================================
+            <br />
+            <EditReturnableMaterial/>
+            <br />
             <br></br>
             
         </div>

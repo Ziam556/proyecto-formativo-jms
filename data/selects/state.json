@@ -1,0 +1,27 @@
+[
+    {
+        "id": "N.D",
+        "label": "No disponible"
+    },
+    {
+        "id": "D",
+        "label": "Disponible"
+    },
+    {
+        "id": "P",
+        "label": "Prestamo"
+    },
+    {
+        "id": "T",
+        "label": "Traslado"
+    },
+    {
+        "id": "M",
+        "label": "Mantenimiento"
+    },
+    {
+        "id": "B",
+        "label": "Baja"
+    }
+
+]
