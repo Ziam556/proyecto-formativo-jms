@@ -1,7 +1,19 @@
 import { z } from "zod";
 
 export const materialSchema = z.object({
-    
+
+    materialPlate: 
+        z.string()
+        .min(1, "La placa es requerida"),
+
+    materialCategory: 
+        z.string()
+        .min(1, "La categoría es requerida"),
+
+    materialElementName: 
+        z.string()
+        .min(1, "El nombre del elemento es requerido"),
+
     materialBrand: 
         z.string()
         .min(1, "La marca es requerida"),

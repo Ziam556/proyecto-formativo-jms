@@ -2,8 +2,11 @@ import UserRegisterForm from "../components/UserRegisterForm";
 import CreateReturnable1 from "../../returnable-material/components/CreateReturnable-1";
 import CreateReturnable2 from "../../returnable-material/components/CreateReturnable-2";
 import CreateReturnable3 from "../../returnable-material/components/CreateReturnable-3";
+import CreateReturnable4 from "../../returnable-material/components/CreateReturnable-4";
 import ConsumableMaterialEdit from "../../consumable-material/components/ConsumableMaterialEdit";
 import EditReturnableMaterial from "../../returnable-material/components/EditReturnableMaterial";
+import RegisterConsumableMaterial from "../../consumable-material/components/RegisterConsumableMaterial";
+import LoanEdit from "../../loans/components/LoanEdit";
 
 
 export default function CreateUserPage(){
@@ -11,6 +14,10 @@ export default function CreateUserPage(){
     return(
         <div>
             <UserRegisterForm/>
+            <br />
+            =================================================================================================================================
+            <br />
+            <CreateReturnable4/>
             <br />
             =================================================================================================================================
             <br />
@@ -31,6 +38,14 @@ export default function CreateUserPage(){
             =================================================================================================================================
             <br />
             <EditReturnableMaterial/>
+            <br />
+            =================================================================================================================================
+            <br />
+            <RegisterConsumableMaterial/>
+            <br />
+            =================================================================================================================================
+            <br />
+            <LoanEdit/>
             <br />
             <br></br>
             

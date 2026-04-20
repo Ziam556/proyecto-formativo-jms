@@ -1,15 +1,8 @@
-import { getStateTypes } from "@/features/consumable-material/services/selectService.js"
-import { Input, Button, Select } from "@/shared";
-import { useState, useEffect } from "react";
+import { Input, Button } from "@/shared";
+import { useState } from "react";
 import { consumableMaterialSchema } from "../schemas/consumableMaterialSchema";
 
-export default function UseEditConsumableMaterial() {
-
-    const [state, setStateTypes] = useState([]);
-
-    useEffect(() => {
-        getStateTypes().then(setStateTypes);
-    }, [])
+export default function UseRegisterMaterialConsumption() {
 
     const [formData, setFormData] = useState({
         consumableMaterialElementName: "",
@@ -24,7 +17,6 @@ export default function UseEditConsumableMaterial() {
         consumableMaterialDescription: "",
         consumableMaterialAccountHolder: "",
         consumableMaterialLocation: "",
-        consumableMaterialState: "",
     });
 
     const [errors, setErrors] = useState({});
@@ -56,11 +48,11 @@ export default function UseEditConsumableMaterial() {
     return (
         <div>
             <h1 className="col-span-2 text-text-primary text-2xl mb-6">
-                Editar Material Consumo
+                Registro Material Consumo
             </h1>
 
             <h2 className="text-text-primary text-1xl mb-6">
-                Edite la información correspondiente
+                Ingrese la información correspondiente
             </h2>
 
             <form
@@ -152,14 +144,6 @@ export default function UseEditConsumableMaterial() {
                         value={formData.consumableMaterialLocation}
                         onChange={handleChange}
                         error={errors.consumableMaterialLocation}
-                    />
-                    <Select
-                        name="consumableMaterialState"
-                        placeholder="Seleccione el estado"
-                        value={formData.consumableMaterialState}
-                        options={state}
-                        onChange={handleChange}
-                        error={errors.consumableMaterialState}
                     />
 
                     {/* Actions */}
