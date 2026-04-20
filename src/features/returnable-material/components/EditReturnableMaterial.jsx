@@ -14,7 +14,6 @@ export default function UseEditReturnableMaterial() {
     }, [])
 
     const [formData, setFormData] = useState({
-        returnableMaterialId: "",
         returnableMaterialBrand: "",
         returnableMaterialPlate: "",
         returnableMaterialModel: "",
@@ -73,14 +72,7 @@ export default function UseEditReturnableMaterial() {
                 onSubmit={handleSubmit}
             >
                 <div className="grid grid-cols-2 gap-6 my-0 mx-auto">
-
-                    <Input
-                        name="returnableMaterialId"
-                        placeholder="ID"
-                        value={formData.returnableMaterialId}
-                        onChange={handleChange}
-                        error={errors.returnableMaterialId}
-                    />
+                    
                     <Input
                         name="returnableMaterialBrand"
                         placeholder="Marca"

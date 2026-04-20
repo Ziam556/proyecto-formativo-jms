@@ -3,15 +3,19 @@ import { z } from "zod";
 
 export const consumableMaterialSchema = z.object({
 
-    consumableMaterialId: 
-        z.string()
-        .min(1, "El ID es requerido"),
-
     consumableMaterialBrand: 
         z.string()
         .min(1, "La marca es requerida"),
 
-    consumableMaterialPlate: 
+    consumableMaterialImage: 
+        z.string()
+        .min(1, "La imagen es requerida"),
+
+    consumableMaterialTechnicalSheet: 
+        z.string()
+        .min(1, "La imagen es requerida"),
+
+    consumableMaterialSerial: 
         z.string()
         .min(1, "La placa SENA es requerida"),
 
