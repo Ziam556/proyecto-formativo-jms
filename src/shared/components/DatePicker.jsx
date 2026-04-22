@@ -33,7 +33,7 @@ export default function DatePicker({
                 selected={value ? new Date(value) : null}
                 onChange={(date) =>
                     onChange({
-                        target: {
+                        target:  {
                             name,
                             value: date ? date.toISOString().split("T")[0] : "",
                         },

@@ -15,17 +15,22 @@ export const consumableMaterialSchema = z.object({
         z.string()
         .min(1, "La imagen es requerida"),
 
-    consumableMaterialSerial: 
+    consumableMaterialPlate: 
         z.string()
         .min(1, "La placa SENA es requerida"),
+
+    consumableMaterialSerial:
+        z.string()
+        .min(1, "El serial es requerido"),
 
     consumableMaterialElementName: 
         z.string()
         .min(1, "El nombre del elemento es requerido"),
 
+
     consumableMaterialPurchaseDate: 
         z.string()
-        .min(1, "La fecha de compra es requerida"),
+        .min(1, "Debe seleccionar una fecha de compra"),
 
     consumableMaterialLocation: 
         z.string()
@@ -55,3 +60,4 @@ export const consumableMaterialSchema = z.object({
         z.string()
         .min(1, "El estado es requerido"),
 });
+
