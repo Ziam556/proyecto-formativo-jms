@@ -1,3 +1,4 @@
+import LoginUserForm from "../../home/components/LoginUserForm";
 import UserRegisterForm from "../components/UserRegisterForm";
 import CreateReturnable1 from "../../returnable-material/components/CreateReturnable-1";
 import CreateReturnable2 from "../../returnable-material/components/CreateReturnable-2";
@@ -13,6 +14,8 @@ export default function CreateUserPage(){
 
     return(
         <div>
+            <LoginUserForm/>
+            <br />
             <UserRegisterForm/>
             <br />
             =================================================================================================================================

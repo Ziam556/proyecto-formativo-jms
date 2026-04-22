@@ -22,6 +22,10 @@ export const materialSchema = z.object({
         z.string()
         .min(1, "El modelo es requerido"),
 
+    MaterialPurchaseDate: 
+        z.string()
+        .min(1, "Debe seleccionar una fecha de compra"),    
+
     materialSerial: 
         z.string().
         min(1, "El serial es requerido"),

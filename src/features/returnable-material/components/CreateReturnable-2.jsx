@@ -63,7 +63,7 @@ export default function UserRegisterForm() {
                     <Input
                         label="Cuentadante"
                         name="materialStoryTeller"
-                        placeholder="Ingrese el cuentadante"
+                        placeholder="Ingrese el nombre del cuentadante"
                         value={formData.materialStoryTeller}
                         onChange={handleChange}
                         error={errors.materialStoryTeller}
@@ -71,7 +71,7 @@ export default function UserRegisterForm() {
                     <Input
                         label="Cantidad"
                         name="materialAmount"
-                        placeholder="Ingrese la cantidad"
+                        placeholder="Escribe la cantidad"
                         value={formData.materialAmount}
                         onChange={handleChange}
                         error={errors.materialAmount}
@@ -79,7 +79,7 @@ export default function UserRegisterForm() {
                     <Input
                         label="Valor unitario"
                         name="materialUnitValue"
-                        placeholder="Ingrese el valor unitario"
+                        placeholder="Ingrese el valor unitario del material"
                         value={formData.materialUnitValue}
                         onChange={handleChange}
                         error={errors.materialUnitValue}
@@ -87,7 +87,7 @@ export default function UserRegisterForm() {
                     <Input
                         label="Valor total"
                         name="materialTotalValue"
-                        placeholder="Ingrese el valor total"
+                        placeholder="Ingrese el valor total del material"
                         value={formData.materialTotalValue}
                         onChange={handleChange}
                         error={errors.materialTotalValue}

@@ -1,5 +1,5 @@
-import { Input, Button, } from "@/shared";
-import { useState, } from "react";
+import { Input, Button, DatePicker } from "@/shared";
+import { useState } from "react";
 import { materialSchema } from "../../returnable-material/schemas/materialSchema";
 
 export default function UserRegisterForm() {
@@ -10,6 +10,7 @@ export default function UserRegisterForm() {
         materialModel: "",
         materialSerial: "",
         materialImage: "",
+        MaterialPurchaseDate: "",
     });
 
     // Estado para los errores de validacion
@@ -59,7 +60,7 @@ export default function UserRegisterForm() {
                     <Input
                         label="Marca"
                         name="materialBrand"
-                        placeholder="Ingrese la marca"
+                        placeholder="Escribe y busca la marca"
                         value={formData.materialBrand}
                         onChange={handleChange}
                         error={errors.materialBrand}
@@ -67,7 +68,7 @@ export default function UserRegisterForm() {
                     <Input
                         label="Modelo"
                         name="materialModel"
-                        placeholder="Ingrese el modelo"
+                        placeholder="Escribe el modelo"
                         value={formData.materialModel}
                         onChange={handleChange}
                         error={errors.materialModel}
@@ -75,7 +76,7 @@ export default function UserRegisterForm() {
                     <Input
                         label="Serial"
                         name="materialSerial"
-                        placeholder="Ingrese el serial"
+                        placeholder="Escribe el serial"
                         value={formData.materialSerial}
                         onChange={handleChange}
                         error={errors.materialSerial}
@@ -89,6 +90,16 @@ export default function UserRegisterForm() {
                         onChange={handleChange}
                         error={errors.materialImage}
                     />
+
+                    <DatePicker
+                        label="Fecha de compra"
+                        name="consumableMaterialPurchaseDate"
+                        placeholder="Selecciona la fecha de compra"
+                        value={formData.MaterialPurchaseDate}
+                        onChange={handleChange}
+                        error={errors.MaterialPurchaseDate}
+                    />
+                    
 
                     {/* Actions */}
                     <div className="flex items-end justify-end gap-6">

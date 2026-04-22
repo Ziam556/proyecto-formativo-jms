@@ -1,22 +1,26 @@
-import { Input, Button, Select } from "@/shared";
+import { Input, Button, Select, DatePicker } from "@/shared";
 import { useState, useEffect } from "react";
 import { materialSchema } from "../schemas/materialSchema";
-import { getDimensionsTypes, getCategoriesTypes } from "@/features/returnable-material/services/selectService.js";
+import { getDimensionsTypes, getCategoriesTypes, getStateTypes } from "@/features/returnable-material/services/selectService.js";
 
 export default function UseEditReturnableMaterial() {
 
     const [dimensions, setDimensionsTypes] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [state, setStateTypes] = useState([]);
 
     useEffect(() => {
         getDimensionsTypes().then(setDimensionsTypes);
         getCategoriesTypes().then(setCategories);
+        getStateTypes().then(setStateTypes);
     }, [])
+
 
     const [formData, setFormData] = useState({
         returnableMaterialBrand: "",
         returnableMaterialPlate: "",
         returnableMaterialModel: "",
+        materialState: "",
         returnableMaterialAccountHolder: "",
         returnableMaterialState: "",
         returnableMaterialAmount: "",
@@ -72,28 +76,74 @@ export default function UseEditReturnableMaterial() {
                 onSubmit={handleSubmit}
             >
                 <div className="grid grid-cols-2 gap-6 my-0 mx-auto">
-                    
+
                     <Input
-                        name="returnableMaterialBrand"
-                        placeholder="Marca"
-                        value={formData.returnableMaterialBrand}
-                        onChange={handleChange}
-                        error={errors.returnableMaterialBrand}
-                    />
-                    <Input
+                        label="Placa SENA"
                         name="returnableMaterialPlate"
-                        placeholder="Placa"
+                        placeholder="Escribe la placa SENA"
                         value={formData.returnableMaterialPlate}
                         onChange={handleChange}
                         error={errors.returnableMaterialPlate}
                     />
                     <Input
+                        label="Nombre Elemento"
+                        name="returnableMaterialElementName"
+                        placeholder="Escribe el nombre del elemento"
+                        value={formData.returnableMaterialElementName}
+                        onChange={handleChange}
+                        error={errors.returnableMaterialElementName}
+                    />
+                    <Select
+                        name="returnableMaterialCategory"
+                        placeholder="Categoría"
+                        value={formData.returnableMaterialCategory}
+                        options={categories}
+                        onChange={handleChange}
+                        error={errors.returnableMaterialCategory}
+                    />
+
+                    {/* Pagina 2*/}
+                    <Input
+                        label="Marca"
+                        name="returnableMaterialBrand"
+                        placeholder="Escribe y busca la marca"
+                        value={formData.returnableMaterialBrand}
+                        onChange={handleChange}
+                        error={errors.returnableMaterialBrand}
+                    />
+                    <Input
+                        label="Modelo"
                         name="returnableMaterialModel"
-                        placeholder="Modelo"
+                        placeholder="Escribe el modelo"
                         value={formData.returnableMaterialModel}
                         onChange={handleChange}
                         error={errors.returnableMaterialModel}
                     />
+                    <Input
+                        label="Serial"
+                        name="returnableMaterialSerial"
+                        placeholder="Escribe el serial"
+                        value={formData.returnableMaterialSerial}
+                        onChange={handleChange}
+                        error={errors.returnableMaterialSerial}
+                    />
+                    <Input
+                        label="Imagen"
+                        name="materialImage"
+                        placeholder="Ingrese la imagen"
+                        value={formData.materialImage}
+                        onChange={handleChange}
+                        error={errors.materialImage}
+                    />
+                    <DatePicker
+                        label="Fecha de compra"
+                        name="consumableMaterialPurchaseDate"
+                        placeholder="Fecha de compra"
+                        value={formData.MaterialPurchaseDate}
+                        onChange={handleChange}
+                        error={errors.MaterialPurchaseDate}
+                    />
+                    {/* Pagina 3*/}
                     <Input
                         name="returnableMaterialAccountHolder"
                         placeholder="Cuentadante"
@@ -109,35 +159,6 @@ export default function UseEditReturnableMaterial() {
                         error={errors.returnableMaterialAmount}
                     />
                     <Input
-                        name="returnableMaterialTechnicalSheet"
-                        placeholder="Ficha Técnica"
-                        value={formData.returnableMaterialTechnicalSheet}
-                        onChange={handleChange}
-                        error={errors.returnableMaterialTechnicalSheet}
-                    />
-                    <Input
-                        name="returnableMaterialElementName"
-                        placeholder="Nombre Elemento"
-                        value={formData.returnableMaterialElementName}
-                        onChange={handleChange}
-                        error={errors.returnableMaterialElementName}
-                    />
-                    <Input
-                        name="returnableMaterialSerial"
-                        placeholder="Serial"
-                        value={formData.returnableMaterialSerial}
-                        onChange={handleChange}
-                        error={errors.returnableMaterialSerial}
-                    />
-                    <Select
-                        name="returnableMaterialCategory"
-                        placeholder="Categoría"
-                        value={formData.returnableMaterialCategory}
-                        options={categories}
-                        onChange={handleChange}
-                        error={errors.returnableMaterialCategory}
-                    />
-                    <Input
                         name="returnableMaterialUnitValue"
                         placeholder="Valor Unitario"
                         value={formData.returnableMaterialUnitValue}
@@ -150,6 +171,23 @@ export default function UseEditReturnableMaterial() {
                         value={formData.returnableMaterialTotalValue}
                         onChange={handleChange}
                         error={errors.returnableMaterialTotalValue}
+                    />
+                    {/* Pagina 4*/}
+                    <Select
+                        label="Estado"
+                        name="consumableMaterialState"
+                        placeholder="Seleccione el estado"
+                        value={formData.materialState}
+                        options={state}
+                        onChange={handleChange}
+                        error={errors.materialState}
+                    />
+                    <Input
+                        name="returnableMaterialTechnicalSheet"
+                        placeholder="Ficha Técnica"
+                        value={formData.returnableMaterialTechnicalSheet}
+                        onChange={handleChange}
+                        error={errors.returnableMaterialTechnicalSheet}
                     />
                     <Input
                         name="returnableMaterialDescription"

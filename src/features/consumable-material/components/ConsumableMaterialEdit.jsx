@@ -1,5 +1,5 @@
 import { getStateTypes } from "@/features/consumable-material/services/selectService.js"
-import { Input, Button, Select } from "@/shared";
+import { Input, Button, Select, DatePicker } from "@/shared";
 import { useState, useEffect } from "react";
 import { consumableMaterialSchema } from "../schemas/consumableMaterialSchema";
 
@@ -7,9 +7,9 @@ export default function UseEditConsumableMaterial() {
 
     const [state, setStateTypes] = useState([]);
 
-    useEffect(() => {
-        getStateTypes().then(setStateTypes);
-    }, [])
+        useEffect(() => {
+            getStateTypes().then(setStateTypes);
+        }, [])
 
     const [formData, setFormData] = useState({
         consumableMaterialElementName: "",
@@ -69,21 +69,25 @@ export default function UseEditConsumableMaterial() {
             >
                 <div className="grid grid-cols-2 gap-6 my-0 mx-auto">
 
+                    {/* Pagina 1 */}
                     <Input
-                        name="consumableMaterialElementName"
-                        placeholder="Nombre Elemento"
-                        value={formData.consumableMaterialElementName}
+                        label="Imagen"
+                        name="consumableMaterialImage"
+                        placeholder="Arrastra o carga tu imagen aquí"
+                        value={formData.consumableMaterialImage}
                         onChange={handleChange}
-                        error={errors.consumableMaterialElementName}
+                        error={errors.consumableMaterialImage}
                     />
                     <Input
-                        name="consumableMaterialBrand"
-                        placeholder="Marca"
-                        value={formData.consumableMaterialBrand}
+                        label="Ficha Técnica"
+                        name="consumableMaterialTechnicalSheet"
+                        placeholder="Arrastra o carga tu ficha técnica aquí"
+                        value={formData.consumableMaterialTechnicalSheet}
                         onChange={handleChange}
-                        error={errors.consumableMaterialBrand}
+                        error={errors.consumableMaterialTechnicalSheet}
                     />
                     <Input
+                        label="Escribe el serial"
                         name="consumableMaterialSerial"
                         placeholder="Serial"
                         value={formData.consumableMaterialSerial}
@@ -91,75 +95,87 @@ export default function UseEditConsumableMaterial() {
                         error={errors.consumableMaterialSerial}
                     />
                     <Input
-                        name="consumableMaterialImage"
-                        placeholder="Imagen"
-                        value={formData.consumableMaterialImage}
+                        label="Nombre Elemento"
+                        name="consumableMaterialElementName"
+                        placeholder="Escribe el nombre del elemento"
+                        value={formData.consumableMaterialElementName}
                         onChange={handleChange}
-                        error={errors.consumableMaterialImage}
+                        error={errors.consumableMaterialElementName}
                     />
                     <Input
-                        name="consumableMaterialPurchaseDate"
-                        placeholder="Fecha Compra"
-                        value={formData.consumableMaterialPurchaseDate}
+                        label="Marca"
+                        name="consumableMaterialBrand"
+                        placeholder="Escribe y busca la marca"
+                        value={formData.consumableMaterialBrand}
                         onChange={handleChange}
-                        error={errors.consumableMaterialPurchaseDate}
+                        error={errors.consumableMaterialBrand}
                     />
+                    {/* Pagina 2 */}
                     <Input
-                        name="consumableMaterialAmount"
-                        placeholder="Cantidad"
-                        value={formData.consumableMaterialAmount}
-                        onChange={handleChange}
-                        error={errors.consumableMaterialAmount}
-                    />
-                    <Input
-                        name="consumableMaterialUnitValue"
-                        placeholder="Valor Unitario"
-                        value={formData.consumableMaterialUnitValue}
-                        onChange={handleChange}
-                        error={errors.consumableMaterialUnitValue}
-                    />
-                    <Input
-                        name="consumableMaterialTotalValue"
-                        placeholder="Valor Total"
-                        value={formData.consumableMaterialTotalValue}
-                        onChange={handleChange}
-                        error={errors.consumableMaterialTotalValue}
-                    />
-                    <Input
-                        name="consumableMaterialTechnicalSheet"
-                        placeholder="Ficha Técnica"
-                        value={formData.consumableMaterialTechnicalSheet}
-                        onChange={handleChange}
-                        error={errors.consumableMaterialTechnicalSheet}
-                    />
-                    <Input
-                        name="consumableMaterialDescription"
-                        placeholder="Descripción"
-                        value={formData.consumableMaterialDescription}
-                        onChange={handleChange}
-                        error={errors.consumableMaterialDescription}
-                    />
-                    <Input
+                        label="Cuentadante"
                         name="consumableMaterialAccountHolder"
-                        placeholder="Cuentadante"
+                        placeholder="Escribe el nombre del cuentadante"
                         value={formData.consumableMaterialAccountHolder}
                         onChange={handleChange}
                         error={errors.consumableMaterialAccountHolder}
                     />
                     <Input
-                        name="consumableMaterialLocation"
-                        placeholder="Ubicación"
-                        value={formData.consumableMaterialLocation}
+                        label="Cantidad"
+                        name="consumableMaterialAmount"
+                        placeholder="Escribe la cantidad del material"
+                        value={formData.consumableMaterialAmount}
                         onChange={handleChange}
-                        error={errors.consumableMaterialLocation}
+                        error={errors.consumableMaterialAmount}
                     />
+                    <Input
+                        label="Valor unitario"
+                        name="consumableMaterialUnitValue"
+                        placeholder="Escribe el valor unitario del material"
+                        value={formData.consumableMaterialUnitValue}
+                        onChange={handleChange}
+                        error={errors.consumableMaterialUnitValue}
+                    />
+                    <Input
+                        label="Valor total"
+                        name="consumableMaterialTotalValue"
+                        placeholder="Escribe el valor total del material"
+                        value={formData.consumableMaterialTotalValue}
+                        onChange={handleChange}
+                        error={errors.consumableMaterialTotalValue}
+                    />
+                    {/* Pagina 3*/}
                     <Select
+                        label="Estado"
                         name="consumableMaterialState"
                         placeholder="Seleccione el estado"
                         value={formData.consumableMaterialState}
                         options={state}
                         onChange={handleChange}
                         error={errors.consumableMaterialState}
+                    />
+                    <Input
+                        label="Descripción"
+                        name="consumableMaterialDescription"
+                        placeholder="Escribe la descripción aquí"
+                        value={formData.consumableMaterialDescription}
+                        onChange={handleChange}
+                        error={errors.consumableMaterialDescription}
+                    />
+                    <DatePicker
+                        label="Fecha de compra"
+                        name="consumableMaterialPurchaseDate"
+                        placeholder="Fecha de compra"
+                        value={formData.consumableMaterialPurchaseDate}
+                        onChange={handleChange}
+                        error={errors.consumableMaterialPurchaseDate}
+                    />
+                    <Input
+                        label="Ubicación"
+                        name="consumableMaterialLocation"
+                        placeholder="Escribre la ubicación aquí"
+                        value={formData.consumableMaterialLocation}
+                        onChange={handleChange}
+                        error={errors.consumableMaterialLocation}
                     />
 
                     {/* Actions */}

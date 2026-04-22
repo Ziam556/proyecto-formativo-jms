@@ -1,4 +1,4 @@
-import { getDimensionsTypes } from "@/features/returnable-material/services/selectService.js"
+import { getDimensionsTypes, getStateTypes } from "@/features/returnable-material/services/selectService.js"
 import { Input, Button, Select } from "@/shared";
 import { useState, useEffect } from "react";
 import { materialSchema } from "../../returnable-material/schemas/materialSchema";
@@ -12,6 +12,12 @@ export default function UserRegisterForm() {
     useEffect(() => {
         getDimensionsTypes().then(setDimensionsTypes);
     }, [])
+
+    const [state, setStateTypes] = useState([]);
+
+        useEffect(() => {
+            getStateTypes().then(setStateTypes);
+        }, [])
 
     // Estado del formulario con los campos de descripcion y ubicacion del material
     const [ formData, setFormData ] = useState({
@@ -66,11 +72,12 @@ export default function UserRegisterForm() {
                 <div className="grid grid-cols-2 gap-6 my-0 mx-auto">
 
                     {/* Descripcion y ubicacion fisica del material */}
-                    <Input
+                    <Select
                         label="Estado"
-                        name="materialState"
-                        placeholder="Ingrese el estado"
+                        name="consumableMaterialState"
+                        placeholder="Seleccione el estado"
                         value={formData.materialState}
+                        options={state}
                         onChange={handleChange}
                         error={errors.materialState}
                     />
@@ -113,7 +120,7 @@ export default function UserRegisterForm() {
                     {/* Actions */}
                     <div className="flex items-end justify-end gap-6">
                         <Button variant="secondary" size="sm">Cancelar</Button>
-                        <Button variant="primary" size="md">Siguiente</Button>
+                        <Button variant="primary" size="md">Guardar</Button>
                     </div>
 
                 </div>
