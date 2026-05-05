@@ -36,17 +36,17 @@ export default function LoginUserForm() {
     }
 
     return (
-        <div>
-            <h1 className="text-text-primary text-2x1 mb-6">
+    <div className="flex flex-col items-center justify-center py-12">
+        <div className="w-full max-w-2xl px-8">
+            <h1 className="text-text-primary text-2xl mb-6">
                 Inicio de sesión
             </h1>
 
             <form 
-            className="grid grid-cols-1 items-center gap-6"
-            onSubmit={handleSubmit}
+                className="grid grid-cols-1 gap-6"
+                onSubmit={handleSubmit}
             >
-                <div className="grid grid-cols-2 gap-6 my-0 mx-auto">
-                    
+                <div className="grid grid-cols-2 gap-6">
                     <Input
                         label="Correo electrónico"
                         name="loginUserEmail"
@@ -66,12 +66,12 @@ export default function LoginUserForm() {
                         error={errors.loginUserPassword}
                     />
 
-                    <div className="flex items-end justify-end gap-6">
+                    <div className="col-span-2 flex justify-end">
                         <Button variant="primary" size="md">Iniciar sesión</Button>
                     </div>
-
                 </div>
             </form>
         </div>
-    );
+    </div>
+);
 }
