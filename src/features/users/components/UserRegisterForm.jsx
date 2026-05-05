@@ -1,9 +1,13 @@
 import { useState, useEffect} from 'react'
 import { getDocumentTypes, getUserTypes } from "@/features/users/services/selectService"
 import { userSchema } from "../schemas/userSchema";
-import { Input, Button, Select, DatePicker } from "@/shared";
+import { check } from 'zod';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { SquareArrowRightEnter, Menu } from "lucide-react";
+import { Input, Button, Select, Checkbox, DatePicker, IconButton, Dropdown, DropdownTrigger, DropdownContent ,DropdownItem  } from "@/shared";
 
 export default function UserRegisterForm() {
+    const Navigate = useNavigate();
 
     // Estados para las opciones de los selects
     // Se cargan desde archivos JSON a traves de los servicios
@@ -191,11 +195,58 @@ export default function UserRegisterForm() {
                         error={errors.userPhone}
                     />
 
+                    <Checkbox
+                        id="inStaff"
+                        name="inStaff"
+                        label="Es staff"
+                        checked={formData.inStaff}
+                        onChange={handleChange}
+                    />
+
+                    <Checkbox
+                        id="isActive"
+                        name="isActive"
+                        label="Está activo"
+                        checked={formData.isActive}
+                        onChange={handleChange}
+                    />
+                    <Checkbox
+                        id="inSuperUser"
+                        name="inSuperUser"
+                        label="Es super usuario"
+                        checked={formData.inSuperUser}
+                        onChange={handleChange}
+                    />
+
                     {/* Actions */}
                     <div className="flex items-end justify-end gap-6">
                         <Button variant="secondary" size="sm">Cancelar</Button>
                         <Button variant="primary" size="md">Guardar</Button>
                     </div>
+
+                    <div className="p-10">
+                            <Dropdown>
+                                <DropdownTrigger>
+                                    <IconButton ariaLabel="Menu de usuario">
+                                        <Menu/>    
+                                    </IconButton>
+                                </DropdownTrigger>
+
+                                <DropdownContent className="right-0 w-48">
+                                    <DropdownItem>
+                                        <Link to="/auth" className="block w-full">
+                                            Autenticacion
+                                        </Link>
+                                    </DropdownItem>
+
+                                    <DropdownItem>
+                                        <Link to="/dashboard" className="block w-full">
+                                            Panel de control
+                                        </Link>
+                                    </DropdownItem>
+                                </DropdownContent>
+                            </Dropdown>    
+                        </div>
 
                 </div>
             </form>
