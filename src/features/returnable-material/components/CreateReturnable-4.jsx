@@ -1,103 +1,94 @@
-import { getCategoriesTypes } from "@/features/returnable-material/services/selectService.js"
-import { Input, Button, Select } from "@/shared";
 import { useState, useEffect } from "react";
-import { materialSchema } from "../../returnable-material/schemas/materialSchema";
+import { Input, Button, Select, FileInput } from "@/shared";
+import { getStateTypes, getDimensionsTypes } from "../services/selectService";
 
-export default function UserRegisterForm() {
-
-    // Estado para las opciones del select de dimensiones
-    // Se carga desde un archivo JSON a traves del servicio getDimensionsTypes
-    const [categories, setCategoriesTypes] = useState([]);
-
-    useEffect(() => {
-        getCategoriesTypes().then(setCategoriesTypes);
-    }, [])
-
-    // Estado del formulario con los campos de descripcion y ubicacion del material
-    const [ formData, setFormData ] = useState({
-        materialId: "",
-        materialPlate: "",
-        materialCategory: "",
-        materialElementName: "",
+export default function CreateReturnable4({ formData, onSave, onBack }) {
+    const [states, setStates] = useState([]);
+    const [dimensions, setDimensions] = useState([]);
+    const [fields, setFields] = useState({
+        materialState: formData.materialState || "",
+        materialTechnicalSheet: formData.materialTechnicalSheet || [],
+        materialDescription: formData.materialDescription || "",
+        materialLocation: formData.materialLocation || "",
+        materialDimensions: formData.materialDimensions || "",
     });
-
-    // Estado para los errores de validacion
     const [errors, setErrors] = useState({});
 
-    // Actualiza el campo correspondiente en formData cada vez que el usuario escribe
+    useEffect(() => {
+        getStateTypes().then(setStates);
+        getDimensionsTypes().then(setDimensions);
+    }, []);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value, 
-        }))
-    }
+        setFields((prev) => ({ ...prev, [name]: value }));
+    };
 
-    // Valida el formulario con Zod al hacer submit
-    // Si hay errores los mapea por campo y los guarda en el estado errors
-    // Si es exitoso limpia los errores y procesa los datos
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        const result = materialSchema.safeParse(formData);
-        if (!result.success) {
-            const fieldErrors = {};
-            result.error.issues.forEach((issue) => {
-                const field = issue.path[0]
-                fieldErrors[field] = issue.message
-            });
-            setErrors(fieldErrors)
+    const handleSave = () => {
+        const newErrors = {};
+        if (!fields.materialState) newErrors.materialState = "El estado es requerido";
+        if (!fields.materialDescription) newErrors.materialDescription = "La descripción es requerida";
+        if (!fields.materialLocation) newErrors.materialLocation = "La ubicación es requerida";
+        if (!fields.materialDimensions) newErrors.materialDimensions = "Las dimensiones son requeridas";
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
             return;
         }
-        setErrors({});
-        console.log("Usuario invalido", result.data)
-    }
+        onSave(fields);
+    };
 
     return (
-        <div>
-            <h1 className="text-text-primary text-2xl mb-6">
-                Registro de material devolutivo 
-            </h1>
+        <div style={{ display: "grid", gridTemplateColumns: "320px 320px", gap: "24px" }}>
+            <Select
+                label="Estado"
+                name="materialState"
+                value={fields.materialState}
+                options={states}
+                onChange={handleChange}
+                error={errors.materialState}
+            />
 
-            <form
-                className="grid grid-cols-1 items-center gap-6"
-                onSubmit={handleSubmit}
-            >
-                <div className="grid grid-cols-2 gap-6 my-0 mx-auto">
-                    
-                    <Input
-                        label="Placa SENA"
-                        name="materialPlate"
-                        placeholder="Ingrese la placa SENA"
-                        value={formData.materialPlate}
-                        onChange={handleChange}
-                        error={errors.materialPlate}
-                    />
-                    <Select
-                        label="Categoría"
-                        name="materialCategory"
-                        placeholder="Ingrese la categoria"
-                        value={formData.materialCategory}
-                        options={categories}
-                        onChange={handleChange}
-                        error={errors.materialCategory}
-                    />
-                    <Input
-                        label="Nombre del elemento"
-                        name="materialElementName"
-                        placeholder="Escriba el nombre del elemento"
-                        value={formData.materialElementName}
-                        onChange={handleChange}
-                        error={errors.materialElementName}
-                    />
+            {/* Ficha técnica */}
+            <div className="flex flex-col gap-1">
+                <label className="text-sm font-medium text-text-primary">Ficha técnica</label>
+                <FileInput
+                    value={fields.materialTechnicalSheet}
+                    onChange={(files) => setFields((prev) => ({ ...prev, materialTechnicalSheet: files }))}
+                    accept="application/pdf"
+                    multiple={false}
+                />
+            </div>
 
-                    {/* Actions */}
-                    <div className="flex items-end justify-end gap-6">
-                        <Button variant="secondary" size="sm">Cancelar</Button>
-                        <Button variant="primary" size="md">Siguiente</Button>
-                    </div>
+            <Input
+                label="Descripción"
+                name="materialDescription"
+                placeholder="Escribe la descripción aquí"
+                value={fields.materialDescription}
+                onChange={handleChange}
+                error={errors.materialDescription}
+            />
+            <Input
+                label="Ubicación"
+                name="materialLocation"
+                placeholder="Escribe la ubicación del material"
+                value={fields.materialLocation}
+                onChange={handleChange}
+                error={errors.materialLocation}
+            />
+            <Select
+                label="Dimensiones"
+                name="materialDimensions"
+                value={fields.materialDimensions}
+                options={dimensions}
+                onChange={handleChange}
+                error={errors.materialDimensions}
+            />
 
-                </div>
-            </form>
+            <div className="col-span-2 flex justify-end gap-4 mt-2">
+                <Button variant="secondary" size="sm" onClick={onBack}>Atrás</Button>
+                <Button variant="primary" size="md" onClick={handleSave}>Guardar material devolutivo</Button>
+            </div>
         </div>
     );
 }

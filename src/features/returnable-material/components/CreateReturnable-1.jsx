@@ -1,114 +1,86 @@
-import { Input, Button, DatePicker } from "@/shared";
-import { useState } from "react";
-import { materialSchema } from "../../returnable-material/schemas/materialSchema";
+import { useState, useEffect } from "react";
+import { Input, Button, Select } from "@/shared";
+import { getCategoriesTypes } from "../services/selectService";
 
-export default function UserRegisterForm() {
-
-    // Estado del formulario con los campos de identificacion del material
-    const [ formData, setFormData ] = useState({
-        materialBrand: "",
-        materialModel: "",
-        materialSerial: "",
-        materialImage: "",
-        MaterialPurchaseDate: "",
+export default function CreateReturnable1({ formData, onNext, onCancel }) {
+    const [categories, setCategories] = useState([]);
+    const [fields, setFields] = useState({
+        returnableMaterialId: formData.returnableMaterialId || "",
+        materialPlate: formData.materialPlate || "",
+        materialCategory: formData.materialCategory || "",
+        materialElementName: formData.materialElementName || "",
     });
-
-    // Estado para los errores de validacion
     const [errors, setErrors] = useState({});
 
-    // Actualiza el campo correspondiente en formData cada vez que el usuario escribe
+    useEffect(() => {
+        getCategoriesTypes().then(setCategories);
+    }, []);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value, 
-        }))
-    }
+        setFields((prev) => ({ ...prev, [name]: value }));
+    };
 
-    // Valida el formulario con Zod al hacer submit
-    // Si hay errores los mapea por campo y los guarda en el estado errors
-    // Si es exitoso limpia los errores y procesa los datos
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        const result = materialSchema.safeParse(formData);
-        if (!result.success) {
-            const fieldErrors = {};
-            result.error.issues.forEach((issue) => {
-                const field = issue.path[0]
-                fieldErrors[field] = issue.message
-            });
-            setErrors(fieldErrors)
+    const handleNext = () => {
+        const newErrors = {};
+        if (!fields.returnableMaterialId) newErrors.returnableMaterialId = "El ID es requerido";
+        if (!fields.materialPlate) newErrors.materialPlate = "La placa es requerida";
+        if (!fields.materialCategory) newErrors.materialCategory = "La categoría es requerida";
+        if (!fields.materialElementName) newErrors.materialElementName = "El nombre es requerido";
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
             return;
         }
-        setErrors({});
-        console.log("Usuario invalido", result.data)
-    }
+        onNext(fields);
+    };
 
     return (
-        <div>
-            <h1 className="text-text-primary text-2xl mb-6">
-                Registro de material devolutivo
-            </h1>
+    <div style={{ 
+    display: "grid", 
+    gridTemplateColumns: "320px 320px", 
+    gap: "24px",
+    margin: "0 auto",   
+}}>
+        <Input
+            label="ID"
+            name="returnableMaterialId"
+            placeholder="ID"
+            value={fields.returnableMaterialId}
+            onChange={handleChange}
+            error={errors.returnableMaterialId}
+        />
+        <Input
+            label="Placa SENA"
+            name="materialPlate"
+            placeholder="Escribe la Placa Sena"
+            value={fields.materialPlate}
+            onChange={handleChange}
+            error={errors.materialPlate}
+        />
+        <Select
+            label="Categoría"
+            name="materialCategory"
+            value={fields.materialCategory}
+            options={categories}
+            onChange={handleChange}
+            error={errors.materialCategory}
+        />
+        <Input
+            label="Nombre del elemento"
+            name="materialElementName"
+            placeholder="Escribe el nombre del elemento"
+            value={fields.materialElementName}
+            onChange={handleChange}
+            error={errors.materialElementName}
+        />
 
-            <form
-                className="grid grid-cols-1 items-center gap-6"
-                onSubmit={handleSubmit}
-            >
-                <div className="grid grid-cols-2 gap-6 my-0 mx-auto">
-
-                    {/* Identificacion del material */}
-                    <Input
-                        label="Marca"
-                        name="materialBrand"
-                        placeholder="Escribe y busca la marca"
-                        value={formData.materialBrand}
-                        onChange={handleChange}
-                        error={errors.materialBrand}
-                    />
-                    <Input
-                        label="Modelo"
-                        name="materialModel"
-                        placeholder="Escribe el modelo"
-                        value={formData.materialModel}
-                        onChange={handleChange}
-                        error={errors.materialModel}
-                    />
-                    <Input
-                        label="Serial"
-                        name="materialSerial"
-                        placeholder="Escribe el serial"
-                        value={formData.materialSerial}
-                        onChange={handleChange}
-                        error={errors.materialSerial}
-                    />
-                    {/* Campo para subir o referenciar la imagen del material */}
-                    <Input
-                        label="Imagen"
-                        name="materialImage"
-                        placeholder="Ingrese la imagen"
-                        value={formData.materialImage}
-                        onChange={handleChange}
-                        error={errors.materialImage}
-                    />
-
-                    <DatePicker
-                        label="Fecha de compra"
-                        name="consumableMaterialPurchaseDate"
-                        placeholder="Selecciona la fecha de compra"
-                        value={formData.MaterialPurchaseDate}
-                        onChange={handleChange}
-                        error={errors.MaterialPurchaseDate}
-                    />
-                    
-
-                    {/* Actions */}
-                    <div className="flex items-end justify-end gap-6">
-                        <Button variant="secondary" size="sm">Cancelar</Button>
-                        <Button variant="primary" size="md">Siguiente</Button>
-                    </div>
-
-                </div>
-            </form>
+        <div style={{ gridColumn: "span 2", display: "flex", justifyContent: "flex-end", gap: "16px" }}>
+            <div style={{ gridColumn: "span 2", display: "flex", justifyContent: "flex-end", gap: "16px" }}>
+                <Button variant="secondary" size="sm" onClick={onCancel}>Cancelar</Button>
+                <Button variant="primary" size="md" onClick={handleNext}>Siguiente</Button>
+            </div>
         </div>
-    );
+    </div>
+);
 }

@@ -1,0 +1,1 @@
+export { default as ConfigPage } from "./pages/ConfigPage.jsx"

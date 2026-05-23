@@ -103,6 +103,7 @@ export function DropdownContent({ children, className = ""}) {
                 hover:shadow-black
                 text-white
                 transition-shadow duration-700
+                z-50 
                 ${className}
             `}
         >

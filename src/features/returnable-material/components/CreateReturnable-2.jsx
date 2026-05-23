@@ -1,106 +1,92 @@
-import { Input, Button, } from "@/shared";
-import { useState, } from "react";
-import { materialSchema } from "../../returnable-material/schemas/materialSchema";
+import { useState } from "react";
+import { Input, Button, FileInput } from "@/shared";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
-export default function UserRegisterForm() {
-
-    // Estado del formulario con los campos de informacion economica del material
-    const [ formData, setFormData ] = useState({
-        materialStoryTeller: "",
-        materialAmount: "",
-        materialUnitValue: "",
-        materialTotalValue: "",
+export default function CreateReturnable2({ formData, onNext, onBack }) {
+    const [fields, setFields] = useState({
+        materialBrand: formData.materialBrand || "",
+        materialModel: formData.materialModel || "",
+        materialSerial: formData.materialSerial || "",
+        materialImage: formData.materialImage || [],
+        MaterialPurchaseDate: formData.MaterialPurchaseDate || null,
     });
-
-    // Estado para los errores de validacion
     const [errors, setErrors] = useState({});
 
-    // Actualiza el campo correspondiente en formData cada vez que el usuario escribe
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value, 
-        }))
-    }
+        setFields((prev) => ({ ...prev, [name]: value }));
+    };
 
-    // Valida el formulario con Zod al hacer submit
-    // Si hay errores los mapea por campo y los guarda en el estado errors
-    // Si es exitoso limpia los errores y procesa los datos
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        const result = materialSchema.safeParse(formData);
-        if (!result.success) {
-            const fieldErrors = {};
-            result.error.issues.forEach((issue) => {
-                const field = issue.path[0]
-                fieldErrors[field] = issue.message
-            });
-            setErrors(fieldErrors)
+    const handleNext = () => {
+        const newErrors = {};
+        if (!fields.materialBrand) newErrors.materialBrand = "La marca es requerida";
+        if (!fields.materialModel) newErrors.materialModel = "El modelo es requerido";
+        if (!fields.materialSerial) newErrors.materialSerial = "El serial es requerido";
+        if (!fields.MaterialPurchaseDate) newErrors.MaterialPurchaseDate = "La fecha es requerida";
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
             return;
         }
-        setErrors({});
-        console.log("Usuario invalido", result.data)
-    }
+        onNext(fields);
+    };
 
     return (
-        <div>
-            <h1 className="text-text-primary text-2xl mb-6">
-                Registro de material devolutivo 
-            </h1>
+        <div style={{ display: "grid", gridTemplateColumns: "320px 320px", gap: "24px" }}>
+            <Input
+                label="Marca"
+                name="materialBrand"
+                placeholder="Escribe y busca la marca"
+                value={fields.materialBrand}
+                onChange={handleChange}
+                error={errors.materialBrand}
+            />
+            <Input
+                label="Modelo"
+                name="materialModel"
+                placeholder="Escribe el modelo"
+                value={fields.materialModel}
+                onChange={handleChange}
+                error={errors.materialModel}
+            />
+            <Input
+                label="Serial"
+                name="materialSerial"
+                placeholder="Escribe el serial"
+                value={fields.materialSerial}
+                onChange={handleChange}
+                error={errors.materialSerial}
+            />
 
-            <form
-                className="grid grid-cols-1 items-center gap-6"
-                onSubmit={handleSubmit}
-            >
-                <div className="grid grid-cols-2 gap-6 my-0 mx-auto">
+            {/* Input de imagen */}
+            <div className="flex flex-col gap-1">
+                <label className="text-sm font-medium text-text-primary">Imagen</label>
+                <FileInput
+                    value={fields.materialImage}
+                    onChange={(files) => setFields((prev) => ({ ...prev, materialImage: files }))}
+                    accept="image/*"
+                    multiple={false}
+                />
+            </div>
 
-                    {/* Informacion economica y de responsabilidad del material
-                        materialStoryTeller: persona responsable del material
-                        materialAmount: cantidad de unidades del material
-                        materialUnitValue: valor por unidad
-                        materialTotalValue: resultado de cantidad por valor unitario */}
-                    <Input
-                        label="Cuentadante"
-                        name="materialStoryTeller"
-                        placeholder="Ingrese el nombre del cuentadante"
-                        value={formData.materialStoryTeller}
-                        onChange={handleChange}
-                        error={errors.materialStoryTeller}
-                    />
-                    <Input
-                        label="Cantidad"
-                        name="materialAmount"
-                        placeholder="Escribe la cantidad"
-                        value={formData.materialAmount}
-                        onChange={handleChange}
-                        error={errors.materialAmount}
-                    />
-                    <Input
-                        label="Valor unitario"
-                        name="materialUnitValue"
-                        placeholder="Ingrese el valor unitario del material"
-                        value={formData.materialUnitValue}
-                        onChange={handleChange}
-                        error={errors.materialUnitValue}
-                    />
-                    <Input
-                        label="Valor total"
-                        name="materialTotalValue"
-                        placeholder="Ingrese el valor total del material"
-                        value={formData.materialTotalValue}
-                        onChange={handleChange}
-                        error={errors.materialTotalValue}
-                    />
+            <div className="flex flex-col gap-1">
+                <label className="text-sm font-medium text-text-primary">Fecha de compra</label>
+                <DatePicker
+                    selected={fields.MaterialPurchaseDate}
+                    onChange={(date) => setFields((prev) => ({ ...prev, MaterialPurchaseDate: date }))}
+                    placeholderText="Selecciona la fecha de compra"
+                    dateFormat="dd/MM/yyyy"
+                    className="w-full rounded-lg px-4 py-3 text-sm"
+                    style={{ background: "rgba(220,225,240,0.7)" }}
+                />
+                {errors.MaterialPurchaseDate && <span className="text-red-500 text-xs">{errors.MaterialPurchaseDate}</span>}
+            </div>
 
-                    {/* Actions */}
-                    <div className="flex items-end justify-end gap-6">
-                        <Button variant="secondary" size="sm">Cancelar</Button>
-                        <Button variant="primary" size="md">Siguiente</Button>
-                    </div>
-
-                </div>
-            </form>
+            <div className="col-span-2 flex justify-end gap-4 mt-2">
+                <Button variant="secondary" size="sm" onClick={onBack}>Atrás</Button>
+                <Button variant="primary" size="md" onClick={handleNext}>Siguiente</Button>
+            </div>
         </div>
     );
 }
