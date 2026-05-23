@@ -1,35 +1,18 @@
 import { Outlet } from "react-router-dom";
-import { Link, useNavigate } from "react-router-dom";
 import heroBg from "@/assets/images/normal-background.png";
-import { ArrowBigLeftDash } from "lucide-react";
-import { IconButton } from "@/shared";
 import { Navbar } from "@/shared";
 
-export default function MainLayout() {
-    const navigate = useNavigate();
-
+export default function DashboardLayout() {
     return (
-        <div className="relative min-h-screen text-text-primary">
+        <div>
+             {/* Fondo con imagen */}
             <div
-                style={{ 
-                    backgroundImage: `url(${heroBg})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center center",
-                    backgroundRepeat: "no-repeat",
-                    backgroundAttachment: "fixed",
-                    position: "fixed",
-                    inset: 0,
-                    zIndex: -10
-                }}
+                className="absolute inset-0 -z-10 bg-cover bg-center"
+                style={{backgroundImage: `url(${heroBg})`}}
             />
-            <Link to="/auth">
-                <IconButton onClick={() => navigate("/auth")}>
-                    <ArrowBigLeftDash />
-                </IconButton>
-            </Link>
-            <Navbar />
+            <Navbar/>
             <main>
-                <Outlet />
+                <Outlet/>
             </main>
         </div>
     );

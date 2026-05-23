@@ -1,5 +1,17 @@
 @import url(tokens.css);
 @import url(semantic.css);
+
+/* Estilos del DatePicker para que coincida con los demás inputs */
+.react-datepicker__input-container input {
+    background: rgba(217, 217, 217, 0.54) !important;
+    border: 1px solid #000000 !important;
+    border-radius: 8px !important;
+    width: 320px !important;
+    height: 48px !important;
+    padding: 0 16px !important;
+    font-size: 1rem !important;
+}
+
 @import "tailwindcss"; /* Esta linea debe quedar al final para que funcione */
 
 @theme {
@@ -16,14 +28,11 @@
     --color-surface-muted: var(--semantic-surface-muted);
     --color-background-inverse: var(--semantic-background-inverse);
 
-
     /* ======TEXT====== */
-
     --color-text-primary: var(--semantic-text-primary);
     --color-text-secondary: var(--semantic-text-secondary);
     --color-text-muted: var(--semantic-text-muted); 
     --color-text-inverse: var(--semantic-text-inverse);
-
 
     /* ======BORDER====== */
     --color-border: var(--semantic-border);
@@ -49,7 +58,6 @@
     --text-caption: var(--semantic-font-size-caption);
 
     /* ======FONT WEIGHT====== */
-
     --font-heading: var(--semantic-font-weight-heading);
     --font-body: var(--semantic-font-weight-body);  
     --font-label: var(--semantic-font-weight-label);

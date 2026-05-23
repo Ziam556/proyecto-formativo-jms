@@ -33,28 +33,25 @@ export default function DatePicker({
                 selected={value ? new Date(value) : null}
                 onChange={(date) =>
                     onChange({
-                        target:  {
+                        target: {
                             name,
                             value: date ? date.toISOString().split("T")[0] : "",
                         },
                     })
                 }
                 dateFormat="dd/MM/yyyy"
-                className={`
-                    w-[320px]
-                    h-12
-                    rounded-md
-                    border
-                    border-border
-                    px-4
-                    text-base
-                    hover:border-2
-                    hover:border-focus-border
-                    focus:outline-none
-                    focus:ring-1
-                    focus:ring-focus-ring
-                    ${error ? "border-red-600" : "border border-border"}
-                `}
+                wrapperClassName="w-[320px]"
+                className="w-[320px] h-12 px-4 text-base focus:outline-none"
+                // estilos inline directo
+                style={{
+                    background: "rgba(217,217,217,0.54)",
+                    border: error ? "1px solid red" : "1px solid #000000",
+                    borderRadius: "8px",
+                    width: "320px",
+                    height: "48px",
+                    padding: "0 16px",
+                    fontSize: "1rem",
+                }}
             />
 
             {/* Mensaje de error visible solo si hay error */}

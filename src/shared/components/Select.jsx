@@ -24,16 +24,17 @@ export default function Select({
                 name={name}
                 value={value}
                 onChange={onChange}
+                style={{
+                    background: "rgba(217,217,217,0.54)",
+                    border: error ? "1px solid red" : "1px solid #000000",
+                    borderRadius: "8px",
+                }}
                 className={`
-                    w-full
+                    w-full 
                     h-12
-                    rounded-md
-                    border
-                    border-border
                     px-4
                     hover:border-2
                     hover:border-focus-border
-                    ${error ? "border-red-600" : "border border-border"} 
                 `}
             >
                 <option value="">{placeholder}</option>
