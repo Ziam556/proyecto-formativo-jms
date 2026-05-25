@@ -1,57 +1,72 @@
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import UserRegisterForm from "../components/UserRegisterForm";
-import CreateReturnable1 from "../../returnable-material/components/CreateReturnable-1";
-import CreateReturnable2 from "../../returnable-material/components/CreateReturnable-2";
-import CreateReturnable3 from "../../returnable-material/components/CreateReturnable-3";
-import CreateReturnable4 from "../../returnable-material/components/CreateReturnable-4";
-import ConsumableMaterialEdit from "../../consumable-material/components/ConsumableMaterialEdit";
-import EditReturnableMaterial from "../../returnable-material/components/EditReturnableMaterial";
-import RegisterConsumableMaterial from "../../consumable-material/components/RegisterConsumableMaterial";
-import LoanEdit from "../../loans/components/LoanEdit";
 
+export default function CreateUserPage() {
+    const navigate = useNavigate();
 
-export default function CreateUserPage(){
+    return (
+        <div style={{
+            minHeight: "calc(100vh - 72px)",
+            display: "flex",
+            flexDirection: "column",
+            boxSizing: "border-box",
+            padding: "24px 40px",
+            gap: "12px",
+            alignItems: "center",
+            justifyContent: "center",
+        }}>
+            {/* Título */}
+            <h1 style={{ color: "#fff", fontSize: "1.2rem", fontWeight: 600, margin: 0 }}>
+                Registro de usuario
+            </h1>
 
-    return(
-        <div>
-            <LoginUserForm/>
-            <br />
-            <UserRegisterForm/>
-            <br />
-            =================================================================================================================================
-            <br />
-            <CreateReturnable4/>
-            <br />
-            =================================================================================================================================
-            <br />
-            <CreateReturnable1/>
-            <br />
-            =================================================================================================================================
-            <br />
-            <CreateReturnable2/>
-            <br />
-            =================================================================================================================================
-            <br />
-            <CreateReturnable3/>
-            <br />
-            =================================================================================================================================
-            <br />
-            <ConsumableMaterialEdit/>
-            <br />
-            =================================================================================================================================
-            <br />
-            <EditReturnableMaterial/>
-            <br />
-            =================================================================================================================================
-            <br />
-            <RegisterConsumableMaterial/>
-            <br />
-            =================================================================================================================================
-            <br />
-            <LoanEdit/>
-            <br />
-            <br></br>
-            
+            {/* Contenedor exterior glass */}
+            <div style={{
+                width: "95%",
+                margin: "0 auto",
+                borderRadius: "16px",
+                background: "rgba(217,217,217,0.31)",
+                backdropFilter: "blur(16px)",
+                border: "1px solid rgba(255,255,255,0.2)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                position: "relative",
+                padding: "48px 40px 40px",
+            }}>
+                {/* Flecha regresar */}
+                <button
+                    onClick={() => navigate("/dashboard/userpage")}
+                    style={{
+                        position: "absolute",
+                        top: "16px",
+                        left: "16px",
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        color: "#fff",
+                        zIndex: 1,
+                    }}
+                    title="Regresar"
+                >
+                    <ArrowLeft size={24} />
+                </button>
+
+                {/* Contenedor interior glass blanco */}
+                <div style={{
+                    width: "100%",
+                    borderRadius: "12px",
+                    background: "rgba(255,255,255,0.31)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "36px 48px",
+                    overflowX: "auto",
+                }}>
+                    <UserRegisterForm onCancel={() => navigate("/dashboard/userpage")} />
+                </div>
+            </div>
         </div>
-        
-    )
+    );
 }

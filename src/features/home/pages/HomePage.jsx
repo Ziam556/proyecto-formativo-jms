@@ -4,7 +4,7 @@ import { MenuButton } from "@/shared";
 
 // Opciones del menú principal — cada item lleva a un módulo del sistema
 const menuItems = [
-  { label: "Gestion Usuarios", icon: Users, to: "/dashboard/UserList" },
+  { label: "Gestion de Usuarios", icon: Users, to: "/dashboard/userpage" },
   { label: "Material Devolutivo", icon: Package, to: "/dashboard/returnable-material" },
   { label: "Material Consumo", icon: ShoppingCart, to: "/dashboard/consumable-material" },
   { label: "Prestamo", icon: Handshake, to: "/dashboard/loans" },

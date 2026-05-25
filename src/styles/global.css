@@ -61,4 +61,13 @@
     --font-heading: var(--semantic-font-weight-heading);
     --font-body: var(--semantic-font-weight-body);  
     --font-label: var(--semantic-font-weight-label);
+
+}
+/* ====== Fondo degradado principal de la aplicacion ====== */
+.bg-app-gradient {
+    background: linear-gradient(135deg, var(--primary-800) 0%, var(--tertiary-600) 50%, var(--secundary-950) 100%);
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+    display: none;
 }
