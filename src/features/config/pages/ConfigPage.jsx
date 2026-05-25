@@ -4,7 +4,7 @@ import { MenuButton } from "@/shared";
 
 // Secciones de configuración del sistema
 const menuItems = [
-    { label: "Marcas", icon: Cylinder },
+    { label: "Marcas", icon: Cylinder, to: "/dashboard/config/brands" },
     { label: "Grupos", icon: Users, to: "/dashboard/config/groups" },
     { label: "Gestión de tareas", icon: FileSliders },
 ];
