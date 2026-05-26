@@ -39,7 +39,7 @@ export default function CreateReturnable4({ formData, onSave, onBack }) {
     };
 
     return (
-        <div style={{ display: "grid", gridTemplateColumns: "320px 320px", gap: "24px" }}>
+        <div className="grid grid-cols-[320px_320px] gap-6">
             <Select
                 label="Estado"
                 name="materialState"

@@ -36,12 +36,7 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
     };
 
     return (
-    <div style={{ 
-    display: "grid", 
-    gridTemplateColumns: "320px 320px", 
-    gap: "24px",
-    margin: "0 auto",   
-}}>
+    <div className="grid grid-cols-[320px_320px] gap-6 mx-auto">
         <Input
             label="ID"
             name="returnableMaterialId"
@@ -75,11 +70,9 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
             error={errors.materialElementName}
         />
 
-        <div style={{ gridColumn: "span 2", display: "flex", justifyContent: "flex-end", gap: "16px" }}>
-            <div style={{ gridColumn: "span 2", display: "flex", justifyContent: "flex-end", gap: "16px" }}>
-                <Button variant="secondary" size="sm" onClick={onCancel}>Cancelar</Button>
-                <Button variant="primary" size="md" onClick={handleNext}>Siguiente</Button>
-            </div>
+        <div className="col-span-2 flex justify-end gap-4">
+            <Button variant="secondary" size="sm" onClick={onCancel}>Cancelar</Button>
+            <Button variant="primary" size="md" onClick={handleNext}>Siguiente</Button>
         </div>
     </div>
 );

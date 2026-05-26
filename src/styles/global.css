@@ -68,6 +68,11 @@
     background: linear-gradient(135deg, var(--primary-800) 0%, var(--tertiary-600) 50%, var(--secundary-950) 100%);
 }
 
+/* ====== Gradiente de la tarjeta de módulo (Home, Config, módulos) ====== */
+.bg-module-card {
+    background: linear-gradient(90deg, #700D7C 0%, #88A3C7 35%, #50E5F9 100%);
+}
+
 input[type="search"]::-webkit-search-cancel-button {
     display: none;
 }

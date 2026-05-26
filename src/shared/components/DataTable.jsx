@@ -17,27 +17,9 @@ import StateChip from "./StateChip";
 const formatCurrency = (v) =>
     Number(v).toLocaleString("es-CO", { minimumFractionDigits: 0 });
 
-// ─── Estilos ──────────────────────────────────────────────────────────────────
-const thStyle = {
-    padding: "8px 10px",
-    background: "#D1D1D1",
-    color: "#000000",
-    fontSize: "0.8rem",
-    fontWeight: 600,
-    borderBottom: "1px solid #bdbdbd",
-    position: "sticky",
-    top: 0,
-    zIndex: 10,
-};
-
-const tdStyle = {
-    padding: "8px 10px",
-    fontSize: "0.82rem",
-    color: "#3D3D3D",
-    background: "#E9E9E9",
-    borderBottom: "1px solid #d5d5d5",
-    whiteSpace: "nowrap",
-};
+// Clases de cabecera y celda — se usan como className en th y td
+const thClass = "p-[8px_10px] bg-[#D1D1D1] text-black text-[0.8rem] font-semibold border-b border-[#bdbdbd] sticky top-0 z-10";
+const tdClass = "p-[8px_10px] text-[0.82rem] text-[#3D3D3D] border-b border-[#d5d5d5] whitespace-nowrap";
 
 // ─── Componente ───────────────────────────────────────────────────────────────
 //
@@ -96,7 +78,7 @@ export default function DataTable({ data = [], columns: colDefs = [] }) {
                 if (col.format === "currency") return formatCurrency(value);
                 if (col.format === "state")    return <StateChip value={value} />;
                 if (col.format === "link")     return (
-                    <a href="#" style={{ color: "#93c5fd", textDecoration: "underline", fontSize: "0.82rem" }}>
+                    <a href="#" className="text-[#93c5fd] underline text-[0.82rem]">
                         Ver ficha
                     </a>
                 );
@@ -125,13 +107,13 @@ export default function DataTable({ data = [], columns: colDefs = [] }) {
     return (
         <>
             {/* Tabla */}
-            <div style={{ overflowX: "auto", borderRadius: "12px", border: "1px solid #bdbdbd", background: "#E9E9E9" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <div className="overflow-x-auto rounded-xl border border-[#bdbdbd] bg-[#E9E9E9]">
+                <table className="w-full border-collapse">
                     <thead>
                         {table.getHeaderGroups().map((hg) => (
                             <tr key={hg.id}>
                                 {hg.headers.map((header) => (
-                                    <th key={header.id} style={thStyle}>
+                                    <th key={header.id} className={thClass}>
                                         {flexRender(header.column.columnDef.header, header.getContext())}
                                     </th>
                                 ))}
@@ -141,20 +123,19 @@ export default function DataTable({ data = [], columns: colDefs = [] }) {
                     <tbody>
                         {table.getRowModel().rows.length === 0 ? (
                             <tr>
-                                <td colSpan={columns.length} style={{ ...tdStyle, textAlign: "center", padding: "32px", color: "#9ca3af" }}>
+                                <td colSpan={columns.length} className={`${tdClass} text-center p-8 text-gray-400`}>
                                     Sin resultados
                                 </td>
                             </tr>
                         ) : (
                             table.getRowModel().rows.map((row, i) => (
+                                /* odd/even para filas alternadas, hover con Tailwind */
                                 <tr
                                     key={row.id}
-                                    style={{ background: i % 2 === 0 ? "#E9E9E9" : "#f0f0f0" }}
-                                    onMouseEnter={(e) => e.currentTarget.style.background = "#dcd6f0"}
-                                    onMouseLeave={(e) => e.currentTarget.style.background = i % 2 === 0 ? "#E9E9E9" : "#f0f0f0"}
+                                    className={`hover:bg-[#dcd6f0] transition-colors duration-100 ${i % 2 === 0 ? "bg-[#E9E9E9]" : "bg-[#f0f0f0]"}`}
                                 >
                                     {row.getVisibleCells().map((cell) => (
-                                        <td key={cell.id} style={tdStyle}>
+                                        <td key={cell.id} className={tdClass}>
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </td>
                                     ))}
@@ -166,12 +147,12 @@ export default function DataTable({ data = [], columns: colDefs = [] }) {
             </div>
 
             {/* Paginación */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", marginTop: "16px", color: "#e2e8f0", fontSize: "0.85rem" }}>
+            <div className="flex items-center justify-center gap-3 mt-4 text-[#e2e8f0] text-[0.85rem]">
                 <span>Page</span>
                 <select
                     value={pageSize}
                     onChange={(e) => table.setPageSize(Number(e.target.value))}
-                    style={{ padding: "4px 8px", borderRadius: "6px", background: "rgba(30,20,60,0.8)", color: "#fff", border: "1px solid rgba(255,255,255,0.2)", fontSize: "0.82rem" }}
+                    className="px-2 py-1 rounded-md bg-[rgba(30,20,60,0.8)] text-white border border-white/20 text-[0.82rem]"
                 >
                     {[10, 25, 50, 100].map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>
@@ -182,13 +163,17 @@ export default function DataTable({ data = [], columns: colDefs = [] }) {
                     { label: "›",  fn: () => table.nextPage(),                               can: table.getCanNextPage() },
                     { label: "›|", fn: () => table.setPageIndex(table.getPageCount() - 1),  can: table.getCanNextPage() },
                 ].map(({ label, fn, can }) => (
-                    <button key={label} onClick={fn} disabled={!can}
-                        style={{ background: "none", border: "none", color: can ? "#fff" : "#4b5563", cursor: can ? "pointer" : "default", fontSize: "1rem" }}>
+                    <button
+                        key={label}
+                        onClick={fn}
+                        disabled={!can}
+                        className="bg-transparent border-0 text-[1rem] disabled:text-gray-600 text-white disabled:cursor-default cursor-pointer"
+                    >
                         {label}
                     </button>
                 ))}
 
-                <span style={{ color: "#9ca3af" }}>
+                <span className="text-gray-400">
                     {totalRows > 0 ? `${fromRow} - ${toRow} de ${totalRows}` : "0 resultados"}
                 </span>
             </div>

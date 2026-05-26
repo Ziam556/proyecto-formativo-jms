@@ -6,64 +6,27 @@ export default function CreateUserPage() {
     const navigate = useNavigate();
 
     return (
-        <div style={{
-            minHeight: "calc(100vh - 72px)",
-            display: "flex",
-            flexDirection: "column",
-            boxSizing: "border-box",
-            padding: "24px 40px",
-            gap: "12px",
-            alignItems: "center",
-            justifyContent: "center",
-        }}>
+        <div className="min-h-[calc(100vh-72px)] flex flex-col box-border py-6 px-10 gap-3 items-center justify-center">
+
             {/* Título */}
-            <h1 style={{ color: "#fff", fontSize: "1.2rem", fontWeight: 600, margin: 0 }}>
+            <h1 className="text-white text-[1.2rem] font-semibold m-0">
                 Registro de usuario
             </h1>
 
             {/* Contenedor exterior glass */}
-            <div style={{
-                width: "95%",
-                margin: "0 auto",
-                borderRadius: "16px",
-                background: "rgba(217,217,217,0.31)",
-                backdropFilter: "blur(16px)",
-                border: "1px solid rgba(255,255,255,0.2)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                position: "relative",
-                padding: "48px 40px 40px",
-            }}>
+            <div className="w-[95%] mx-auto rounded-2xl bg-[rgba(217,217,217,0.31)] backdrop-blur-[16px] border border-white/20 flex items-center justify-center relative pt-12 px-10 pb-10">
+
                 {/* Flecha regresar */}
                 <button
                     onClick={() => navigate("/dashboard/userpage")}
-                    style={{
-                        position: "absolute",
-                        top: "16px",
-                        left: "16px",
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        color: "#fff",
-                        zIndex: 1,
-                    }}
+                    className="absolute top-4 left-4 bg-transparent border-0 cursor-pointer text-white z-[1]"
                     title="Regresar"
                 >
                     <ArrowLeft size={24} />
                 </button>
 
                 {/* Contenedor interior glass blanco */}
-                <div style={{
-                    width: "100%",
-                    borderRadius: "12px",
-                    background: "rgba(255,255,255,0.31)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: "36px 48px",
-                    overflowX: "auto",
-                }}>
+                <div className="w-full rounded-xl bg-[rgba(255,255,255,0.31)] flex items-center justify-center py-9 px-12 overflow-x-auto">
                     <UserRegisterForm onCancel={() => navigate("/dashboard/userpage")} />
                 </div>
             </div>

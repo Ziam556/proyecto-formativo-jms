@@ -13,15 +13,8 @@ function StateChip({ value }) {
   const color = stateColors[value] || "#6b7280";
   return (
     <span
-      style={{
-        background: color,
-        color: "#fff",
-        borderRadius: "999px",
-        padding: "2px 10px",
-        fontSize: "0.78rem",
-        fontWeight: 600,
-        whiteSpace: "nowrap",
-      }}
+      className="text-white rounded-full py-[2px] px-[10px] text-[0.78rem] font-semibold whitespace-nowrap"
+      style={{ background: color }}
     >
       {value}
     </span>
@@ -76,7 +69,7 @@ export const returnableMaterialColumns = [
     id: "technicalSheet",
     header: "Ficha Técnica",
     cell: () => (
-      <a href="#" style={{ color: "var(--color-primary, #7c3aed)", textDecoration: "underline", fontSize: "0.85rem" }}>
+      <a href="#" className="text-[#7c3aed] underline text-[0.85rem]">
         Ver ficha
       </a>
     ),

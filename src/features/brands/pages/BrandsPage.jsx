@@ -6,28 +6,12 @@ export default function BrandsPage() {
     const navigate = useNavigate();
 
     return (
-        <div style={{
-            minHeight: "calc(100vh - 64px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "24px",
-        }}>
-            <div style={{
-                borderRadius: "20px",
-                overflow: "hidden",
-                background: "linear-gradient(90deg, #700D7C 0%, #88A3C7 35%, #50E5F9 100%)",
-                backdropFilter: "blur(16px)",
-                boxShadow: "0 8px 40px rgba(0,0,0,0.3)",
-                maxWidth: "680px",
-                width: "100%",
-                padding: "48px 40px",
-            }}>
-                <h2 style={{ color: "#fff", textAlign: "center", fontSize: "1.3rem", fontWeight: 700, marginBottom: "32px" }}>
+        <div className="min-h-[calc(100vh-64px)] flex items-center justify-center p-6">
+            <div className="bg-module-card rounded-[20px] overflow-hidden backdrop-blur-[16px] shadow-[0_8px_40px_rgba(0,0,0,0.3)] max-w-[680px] w-full px-10 py-12">
+                <h2 className="text-white text-center text-[1.3rem] font-bold mb-8">
                     Módulo de marcas
                 </h2>
-
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                <div className="grid grid-cols-2 gap-4">
                     <MenuButton label="Regresar" icon={ArrowLeft} onClick={() => navigate("/dashboard/home")} />
                 </div>
             </div>

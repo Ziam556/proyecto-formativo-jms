@@ -13,16 +13,11 @@ export default function StateChip({ value, customStyles = {} }) {
     const s = styles[value] || { bg: "#6b7280", color: "#fff" };
 
     return (
-        <span style={{
-            background: s.bg,
-            color: s.color,
-            border: s.border,
-            borderRadius: "999px",
-            padding: "3px 12px",
-            fontSize: "0.78rem",
-            fontWeight: 600,
-            whiteSpace: "nowrap",
-        }}>
+        /* El bg y color vienen del dato — se mantienen inline */
+        <span
+            className="rounded-full py-[3px] px-3 text-[0.78rem] font-semibold whitespace-nowrap"
+            style={{ background: s.bg, color: s.color }}
+        >
             {value}
         </span>
     );

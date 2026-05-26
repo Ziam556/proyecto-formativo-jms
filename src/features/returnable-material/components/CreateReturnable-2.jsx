@@ -33,7 +33,7 @@ export default function CreateReturnable2({ formData, onNext, onBack }) {
     };
 
     return (
-        <div style={{ display: "grid", gridTemplateColumns: "320px 320px", gap: "24px" }}>
+        <div className="grid grid-cols-[320px_320px] gap-6">
             <Input
                 label="Marca"
                 name="materialBrand"
@@ -77,8 +77,7 @@ export default function CreateReturnable2({ formData, onNext, onBack }) {
                     onChange={(date) => setFields((prev) => ({ ...prev, MaterialPurchaseDate: date }))}
                     placeholderText="Selecciona la fecha de compra"
                     dateFormat="dd/MM/yyyy"
-                    className="w-full rounded-lg px-4 py-3 text-sm"
-                    style={{ background: "rgba(220,225,240,0.7)" }}
+                    className="w-full rounded-lg px-4 py-3 text-sm bg-[rgba(220,225,240,0.7)]"
                 />
                 {errors.MaterialPurchaseDate && <span className="text-red-500 text-xs">{errors.MaterialPurchaseDate}</span>}
             </div>

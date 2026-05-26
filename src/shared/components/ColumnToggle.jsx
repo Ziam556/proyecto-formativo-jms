@@ -8,42 +8,24 @@ export default function ColumnToggle({ label, active = true, onChange }) {
         <button
             type="button"
             onClick={() => onChange?.(!active)}
-            style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "5px",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                padding: 0,
-                whiteSpace: "nowrap",
-            }}
+            className="inline-flex items-center gap-[5px] bg-transparent border-0 cursor-pointer p-0 whitespace-nowrap"
         >
-            {/* Icono de estado */}
-            <span style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "16px",
-                height: "16px",
-                borderRadius: "4px",
-                flexShrink: 0,
-                background: active ? "#16a34a" : "#FDC300",
-                transition: "background 0.15s",
-            }}>
+            {/* Icono de estado — el color de fondo varía según estado, se mantiene inline */}
+            <span
+                className="flex items-center justify-center w-4 h-4 rounded-[4px] shrink-0 transition-colors duration-150"
+                style={{ background: active ? "#16a34a" : "#FDC300" }}
+            >
                 {active
                     ? <Check size={11} color="#000000" strokeWidth={3} />
                     : <X size={11} color="#000000" strokeWidth={3} />
                 }
             </span>
 
-            {/* Etiqueta */}
-            <span style={{
-                color: active ? "#000000" : "#3D3D3D",
-                fontSize: "0.8rem",
-                fontWeight: 600,
-                transition: "color 0.15s",
-            }}>
+            {/* Etiqueta — el color también varía según estado */}
+            <span
+                className="text-[0.8rem] font-semibold transition-colors duration-150"
+                style={{ color: active ? "#000000" : "#3D3D3D" }}
+            >
                 {label}
             </span>
         </button>
