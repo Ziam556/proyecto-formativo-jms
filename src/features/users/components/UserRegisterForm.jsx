@@ -243,7 +243,7 @@ export default function UserRegisterForm({ onCancel }) {
 
     return (
         <>
-            <div className="flex flex-row gap-12 items-start w-full">
+            <div className="flex flex-row gap-12 items-start w-fit mx-auto">
 
                 {/* ── Foto de perfil (izquierda) ── */}
                 <div className="flex flex-col items-center gap-4 min-w-[160px]">
