@@ -14,7 +14,7 @@ export default function CreateUserPage() {
             </h1>
 
             {/* Contenedor exterior glass */}
-            <div className="w-[95%] mx-auto rounded-2xl bg-[rgba(217,217,217,0.31)] backdrop-blur-[16px] border border-white/20 flex items-center justify-center relative pt-12 px-10 pb-10">
+            <div className="w-fit mx-auto rounded-2xl bg-[rgba(217,217,217,0.31)] backdrop-blur-[16px] border border-white/20 relative pt-12 px-10 pb-10">
 
                 {/* Flecha regresar */}
                 <button
@@ -26,7 +26,7 @@ export default function CreateUserPage() {
                 </button>
 
                 {/* Contenedor interior glass blanco */}
-                <div className="w-full rounded-xl bg-[rgba(255,255,255,0.31)] flex items-center justify-center py-9 px-12 overflow-x-auto">
+                <div className="w-fit rounded-xl bg-[rgba(255,255,255,0.31)] py-9 px-12 overflow-x-auto">
                     <UserRegisterForm onCancel={() => navigate("/dashboard/userpage")} />
                 </div>
             </div>
