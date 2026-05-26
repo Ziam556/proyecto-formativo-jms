@@ -63,32 +63,6 @@ const permissionModules = [
     },
 ];
 
-const cardStyle = {
-    background: "linear-gradient(135deg, #700D7C 0%, #88A3C7 50%, #50E5F9 100%)",
-    borderRadius: "20px",
-    boxShadow: "0 8px 40px rgba(0,0,0,0.3)",
-    padding: "36px 40px",
-    width: "100%",
-    maxWidth: "1100px",
-    position: "relative",
-};
-
-const inputStyle = {
-    width: "100%",
-    padding: "10px 14px",
-    borderRadius: "8px",
-    border: "1px solid rgba(0,0,0,0.2)",
-    background: "rgba(217,217,217,0.54)",
-    fontSize: "0.9rem",
-    marginTop: "4px",
-};
-
-const moduleBoxStyle = {
-    background: "rgba(100,80,160,0.5)",
-    borderRadius: "10px",
-    padding: "14px 16px",
-};
-
 export default function CreateGroupPage() {
     const navigate = useNavigate();
 
@@ -167,27 +141,13 @@ export default function CreateGroupPage() {
     };
 
     return (
-        <div style={{
-            minHeight: "calc(100vh - 64px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "24px",
-        }}>
-            <div style={cardStyle}>
+        <div className="min-h-[calc(100vh-64px)] flex items-center justify-center p-6">
+            <div className="bg-[linear-gradient(135deg,#700D7C_0%,#88A3C7_50%,#50E5F9_100%)] rounded-[20px] shadow-[0_8px_40px_rgba(0,0,0,0.3)] py-9 px-10 w-full max-w-[1100px] relative">
 
                 {/* Flecha regresar */}
                 <button
                     onClick={() => navigate("/dashboard/config/groups")}
-                    style={{
-                        position: "absolute",
-                        top: "20px",
-                        left: "20px",
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        color: "#fff",
-                    }}
+                    className="absolute top-5 left-5 bg-transparent border-0 cursor-pointer text-white"
                     title="Regresar"
                 >
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
@@ -195,62 +155,45 @@ export default function CreateGroupPage() {
                     </svg>
                 </button>
 
-                <div style={{ display: "flex", gap: "40px" }}>
+                <div className="flex gap-10">
 
                     {/* Panel izquierdo */}
-                    <div style={{ minWidth: "220px", display: "flex", flexDirection: "column", gap: "20px" }}>
+                    <div className="min-w-[220px] flex flex-col gap-5">
 
                         {/* Radio buttons */}
-                        <div style={{ display: "flex", flexDirection: "column", gap: "10px", paddingTop: "40px" }}>
-                            <label style={{ display: "flex", alignItems: "center", gap: "10px", color: "#fff", cursor: "pointer" }}>
+                        <div className="flex flex-col gap-[10px] pt-10">
+                            <label className="flex items-center gap-[10px] text-white cursor-pointer">
                                 <input
                                     type="radio"
                                     name="permisoType"
                                     value="individual"
                                     checked={permisoType === "individual"}
                                     onChange={() => setPermisoType("individual")}
-                                    style={{ accentColor: "#fff", width: "18px", height: "18px" }}
+                                    className="accent-white w-[18px] h-[18px]"
                                 />
                                 Activar permiso individual
                             </label>
-                            <label style={{ display: "flex", alignItems: "center", gap: "10px", color: "#fff", cursor: "pointer" }}>
+                            <label className="flex items-center gap-[10px] text-white cursor-pointer">
                                 <input
                                     type="radio"
                                     name="permisoType"
                                     value="grupal"
                                     checked={permisoType === "grupal"}
                                     onChange={() => setPermisoType("grupal")}
-                                    style={{ accentColor: "#7C3AED", width: "18px", height: "18px" }}
+                                    className="accent-[#7C3AED] w-[18px] h-[18px]"
                                 />
                                 Permisos Grupales
                             </label>
                         </div>
 
-                        {/* Inputs */}
-                        <div ref={dropdownRef} style={{ position: "relative" }}>
-                            <label style={{ color: "#fff", fontSize: "0.85rem" }}>Permisos individuales</label>
+                        {/* Combobox usuarios */}
+                        <div ref={dropdownRef} className="relative">
+                            <label className="text-white text-[0.85rem]">Permisos individuales</label>
 
                             {/* Trigger del combobox */}
-                            <div style={{
-                                ...inputStyle,
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                                opacity: permisoType === "individual" ? 1 : 0.5,
-                                cursor: permisoType === "individual" ? "pointer" : "not-allowed",
-                                padding: "0",
-                                overflow: "hidden",
-                            }}>
+                            <div className={`w-full rounded-lg border border-[rgba(0,0,0,0.2)] bg-[rgba(217,217,217,0.54)] text-[0.9rem] mt-1 flex items-center justify-between overflow-hidden ${permisoType === "individual" ? "opacity-100 cursor-pointer" : "opacity-50 cursor-not-allowed"}`}>
                                 <input
-                                    style={{
-                                        flex: 1,
-                                        border: "none",
-                                        background: "transparent",
-                                        padding: "10px 14px",
-                                        fontSize: "0.9rem",
-                                        outline: "none",
-                                        cursor: permisoType === "individual" ? "text" : "not-allowed",
-                                    }}
+                                    className={`flex-1 border-0 bg-transparent p-[10px_14px] text-[0.9rem] outline-none ${permisoType === "individual" ? "cursor-text" : "cursor-not-allowed"}`}
                                     placeholder="Buscar usuario..."
                                     value={userSearch}
                                     onChange={(e) => {
@@ -269,63 +212,28 @@ export default function CreateGroupPage() {
                                     onClick={() => {
                                         if (permisoType === "individual") setDropdownOpen((o) => !o);
                                     }}
-                                    style={{
-                                        background: "none",
-                                        border: "none",
-                                        padding: "0 12px",
-                                        cursor: "pointer",
-                                        color: "#555",
-                                        display: "flex",
-                                        alignItems: "center",
-                                    }}
+                                    className="bg-transparent border-0 px-3 cursor-pointer text-[#555] flex items-center"
                                     disabled={permisoType !== "individual"}
                                 >
                                     <ChevronDown
                                         size={18}
-                                        style={{
-                                            transform: dropdownOpen ? "rotate(180deg)" : "rotate(0deg)",
-                                            transition: "transform 0.2s",
-                                        }}
+                                        className={`transition-transform duration-200 ${dropdownOpen ? "rotate-180" : "rotate-0"}`}
                                     />
                                 </button>
                             </div>
 
                             {/* Panel desplegable */}
                             {dropdownOpen && permisoType === "individual" && (
-                                <div style={{
-                                    position: "absolute",
-                                    top: "calc(100% + 4px)",
-                                    left: 0,
-                                    right: 0,
-                                    zIndex: 100,
-                                    borderRadius: "12px",
-                                    overflow: "hidden",
-                                    boxShadow: "0 8px 24px rgba(0,0,0,0.25)",
-                                }}>
+                                <div className="absolute top-[calc(100%+4px)] left-0 right-0 z-[100] rounded-xl overflow-hidden shadow-[0_8px_24px_rgba(0,0,0,0.25)]">
                                     {/* Header */}
-                                    <div style={{
-                                        background: "#6f077c",
-                                        padding: "10px 16px",
-                                        color: "#fff",
-                                        fontWeight: 600,
-                                        fontSize: "0.9rem",
-                                        textAlign: "center",
-                                    }}>
+                                    <div className="bg-[#6f077c] p-[10px_16px] text-white font-semibold text-[0.9rem] text-center">
                                         Usuarios
                                     </div>
 
                                     {/* Lista */}
-                                    <div style={{
-                                        background: "#fff",
-                                        maxHeight: "180px",
-                                        overflowY: "auto",
-                                        padding: "8px",
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        gap: "6px",
-                                    }}>
+                                    <div className="bg-white max-h-[180px] overflow-y-auto p-2 flex flex-col gap-[6px]">
                                         {filteredUsers.length === 0 ? (
-                                            <p style={{ textAlign: "center", color: "#888", fontSize: "0.85rem", padding: "8px" }}>
+                                            <p className="text-center text-[#888] text-[0.85rem] p-2">
                                                 Sin resultados
                                             </p>
                                         ) : (
@@ -334,22 +242,7 @@ export default function CreateGroupPage() {
                                                     key={user.id}
                                                     type="button"
                                                     onClick={() => handleSelectUser(user)}
-                                                    style={{
-                                                        background: selectedUser?.id === user.id
-                                                            ? "rgba(112,13,124,0.12)"
-                                                            : "#f5f5f5",
-                                                        border: "none",
-                                                        borderRadius: "30px",
-                                                        padding: "9px 16px",
-                                                        textAlign: "left",
-                                                        cursor: "pointer",
-                                                        fontSize: "0.88rem",
-                                                        fontWeight: 500,
-                                                        color: "#222",
-                                                        transition: "background 0.15s",
-                                                    }}
-                                                    onMouseEnter={(e) => e.currentTarget.style.background = "rgba(112,13,124,0.15)"}
-                                                    onMouseLeave={(e) => e.currentTarget.style.background = selectedUser?.id === user.id ? "rgba(112,13,124,0.12)" : "#f5f5f5"}
+                                                    className={`border-0 rounded-[30px] py-[9px] px-4 text-left cursor-pointer text-[0.88rem] font-medium text-[#222] transition-colors duration-[150ms] hover:bg-[rgba(112,13,124,0.15)] ${selectedUser?.id === user.id ? "bg-[rgba(112,13,124,0.12)]" : "bg-[#f5f5f5]"}`}
                                                 >
                                                     {user.label}
                                                 </button>
@@ -360,13 +253,11 @@ export default function CreateGroupPage() {
                             )}
                         </div>
 
+                        {/* Permisos grupales */}
                         <div>
-                            <label style={{ color: "#fff", fontSize: "0.85rem" }}>Permisos grupales</label>
+                            <label className="text-white text-[0.85rem]">Permisos grupales</label>
                             <input
-                                style={{
-                                    ...inputStyle,
-                                    opacity: permisoType === "grupal" ? 1 : 0.5,
-                                }}
+                                className={`w-full p-[10px_14px] rounded-lg border border-[rgba(0,0,0,0.2)] bg-[rgba(217,217,217,0.54)] text-[0.9rem] mt-1 ${permisoType === "grupal" ? "opacity-100" : "opacity-50"}`}
                                 placeholder="Nombre del grupo"
                                 value={groupName}
                                 onChange={(e) => setGroupName(e.target.value)}
@@ -374,10 +265,11 @@ export default function CreateGroupPage() {
                             />
                         </div>
 
+                        {/* Número de ficha */}
                         <div>
-                            <label style={{ color: "#fff", fontSize: "0.85rem" }}>Numero de ficha</label>
+                            <label className="text-white text-[0.85rem]">Numero de ficha</label>
                             <input
-                                style={inputStyle}
+                                className="w-full p-[10px_14px] rounded-lg border border-[rgba(0,0,0,0.2)] bg-[rgba(217,217,217,0.54)] text-[0.9rem] mt-1"
                                 placeholder="Numero"
                                 value={ficha}
                                 onChange={(e) => setFicha(e.target.value)}
@@ -387,60 +279,30 @@ export default function CreateGroupPage() {
                         {/* Botón Guardar */}
                         <button
                             onClick={handleSave}
-                            style={{
-                                marginTop: "8px",
-                                padding: "12px",
-                                borderRadius: "30px",
-                                background: "#700D7C",
-                                border: "none",
-                                color: "#fff",
-                                fontWeight: 600,
-                                fontSize: "0.95rem",
-                                cursor: "pointer",
-                            }}
+                            className="mt-2 py-3 px-3 rounded-[30px] bg-[#700D7C] border-0 text-white font-semibold text-[0.95rem] cursor-pointer"
                         >
                             Guardar
                         </button>
                     </div>
 
                     {/* Panel derecho — módulos de permisos */}
-                    <div style={{
-                        flex: 1,
-                        display: "grid",
-                        gridTemplateColumns: "1fr 1fr",
-                        gap: "16px",
-                        alignContent: "start",
-                    }}>
+                    <div className="flex-1 grid grid-cols-2 gap-4 content-start">
                         {permissionModules.map((mod) => (
-                            <div key={mod.name} style={moduleBoxStyle}>
-                                <p style={{
-                                    color: "#fff",
-                                    fontWeight: 700,
-                                    fontSize: "0.9rem",
-                                    marginBottom: "10px",
-                                    paddingBottom: "6px",
-                                    borderBottom: "1px solid rgba(255,255,255,0.2)",
-                                }}>
+                            <div key={mod.name} className="bg-[rgba(100,80,160,0.5)] rounded-[10px] p-[14px_16px]">
+                                <p className="text-white font-bold text-[0.9rem] mb-[10px] pb-[6px] border-b border-white/20">
                                     {mod.name}
                                 </p>
-                                <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                                <div className="flex flex-col gap-[6px]">
                                     {mod.permissions.map((perm) => (
                                         <label
                                             key={perm}
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                                gap: "8px",
-                                                color: "#fff",
-                                                fontSize: "0.82rem",
-                                                cursor: "pointer",
-                                            }}
+                                            className="flex items-center gap-2 text-white text-[0.82rem] cursor-pointer"
                                         >
                                             <input
                                                 type="checkbox"
                                                 checked={isChecked(mod.name, perm)}
                                                 onChange={() => togglePerm(mod.name, perm)}
-                                                style={{ accentColor: "#7C3AED", width: "14px", height: "14px" }}
+                                                className="accent-[#7C3AED] w-[14px] h-[14px]"
                                             />
                                             {perm}
                                         </label>

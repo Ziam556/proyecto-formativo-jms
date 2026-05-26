@@ -22,33 +22,23 @@ export default function InputForList({
     const isSearch = type === "search";
 
     return (
-        <div style={{ display: "flex", flexDirection: "column", gap: "4px", width: "320px" }}>
+        <div className="flex flex-col gap-1 w-[320px]">
 
             {/* Label */}
             {label && (
-                <label style={{
-                    fontSize: "0.75rem",
-                    color: "#c4b5fd",
-                    fontWeight: 500,
-                }}>
+                <label className="text-xs text-[#c4b5fd] font-medium">
                     {label}
                 </label>
             )}
 
             {/* Input wrapper */}
-            <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+            <div className="relative flex items-center">
 
                 {/* Ícono búsqueda */}
                 {isSearch && (
                     <Search
                         size={15}
-                        style={{
-                            position: "absolute",
-                            left: "12px",
-                            color: "#6b7280",
-                            pointerEvents: "none",
-                            flexShrink: 0,
-                        }}
+                        className="absolute left-3 text-gray-500 pointer-events-none shrink-0"
                     />
                 )}
 
@@ -57,20 +47,7 @@ export default function InputForList({
                     value={value}
                     onChange={onChange}
                     placeholder={placeholder}
-                    style={{
-                        width: "100%",
-                        height: "56px",
-                        background: "rgba(217,217,217,0.54)",
-                        border: "none",
-                        borderRadius: "8px",
-                        padding: isSearch ? "0 36px 0 36px" : "0 36px 0 14px",
-                        fontSize: "0.85rem",
-                        color: "#111",
-                        outline: "none",
-                        boxSizing: "border-box",
-                        backdropFilter: "blur(4px)",
-                        WebkitBackdropFilter: "blur(4px)",
-                    }}
+                    className={`w-full h-14 bg-[rgba(217,217,217,0.54)] border-0 rounded-lg text-[0.85rem] text-[#111] outline-none box-border backdrop-blur-sm ${isSearch ? "pl-9 pr-9" : "pl-[14px] pr-9"}`}
                     {...props}
                 />
 
@@ -79,17 +56,7 @@ export default function InputForList({
                     <button
                         type="button"
                         onClick={() => onChange({ target: { value: "" } })}
-                        style={{
-                            position: "absolute",
-                            right: "10px",
-                            background: "none",
-                            border: "none",
-                            cursor: "pointer",
-                            color: "#6b7280",
-                            display: "flex",
-                            alignItems: "center",
-                            padding: 0,
-                        }}
+                        className="absolute right-[10px] bg-transparent border-0 cursor-pointer text-gray-500 flex items-center p-0"
                     >
                         <X size={14} />
                     </button>

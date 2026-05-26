@@ -21,14 +21,7 @@ export default function Checkbox({
             checked={checked}
             onChange={onChange}
             disabled={disabled}
-            style={{
-                width: "16px",
-                height: "16px",
-                accentColor: "#16a34a",
-                cursor: disabled ? "not-allowed" : "pointer",
-                flexShrink: 0,
-                opacity: disabled ? 0.5 : 1,
-            }}
+            className={`w-4 h-4 accent-[#16a34a] shrink-0 ${disabled ? "opacity-50 cursor-not-allowed" : "opacity-100 cursor-pointer"}`}
         />
     );
 }

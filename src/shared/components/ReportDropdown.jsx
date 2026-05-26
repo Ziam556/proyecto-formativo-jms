@@ -38,26 +38,17 @@ export default function ReportDropdown({
     };
 
     return (
-        <div ref={ref} style={{ position: "relative" }}>
+        <div ref={ref} className="relative">
+            {/* color, width y height vienen como props — se mantienen inline */}
             <button
                 onClick={() => setOpen((o) => !o)}
+                className="flex items-center justify-between gap-2 text-white border-0 rounded-lg px-4 text-[0.82rem] font-semibold cursor-pointer box-border"
                 style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
                     background: color,
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "8px",
-                    padding: "10px 16px",
-                    fontSize: "0.82rem",
-                    fontWeight: 600,
-                    cursor: "pointer",
                     width: width ?? "auto",
                     height: height ?? "auto",
                     minWidth: width ? undefined : "200px",
-                    justifyContent: "space-between",
-                    boxSizing: "border-box",
+                    padding: "10px 16px",
                 }}
             >
                 <span>{label}</span>
@@ -65,17 +56,7 @@ export default function ReportDropdown({
             </button>
 
             {open && (
-                <div style={{
-                    position: "absolute",
-                    top: "calc(100% + 4px)",
-                    left: 0,
-                    right: 0,
-                    background: "rgba(80,50,120,0.95)",
-                    borderRadius: "8px",
-                    overflow: "hidden",
-                    zIndex: 200,
-                    boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
-                }}>
+                <div className="absolute top-[calc(100%+4px)] left-0 right-0 bg-[rgba(80,50,120,0.95)] rounded-lg overflow-hidden z-[200] shadow-[0_8px_24px_rgba(0,0,0,0.4)]">
                     {[
                         { label: "PDF",   handler: handlePDF },
                         { label: "Excel", handler: handleExcel },
@@ -83,20 +64,7 @@ export default function ReportDropdown({
                         <button
                             key={opt.label}
                             onClick={opt.handler}
-                            style={{
-                                display: "block",
-                                width: "100%",
-                                padding: "12px 16px",
-                                background: "rgba(140,80,180,0.7)",
-                                border: "none",
-                                color: "#fff",
-                                fontSize: "0.88rem",
-                                fontWeight: 600,
-                                cursor: "pointer",
-                                textAlign: "center",
-                            }}
-                            onMouseEnter={(e) => e.currentTarget.style.background = "rgba(160,100,200,0.9)"}
-                            onMouseLeave={(e) => e.currentTarget.style.background = "rgba(140,80,180,0.7)"}
+                            className="block w-full py-3 px-4 bg-[rgba(140,80,180,0.7)] border-0 text-white text-[0.88rem] font-semibold cursor-pointer text-center hover:bg-[rgba(160,100,200,0.9)] transition-colors duration-150"
                         >
                             {opt.label}
                         </button>

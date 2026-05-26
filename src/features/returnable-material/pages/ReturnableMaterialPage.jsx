@@ -16,33 +16,18 @@ export default function ReturnableMaterialPage() {
 
     return (
         /* Centra la tarjeta verticalmente en el espacio disponible */
-        <div style={{
-            minHeight: "calc(100vh - 64px)", // resta el navbar
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "24px",
-        }}>
+        <div className="min-h-[calc(100vh-64px)] flex items-center justify-center p-6">
 
             {/* Tarjeta del módulo con gradiente */}
-            <div style={{
-                borderRadius: "20px",
-                overflow: "hidden",
-                background: "linear-gradient(90deg, #700D7C 0%, #88A3C7 35%, #50E5F9 100%)",
-                backdropFilter: "blur(16px)",
-                boxShadow: "0 8px 40px rgba(0,0,0,0.3)",
-                maxWidth: "680px",
-                width: "100%",
-                padding: "48px 40px",
-            }}>
+            <div className="bg-module-card rounded-[20px] overflow-hidden backdrop-blur-[16px] shadow-[0_8px_40px_rgba(0,0,0,0.3)] max-w-[680px] w-full px-10 py-12">
 
                 {/* Título del módulo */}
-                <h2 style={{ color: "#fff", textAlign: "center", fontSize: "1.3rem", fontWeight: 700, marginBottom: "32px" }}>
+                <h2 className="text-white text-center text-[1.3rem] font-bold mb-8">
                     Módulo de material devolutivo
                 </h2>
 
                 {/* Grid 2 columnas con los botones de acción */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                <div className="grid grid-cols-2 gap-4">
                     {menuItems.map((item) => (
                         <MenuButton key={item.to} label={item.label} icon={item.icon} to={item.to} />
                     ))}

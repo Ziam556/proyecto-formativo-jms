@@ -22,7 +22,7 @@ export default function BackButton({ to, onClick }) {
             variant="ghost"
             hitSize={36}
             iconSize={22}
-            style={{ color: "#fff", flexShrink: 0 }}
+            className="text-white shrink-0"
         >
             <ArrowLeft size={22} color="#fff" />
         </IconButton>

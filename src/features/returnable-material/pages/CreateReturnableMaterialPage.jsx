@@ -39,116 +39,46 @@ export default function CreateReturnableMaterialPage() {
     ];
 
     return (
-        <div style={{
-            height: "calc(100vh - 72px)",
-            display: "flex",
-            flexDirection: "column",
-            boxSizing: "border-box",
-            padding: "24px 40px",      // más padding para que no pegue a los bordes
-            gap: "12px",
-            alignItems: "center",      // centra el contenedor exterior
-            justifyContent: "center",  // centra verticalmente
-        }}>
+        <div className="h-[calc(100vh-72px)] flex flex-col box-border py-6 px-10 gap-3 items-center justify-center">
+
             {/* Título */}
-            <h1 style={{ color: "#fff", fontSize: "1.2rem", fontWeight: 600, margin: 0 }}>
+            <h1 className="text-white text-[1.2rem] font-semibold m-0">
                 Registro material devolutivo
             </h1>
 
-            {/* Contenedor exterior */}
-            <div style={{
-                width: "90%",              // menos ancho
-                height: "75vh",            // altura fija, no ocupa todo
-                margin: "0 auto",          // centra horizontalmente
-                borderRadius: "16px",
-                background: "rgba(217,217,217,0.31)",
-                backdropFilter: "blur(16px)",
-                border: "1px solid rgba(255,255,255,0.2)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                position: "relative",
-            }}>
-                {/* Flecha arriba izquierda del exterior */}
+            {/* Contenedor exterior glass */}
+            <div className="w-[90%] h-[75vh] mx-auto rounded-2xl bg-[rgba(217,217,217,0.31)] backdrop-blur-[16px] border border-white/20 flex items-center justify-center relative">
+
+                {/* Flecha arriba izquierda */}
                 <button
                     onClick={() => navigate("/dashboard/returnable-material")}
-                    style={{
-                        position: "absolute",
-                        top: "16px",
-                        left: "16px",
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        color: "#fff",
-                        zIndex: 1,
-                    }}
+                    className="absolute top-4 left-4 bg-transparent border-0 cursor-pointer text-white z-[1]"
                 >
                     <ArrowLeft size={24} />
                 </button>
 
                 {/* Contenedor interior */}
-                <div style={{
-                    width: "84%",           // 1535/1827
-                    height: "89%",          // 609/685
-                    borderRadius: "12px",
-                    background: "rgba(255,255,255,0.31)",
-                    display: "flex",
-                    flexDirection: "row",
-                    overflow: "hidden",
-                }}>
+                <div className="w-[84%] h-[89%] rounded-xl bg-[rgba(255,255,255,0.31)] flex flex-row overflow-hidden">
+
                     {/* Stepper */}
-                    <div style={{
-                        width: "37%",
-                        flexShrink: 0,
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "space-evenly",
-                        alignItems: "center",
-                        padding: "24px",
-                        background: "rgba(180,190,220,0.25)",  
-                    }}>
+                    <div className="w-[37%] shrink-0 flex flex-col justify-evenly items-center p-6 bg-[rgba(180,190,220,0.25)]">
                         {steps.map((step, i) => (
-                        <div key={i} style={{
-                            borderLeft: "3px solid #1e1e2e",  
-                            paddingLeft: "12px",
-                            width: "80%",
-                        }}>
-                            <p style={{
-                                color: "#1e1e2e",              
-                                fontSize: "0.88rem",
-                                fontWeight: i === currentStep ? 600 : 400,
-                                margin: 0,
-                                lineHeight: 1.5,
-                                borderBottom: i === currentStep ? "2px solid #1e1e2e" : "none",
-                                paddingBottom: i === currentStep ? "4px" : "0",
-                            }}>
-                                {step}
-                            </p>
-                        </div>
-                    ))}
+                            <div key={i} className="border-l-[3px] border-[#1e1e2e] pl-3 w-[80%]">
+                                <p className={`text-[#1e1e2e] text-[0.88rem] m-0 leading-[1.5] ${i === currentStep ? "font-semibold border-b-2 border-[#1e1e2e] pb-1" : "font-normal"}`}>
+                                    {step}
+                                </p>
+                            </div>
+                        ))}
                     </div>
-                    
+
                     {/* Formulario */}
-                    <div style={{
-                        flex: 1,
-                        background: "rgba(180,190,220,0.25)",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        padding: "40px",
-                        gap: "28px",
-                    }}>
-                        <h2 style={{
-                            color: "#fff",
-                            textAlign: "center",
-                            fontSize: "1rem",
-                            fontWeight: 500,
-                            margin: 0,
-                        }}>
+                    <div className="flex-1 bg-[rgba(180,190,220,0.25)] flex flex-col items-center justify-center p-10 gap-7">
+                        <h2 className="text-white text-center text-[1rem] font-medium m-0">
                             Ingrese la información correspondiente
                         </h2>
                         {stepComponents[currentStep]}
                     </div>
+
                 </div>
             </div>
         </div>

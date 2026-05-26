@@ -6,51 +6,6 @@ import { initialGroups } from "../data/groups";
 
 const STORAGE_KEY = "grupos_list";
 
-const cardStyle = {
-    background: "linear-gradient(135deg, #700D7C 0%, #88A3C7 50%, #50E5F9 100%)",
-    borderRadius: "20px",
-    boxShadow: "0 8px 40px rgba(0,0,0,0.3)",
-    padding: "36px 40px",
-    width: "100%",
-    maxWidth: "900px",
-    position: "relative",
-};
-
-const tableContainerStyle = {
-    background: "rgba(255,255,255,0.15)",
-    backdropFilter: "blur(8px)",
-    borderRadius: "12px",
-    overflow: "hidden",
-};
-
-const thStyle = {
-    padding: "10px 16px",
-    textAlign: "left",
-    fontSize: "0.85rem",
-    fontWeight: 600,
-    color: "#fff",
-    background: "rgba(0,0,0,0.15)",
-};
-
-const tdStyle = {
-    padding: "10px 16px",
-    fontSize: "0.88rem",
-    color: "#111",
-    borderBottom: "1px solid rgba(255,255,255,0.2)",
-    background: "rgba(255,255,255,0.55)",
-    verticalAlign: "middle",
-};
-
-const iconBtnStyle = {
-    background: "none",
-    border: "none",
-    cursor: "pointer",
-    padding: "4px",
-    display: "flex",
-    alignItems: "center",
-    color: "#444",
-};
-
 export default function GroupsListPage() {
     const navigate = useNavigate();
     const [groups, setGroups] = useState([]);
@@ -95,44 +50,42 @@ export default function GroupsListPage() {
     const rightGroups = groups.slice(mid);
 
     const renderTable = (list) => (
-        <div style={tableContainerStyle}>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <div className="bg-[rgba(255,255,255,0.15)] backdrop-blur-[8px] rounded-xl overflow-hidden">
+            <table className="w-full border-collapse">
                 <thead>
                     <tr>
-                        <th style={thStyle}>Grupos registrados</th>
-                        <th style={{ ...thStyle, textAlign: "center" }}>Estado</th>
+                        <th className="p-[10px_16px] text-left text-[0.85rem] font-semibold text-white bg-[rgba(0,0,0,0.15)]">
+                            Grupos registrados
+                        </th>
+                        <th className="p-[10px_16px] text-center text-[0.85rem] font-semibold text-white bg-[rgba(0,0,0,0.15)]">
+                            Estado
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     {list.length === 0 ? (
                         <tr>
-                            <td colSpan={2} style={{ ...tdStyle, textAlign: "center", color: "#555" }}>
+                            <td colSpan={2} className="p-[10px_16px] text-[0.88rem] text-[#555] border-b border-white/20 bg-[rgba(255,255,255,0.55)] align-middle text-center">
                                 Sin grupos
                             </td>
                         </tr>
                     ) : (
                         list.map((group) => (
                             <tr key={group.id}>
-                                <td style={tdStyle}>
-                                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                <td className="p-[10px_16px] text-[0.88rem] text-[#111] border-b border-white/20 bg-[rgba(255,255,255,0.55)] align-middle">
+                                    <div className="flex items-center gap-2">
                                         {group.isEditing ? (
                                             <input
                                                 value={group.name}
                                                 onChange={(e) => handleNameChange(group.id, e.target.value)}
-                                                style={{
-                                                    border: "1px solid #aaa",
-                                                    borderRadius: "6px",
-                                                    padding: "2px 8px",
-                                                    fontSize: "0.88rem",
-                                                    width: "120px",
-                                                }}
+                                                className="border border-[#aaa] rounded-md py-[2px] px-2 text-[0.88rem] w-[120px]"
                                                 autoFocus
                                             />
                                         ) : (
                                             <span>{group.name}</span>
                                         )}
                                         <button
-                                            style={iconBtnStyle}
+                                            className="bg-transparent border-0 cursor-pointer p-1 flex items-center text-[#444]"
                                             onClick={() =>
                                                 group.isEditing
                                                     ? handleSave(group.id)
@@ -147,7 +100,7 @@ export default function GroupsListPage() {
                                         </button>
                                     </div>
                                 </td>
-                                <td style={{ ...tdStyle, textAlign: "center" }}>
+                                <td className="p-[10px_16px] text-[0.88rem] text-[#111] border-b border-white/20 bg-[rgba(255,255,255,0.55)] align-middle text-center">
                                     <Switch
                                         checked={group.enabled}
                                         onChange={(val) => toggleEnabled(group.id, val)}
@@ -162,27 +115,13 @@ export default function GroupsListPage() {
     );
 
     return (
-        <div style={{
-            minHeight: "calc(100vh - 64px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "24px",
-        }}>
-            <div style={cardStyle}>
+        <div className="min-h-[calc(100vh-64px)] flex items-center justify-center p-6">
+            <div className="bg-[linear-gradient(135deg,#700D7C_0%,#88A3C7_50%,#50E5F9_100%)] rounded-[20px] shadow-[0_8px_40px_rgba(0,0,0,0.3)] py-9 px-10 w-full max-w-[900px] relative">
 
                 {/* Flecha regresar */}
                 <button
                     onClick={() => navigate("/dashboard/config")}
-                    style={{
-                        position: "absolute",
-                        top: "20px",
-                        left: "20px",
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        color: "#fff",
-                    }}
+                    className="absolute top-5 left-5 bg-transparent border-0 cursor-pointer text-white"
                     title="Regresar"
                 >
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
@@ -191,55 +130,24 @@ export default function GroupsListPage() {
                 </button>
 
                 {/* Título */}
-                <h2 style={{
-                    textAlign: "center",
-                    color: "#fff",
-                    fontSize: "1.3rem",
-                    fontWeight: 700,
-                    marginBottom: "28px",
-                }}>
+                <h2 className="text-center text-white text-[1.3rem] font-bold mb-7">
                     Listar Grupos
                 </h2>
 
                 {/* Dos columnas de tablas */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                <div className="grid grid-cols-2 gap-5">
                     {renderTable(leftGroups)}
                     {renderTable(rightGroups)}
                 </div>
 
                 {/* Botones inferiores */}
-                <div style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    gap: "24px",
-                    marginTop: "28px",
-                }}>
-                    <button
-                        style={{
-                            padding: "12px 32px",
-                            borderRadius: "30px",
-                            background: "#50E5F9",
-                            border: "none",
-                            fontWeight: 600,
-                            fontSize: "0.95rem",
-                            cursor: "pointer",
-                            color: "#111",
-                        }}
-                    >
+                <div className="flex justify-center gap-6 mt-7">
+                    <button className="py-3 px-8 rounded-[30px] bg-[#50E5F9] border-0 font-semibold text-[0.95rem] cursor-pointer text-[#111]">
                         Editar Grupos
                     </button>
                     <button
                         onClick={() => navigate("/dashboard/config/groups/create")}
-                        style={{
-                            padding: "12px 32px",
-                            borderRadius: "30px",
-                            background: "#700D7C",
-                            border: "none",
-                            fontWeight: 600,
-                            fontSize: "0.95rem",
-                            cursor: "pointer",
-                            color: "#fff",
-                        }}
+                        className="py-3 px-8 rounded-[30px] bg-[#700D7C] border-0 font-semibold text-[0.95rem] cursor-pointer text-white"
                     >
                         Crear grupo
                     </button>

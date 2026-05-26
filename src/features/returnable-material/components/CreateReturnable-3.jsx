@@ -30,7 +30,7 @@ export default function CreateReturnable3({ formData, onNext, onBack }) {
     };
 
     return (
-        <div style={{ display: "grid", gridTemplateColumns: "320px 320px", gap: "24px" }}>
+        <div className="grid grid-cols-[320px_320px] gap-6">
             <Input
                 label="Cuentadante"
                 name="materialStoryTeller"

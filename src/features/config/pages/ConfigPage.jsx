@@ -14,56 +14,23 @@ export default function ConfigPage() {
 
     return (
         /* Centra la tarjeta en pantalla */
-        <div style={{
-            minHeight: "calc(100vh - 64px)", // resta el navbar
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "24px",
-        }}>
+        <div className="min-h-[calc(100vh-64px)] flex items-center justify-center p-6">
 
             {/* Tarjeta con gradiente, igual que el home */}
-            <div style={{
-                display: "flex",
-                borderRadius: "20px",
-                overflow: "hidden",
-                background: "linear-gradient(90deg, #700D7C 0%, #88A3C7 35%, #50E5F9 100%)",
-                backdropFilter: "blur(16px)",
-                boxShadow: "0 8px 40px rgba(0,0,0,0.3)",
-                maxWidth: "720px",
-                width: "100%",
-                minHeight: "320px",
-            }}>
+            <div className="bg-module-card flex rounded-[20px] overflow-hidden backdrop-blur-[16px] shadow-[0_8px_40px_rgba(0,0,0,0.3)] max-w-[720px] w-full min-h-[320px]">
 
                 {/* Lado izquierdo — texto de bienvenida */}
-                <div style={{
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    padding: "48px 32px",
-                    color: "#fff",
-                    textAlign: "center",
-                    borderRight: "1px solid rgba(255,255,255,0.15)", // separador sutil
-                }}>
-                    <h2 style={{ fontSize: "1.5rem", fontWeight: 700, marginBottom: "12px" }}>
+                <div className="flex-1 flex flex-col justify-center items-center px-8 py-12 text-white text-center border-r border-white/15">
+                    <h2 className="text-[1.5rem] font-bold mb-3">
                         ¡Hola!
                     </h2>
-                    <p style={{ fontSize: "0.95rem", opacity: 0.85, lineHeight: 1.6 }}>
+                    <p className="text-[0.95rem] opacity-85 leading-relaxed">
                         Bienvenido a<br />nuestra<br />configuración.
                     </p>
                 </div>
 
                 {/* Lado derecho — opciones de configuración */}
-                <div style={{
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "12px",
-                    justifyContent: "center",
-                    padding: "40px 32px",
-                }}>
+                <div className="flex-1 flex flex-col gap-3 justify-center px-8 py-10">
                     {/* Secciones disponibles */}
                     {menuItems.map((item) => (
                         <MenuButton key={item.label} {...item} />

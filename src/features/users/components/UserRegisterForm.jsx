@@ -13,41 +13,26 @@ function GroupOverlay({ groups, selectedId, onConfirm, onClose }) {
 
     return (
         <div
-            style={{
-                position: "fixed", inset: 0, zIndex: 200,
-                background: "rgba(0,0,0,0.55)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-            }}
+            className="fixed inset-0 z-[200] bg-[rgba(0,0,0,0.55)] flex items-center justify-center"
             onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
         >
-            <div style={{
-                background: "linear-gradient(135deg, #700D7C 0%, #88A3C7 50%, #50E5F9 100%)",
-                borderRadius: "16px", padding: "32px",
-                minWidth: "320px", maxWidth: "420px", width: "90%",
-                boxShadow: "0 8px 40px rgba(0,0,0,0.4)",
-            }}>
+            <div className="bg-[linear-gradient(135deg,#700D7C_0%,#88A3C7_50%,#50E5F9_100%)] rounded-2xl p-8 min-w-[320px] max-w-[420px] w-[90%] shadow-[0_8px_40px_rgba(0,0,0,0.4)]">
                 {/* Header */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                    <h3 style={{ color: "#fff", margin: 0, fontSize: "1.1rem", fontWeight: 600 }}>
+                <div className="flex justify-between items-center mb-5">
+                    <h3 className="text-white m-0 text-[1.1rem] font-semibold">
                         Seleccionar grupo
                     </h3>
-                    <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#fff" }}>
+                    <button onClick={onClose} className="bg-transparent border-0 cursor-pointer text-white">
                         <X size={20} />
                     </button>
                 </div>
 
                 {/* Lista de grupos */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "24px", maxHeight: "280px", overflowY: "auto" }}>
+                <div className="flex flex-col gap-2 mb-6 max-h-[280px] overflow-y-auto">
                     {enabled.map((group) => (
                         <label
                             key={group.id}
-                            style={{
-                                display: "flex", alignItems: "center", gap: "12px",
-                                padding: "10px 14px", borderRadius: "8px", cursor: "pointer",
-                                background: tempId === group.id ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.15)",
-                                color: "#fff", fontSize: "0.9rem",
-                                transition: "background 0.2s",
-                            }}
+                            className={`flex items-center gap-3 p-[10px_14px] rounded-lg cursor-pointer text-white text-[0.9rem] transition-colors duration-200 ${tempId === group.id ? "bg-[rgba(255,255,255,0.4)]" : "bg-[rgba(255,255,255,0.15)]"}`}
                         >
                             <input
                                 type="radio"
@@ -55,7 +40,7 @@ function GroupOverlay({ groups, selectedId, onConfirm, onClose }) {
                                 value={group.id}
                                 checked={tempId === group.id}
                                 onChange={() => setTempId(group.id)}
-                                style={{ accentColor: "#50E5F9", width: "16px", height: "16px" }}
+                                className="accent-[#50E5F9] w-4 h-4"
                             />
                             {group.name}
                         </label>
@@ -63,28 +48,17 @@ function GroupOverlay({ groups, selectedId, onConfirm, onClose }) {
                 </div>
 
                 {/* Acciones */}
-                <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
+                <div className="flex gap-3 justify-end">
                     <button
                         onClick={onClose}
-                        style={{
-                            padding: "10px 24px", borderRadius: "999px",
-                            background: "rgba(255,255,255,0.2)", border: "none",
-                            color: "#fff", cursor: "pointer", fontWeight: 500,
-                        }}
+                        className="py-[10px] px-6 rounded-full bg-[rgba(255,255,255,0.2)] border-0 text-white cursor-pointer font-medium"
                     >
                         Cancelar
                     </button>
                     <button
                         onClick={() => onConfirm(tempId)}
                         disabled={!tempId}
-                        style={{
-                            padding: "10px 24px", borderRadius: "999px",
-                            background: tempId ? "#50E5F9" : "rgba(255,255,255,0.2)",
-                            border: "none",
-                            color: tempId ? "#111" : "#fff",
-                            cursor: tempId ? "pointer" : "not-allowed",
-                            fontWeight: 600,
-                        }}
+                        className={`py-[10px] px-6 rounded-full border-0 font-semibold ${tempId ? "bg-[#50E5F9] text-[#111] cursor-pointer" : "bg-[rgba(255,255,255,0.2)] text-white cursor-not-allowed"}`}
                     >
                         Confirmar
                     </button>
@@ -100,31 +74,22 @@ function SecondaryPhoneOverlay({ current, onConfirm, onClose }) {
 
     return (
         <div
-            style={{
-                position: "fixed", inset: 0, zIndex: 200,
-                background: "rgba(0,0,0,0.55)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-            }}
+            className="fixed inset-0 z-[200] bg-[rgba(0,0,0,0.55)] flex items-center justify-center"
             onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
         >
-            <div style={{
-                background: "linear-gradient(135deg, #700D7C 0%, #88A3C7 50%, #50E5F9 100%)",
-                borderRadius: "16px", padding: "32px",
-                minWidth: "320px", maxWidth: "420px", width: "90%",
-                boxShadow: "0 8px 40px rgba(0,0,0,0.4)",
-            }}>
+            <div className="bg-[linear-gradient(135deg,#700D7C_0%,#88A3C7_50%,#50E5F9_100%)] rounded-2xl p-8 min-w-[320px] max-w-[420px] w-[90%] shadow-[0_8px_40px_rgba(0,0,0,0.4)]">
                 {/* Header */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                    <h3 style={{ color: "#fff", margin: 0, fontSize: "1.1rem", fontWeight: 600 }}>
+                <div className="flex justify-between items-center mb-5">
+                    <h3 className="text-white m-0 text-[1.1rem] font-semibold">
                         Número secundario
                     </h3>
-                    <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#fff" }}>
+                    <button onClick={onClose} className="bg-transparent border-0 cursor-pointer text-white">
                         <X size={20} />
                     </button>
                 </div>
 
                 {current && (
-                    <p style={{ color: "rgba(255,255,255,0.75)", fontSize: "0.8rem", marginBottom: "12px" }}>
+                    <p className="text-[rgba(255,255,255,0.75)] text-[0.8rem] mb-3">
                         Actual: <strong>{current}</strong>
                     </p>
                 )}
@@ -139,24 +104,16 @@ function SecondaryPhoneOverlay({ current, onConfirm, onClose }) {
                 />
 
                 {/* Acciones */}
-                <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end", marginTop: "24px" }}>
+                <div className="flex gap-3 justify-end mt-6">
                     <button
                         onClick={onClose}
-                        style={{
-                            padding: "10px 24px", borderRadius: "999px",
-                            background: "rgba(255,255,255,0.2)", border: "none",
-                            color: "#fff", cursor: "pointer", fontWeight: 500,
-                        }}
+                        className="py-[10px] px-6 rounded-full bg-[rgba(255,255,255,0.2)] border-0 text-white cursor-pointer font-medium"
                     >
                         Cancelar
                     </button>
                     <button
                         onClick={() => onConfirm(phone)}
-                        style={{
-                            padding: "10px 24px", borderRadius: "999px",
-                            background: "#50E5F9", border: "none",
-                            color: "#111", cursor: "pointer", fontWeight: 600,
-                        }}
+                        className="py-[10px] px-6 rounded-full bg-[#50E5F9] border-0 text-[#111] cursor-pointer font-semibold"
                     >
                         Guardar
                     </button>
@@ -286,41 +243,28 @@ export default function UserRegisterForm({ onCancel }) {
 
     return (
         <>
-            <div style={{ display: "flex", flexDirection: "row", gap: "48px", alignItems: "flex-start", width: "100%" }}>
+            <div className="flex flex-row gap-12 items-start w-full">
 
                 {/* ── Foto de perfil (izquierda) ── */}
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", minWidth: "160px" }}>
+                <div className="flex flex-col items-center gap-4 min-w-[160px]">
 
                     {/* Círculo con preview */}
-                    <div style={{ position: "relative", width: "140px", height: "140px" }}>
-                        <div style={{
-                            width: "140px", height: "140px", borderRadius: "50%",
-                            background: "rgba(200,200,220,0.45)",
-                            border: "2px solid rgba(255,255,255,0.6)",
-                            overflow: "hidden",
-                            display: "flex", alignItems: "center", justifyContent: "center",
-                        }}>
+                    <div className="relative w-[140px] h-[140px]">
+                        <div className="w-[140px] h-[140px] rounded-full bg-[rgba(200,200,220,0.45)] border-2 border-[rgba(255,255,255,0.6)] overflow-hidden flex items-center justify-center">
                             {photoPreview
-                                ? <img src={photoPreview} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="Foto de perfil" />
+                                ? <img src={photoPreview} className="w-full h-full object-cover" alt="Foto de perfil" />
                                 : <User size={64} color="rgba(90,90,120,0.7)" />
                             }
                         </div>
                         {/* Icono de cámara */}
-                        <div style={{
-                            position: "absolute", bottom: "4px", right: "4px",
-                            width: "34px", height: "34px", borderRadius: "50%",
-                            background: "#71277A",
-                            display: "flex", alignItems: "center", justifyContent: "center",
-                            border: "2px solid #fff",
-                            pointerEvents: "none",
-                        }}>
+                        <div className="absolute bottom-1 right-1 w-[34px] h-[34px] rounded-full bg-[#71277A] flex items-center justify-center border-2 border-white pointer-events-none">
                             <Camera size={16} color="#fff" />
                         </div>
                     </div>
 
                     {/* FileInput — patrón returnable material */}
-                    <div className="flex flex-col gap-1" style={{ alignItems: "center" }}>
-                        <label style={{ color: "#fff", fontSize: "0.75rem", textAlign: "center" }}>
+                    <div className="flex flex-col gap-1 items-center">
+                        <label className="text-white text-[0.75rem] text-center">
                             Foto de perfil
                         </label>
                         <FileInput
@@ -334,7 +278,7 @@ export default function UserRegisterForm({ onCancel }) {
 
                 {/* ── Formulario (derecha) ── */}
                 <form onSubmit={(e) => e.preventDefault()}>
-                    <div style={{ display: "grid", gridTemplateColumns: "320px 320px", gap: "20px" }}>
+                    <div className="grid grid-cols-[320px_320px] gap-5">
 
                         {/* Fila 1 */}
                         <Input
@@ -367,7 +311,7 @@ export default function UserRegisterForm({ onCancel }) {
                         />
 
                         {/* Teléfono + botón "+" para número secundario */}
-                        <div style={{ position: "relative" }}>
+                        <div className="relative">
                             <Input
                                 label="Número telefónico de contacto"
                                 name="userPhone"
@@ -383,20 +327,7 @@ export default function UserRegisterForm({ onCancel }) {
                                     ? `Secundario: ${formData.userSecondaryPhone}`
                                     : "Agregar número secundario"}
                                 onClick={() => setShowPhoneModal(true)}
-                                style={{
-                                    position: "absolute",
-                                    right: "10px",
-                                    bottom: errors.userPhone ? "26px" : "13px",
-                                    width: "22px", height: "22px",
-                                    borderRadius: "4px",
-                                    background: formData.userSecondaryPhone
-                                        ? "#50E5F9"
-                                        : "rgba(80,80,180,0.25)",
-                                    border: "none",
-                                    cursor: "pointer",
-                                    display: "flex", alignItems: "center", justifyContent: "center",
-                                    zIndex: 2,
-                                }}
+                                className={`absolute right-[10px] ${errors.userPhone ? "bottom-[26px]" : "bottom-[13px]"} w-[22px] h-[22px] rounded border-0 cursor-pointer flex items-center justify-center z-[2] ${formData.userSecondaryPhone ? "bg-[#50E5F9]" : "bg-[rgba(80,80,180,0.25)]"}`}
                             >
                                 <Plus size={14} />
                             </button>
@@ -470,9 +401,9 @@ export default function UserRegisterForm({ onCancel }) {
                         />
 
                         {/* Botón Asignar Grupo */}
-                        <div style={{ display: "flex", flexDirection: "column", gap: "4px", justifyContent: "flex-end" }}>
+                        <div className="flex flex-col gap-1 justify-end">
                             {selectedGroup && (
-                                <span style={{ fontSize: "0.75rem", color: "#fff" }}>
+                                <span className="text-[0.75rem] text-white">
                                     Grupo: <strong>{selectedGroup.name}</strong>
                                 </span>
                             )}

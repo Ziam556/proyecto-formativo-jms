@@ -35,17 +35,12 @@ const router = createBrowserRouter([
             { path: "returnable-material/list", element: <ListReturnableMaterialPage /> },
             { path: "returnable-material/create", element: <CreateReturnableMaterialPage /> },
             { path: "brands", element: <BrandsPage /> },
-            // { path: "brands/create", element: <CreateBrandPage /> },
+
             { path: "config/brands", element: <CreateBrandPage /> },
             { path: "config", element: <ConfigPage /> },
             { path: "config/groups", element: <GroupsListPage /> },
             { path: "config/groups/create", element: <CreateGroupPage /> },
-            // { path: "*", element: <Navigate to="/dashboard/home" replace /> },
         ],
-    },
-    {
-        path: "*",
-        // element: <Navigate to="/dashboard/home" replace />,
     },
 ]);
 
