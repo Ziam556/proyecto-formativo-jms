@@ -7,35 +7,16 @@ export default function Navbar() {
     const navigate = useNavigate();
 
     return (
-        <nav
-            style={{
-                width: "100%",
-                background: "linear-gradient(90deg, #5b2d8e 0%, #3a6ea8 100%)",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.25)",
-            }}
-        >
-            <div
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    height: "72px",
-                    padding: "0 32px",
-                }}
-            >
+        <nav className="w-full bg-[linear-gradient(90deg,#5b2d8e_0%,#3a6ea8_100%)] shadow-[0_2px_8px_rgba(0,0,0,0.25)]">
+            <div className="flex items-center justify-between h-[72px] px-8">
+
                 {/* Logo + título */}
                 <Link
                     to="/dashboard/home"
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "14px",
-                        textDecoration: "none",
-                        color: "#fff",
-                    }}
+                    className="flex items-center gap-[14px] no-underline text-white"
                 >
-                    <img src={logo} alt="SENA" style={{ height: "44px" }} />
-                    <span style={{ fontWeight: 600, fontSize: "1.15rem", letterSpacing: "0.01em" }}>
+                    <img src={logo} alt="SENA" className="h-11" />
+                    <span className="font-semibold text-[1.15rem] tracking-[0.01em]">
                         Inventario Teleinformática
                     </span>
                 </Link>

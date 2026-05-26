@@ -43,21 +43,17 @@ export default function Input({
                         relative
                         w-full
                         h-12
-                        rounded-md
+                        rounded-[8px]
                         border
                         px-4
                         text-base
+                        bg-[rgba(217,217,217,0.54)]
                         hover:border-2
                         focus:outline-none
                         focus:ring-1
                         focus:ring-focus-ring
-                        ${error ? "border-red-600" : "border-black"}      
+                        ${error ? "border-red-600" : "border-black"}
                     `}
-                    style={{
-                        background: "rgba(217,217,217,0.54)",  // D9D9D9 al 54%
-                        border: error ? "1px solid red" : "1px solid #000000",  // negro 100%
-                        borderRadius: "8px",  // corner radius 8
-                    }}
                     {...props}
                 />
             </div>

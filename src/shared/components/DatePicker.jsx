@@ -41,17 +41,7 @@ export default function DatePicker({
                 }
                 dateFormat="dd/MM/yyyy"
                 wrapperClassName="w-[320px]"
-                className="w-[320px] h-12 px-4 text-base focus:outline-none"
-                // estilos inline directo
-                style={{
-                    background: "rgba(217,217,217,0.54)",
-                    border: error ? "1px solid red" : "1px solid #000000",
-                    borderRadius: "8px",
-                    width: "320px",
-                    height: "48px",
-                    padding: "0 16px",
-                    fontSize: "1rem",
-                }}
+                className={`w-[320px] h-12 px-4 text-base focus:outline-none bg-[rgba(217,217,217,0.54)] rounded-[8px] border ${error ? "border-red-500" : "border-black"}`}
             />
 
             {/* Mensaje de error visible solo si hay error */}

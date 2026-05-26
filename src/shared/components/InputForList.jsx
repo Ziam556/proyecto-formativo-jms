@@ -13,6 +13,7 @@ import { Search, X } from "lucide-react";
 
 export default function InputForList({
     label,
+    labelClassName,
     value = "",
     onChange,
     placeholder,
@@ -26,7 +27,7 @@ export default function InputForList({
 
             {/* Label */}
             {label && (
-                <label className="text-xs text-[#c4b5fd] font-medium">
+                <label className={`text-[0.75rem] font-medium ${labelClassName ?? ""}`}>
                     {label}
                 </label>
             )}
