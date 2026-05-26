@@ -1,20 +1,19 @@
 import ReturnableMaterialRowActions from "../components/ReturnableMaterialRowActions";
 
 const stateColors = {
-  Disponible: "var(--color-success, #22c55e)",
-  "No Disponible": "var(--color-warning, #f59e0b)",
-  Prestamo: "var(--color-info, #3b82f6)",
-  Baja: "var(--color-danger, #ef4444)",
-  Traslado: "var(--color-purple, #a855f7)",
-  Mantenimiento: "var(--color-secondary, #6b7280)",
+  Disponible:      "bg-green-500",
+  "No Disponible": "bg-amber-500",
+  Prestamo:        "bg-blue-500",
+  Baja:            "bg-red-500",
+  Traslado:        "bg-purple-500",
+  Mantenimiento:   "bg-gray-500",
 };
 
 function StateChip({ value }) {
-  const color = stateColors[value] || "#6b7280";
+  const colorClass = stateColors[value] || "bg-gray-500";
   return (
     <span
-      className="text-white rounded-full py-[2px] px-[10px] text-[0.78rem] font-semibold whitespace-nowrap"
-      style={{ background: color }}
+      className={`${colorClass} text-white rounded-full py-[2px] px-[10px] text-[0.78rem] font-semibold whitespace-nowrap`}
     >
       {value}
     </span>

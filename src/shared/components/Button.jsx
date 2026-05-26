@@ -3,6 +3,7 @@ export default function Button({
     size = "md",
     type = "button",
     children,
+    className: extraClassName = "",
     ...props
 }){
     const variants = {
@@ -17,17 +18,9 @@ export default function Button({
         md: "h-14 px-8",   // primario: 320×56
     }
 
-    const bgStyles = {
-        primary: {
-            background: "#71277A",
-            borderRadius: "999px",
-            minWidth: "320px",
-        },
-        secondary: {
-            background: "#00C8DC",  // cyan
-            borderRadius: "999px",
-            minWidth: "240px",
-        },
+    const bgClasses = {
+        primary: "bg-[#71277A] rounded-full min-w-[320px]",
+        secondary: "bg-[#00C8DC] rounded-full min-w-[240px]",
     }
 
     return(
@@ -40,11 +33,12 @@ export default function Button({
                 hover:opacity-85
                 ${variants[variant]}
                 ${sizes[size]}
+                ${bgClasses[variant]}
+                ${extraClassName}
             `}
-            style={bgStyles[variant]}
             {...props}
         >
-            {children}        
+            {children}
         </button>
     )
 }

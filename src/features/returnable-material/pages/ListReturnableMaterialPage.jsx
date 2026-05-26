@@ -3,6 +3,8 @@ import { SlidersHorizontal } from "lucide-react";
 import { returnableMaterials } from "../data/returnableMaterials.js";
 import { DataTable, StatsPills, ReportDropdown, BackButton, InputForList } from "@/shared";
 import { returnableMaterialColumns } from "../table/returnableMaterialColumns";
+import { returnableMaterialReportFields } from "../reports/config/returnableMaterialReportFields.js";
+import { generateReturnableMaterialReport } from "../reports/services/generateReturnableMaterialReport.js";
 
 // ─── Colores de estado para pills ─────────────────────────────────────────────
 const STATE_DOT = {
@@ -24,6 +26,8 @@ export default function ListReturnableMaterialPage() {
     state: "",
     serial: "",
   });
+
+  const [rowSelection, setRowSelection] = useState({});
 
   // Datos filtrados que se pasan a la tabla
   const filtered = useMemo(() => {
@@ -53,6 +57,26 @@ export default function ListReturnableMaterialPage() {
 
   const clearFilters = () =>
     setFilters({ elementName: "", accountHolder: "", state: "", serial: "" });
+
+  // Reporte de materiales seleccionados
+  const generateSelectedReport = (format) => {
+    const selectedIds = Object.keys(rowSelection)
+      .filter((idx) => rowSelection[idx])
+      .map((idx) => filtered[Number(idx)]?.id)
+      .filter(Boolean);
+
+    if (selectedIds.length === 0) {
+      alert("Seleccione al menos un material.");
+      return;
+    }
+
+    generateReturnableMaterialReport({
+      format,
+      selectedFields: returnableMaterialReportFields,
+      scope: "selected",
+      selectedIds,
+    });
+  };
 
   return (
     <div className="min-h-[calc(100vh-64px)] py-4 px-6">
@@ -129,12 +153,28 @@ export default function ListReturnableMaterialPage() {
               color="#00304D"
               width={280}
               height={70}
+              onPDF={() =>
+                generateReturnableMaterialReport({
+                  format: "pdf",
+                  selectedFields: returnableMaterialReportFields,
+                  scope: "all",
+                })
+              }
+              onExcel={() =>
+                generateReturnableMaterialReport({
+                  format: "excel",
+                  selectedFields: returnableMaterialReportFields,
+                  scope: "all",
+                })
+              }
             />
             <ReportDropdown
               label="Generar reporte de material devolutivo seleccionado"
               color="#00304D"
               width={280}
               height={70}
+              onPDF={() => generateSelectedReport("pdf")}
+              onExcel={() => generateSelectedReport("excel")}
             />
           </div>
 
@@ -143,7 +183,12 @@ export default function ListReturnableMaterialPage() {
       </div>
 
       {/* Tabla */}
-      <DataTable data={filtered} columns={returnableMaterialColumns} />
+      <DataTable
+        data={filtered}
+        columns={returnableMaterialColumns}
+        rowSelection={rowSelection}
+        onRowSelectionChange={setRowSelection}
+      />
 
     </div>
   );

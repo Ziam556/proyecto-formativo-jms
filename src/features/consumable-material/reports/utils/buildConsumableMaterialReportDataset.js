@@ -1,0 +1,40 @@
+export function buildConsumableMaterialReportDataset({
+  materials,
+  selectedFields,
+  scope,
+  filterSerial,
+  filterState,
+  selectedIds = [],
+}) {
+
+  let filteredMaterials = [...materials];
+
+  if (scope === "serial" && filterSerial) {
+    filteredMaterials = filteredMaterials.filter(
+      (material) => material.serial === filterSerial
+    );
+  }
+
+  if (scope === "state" && filterState) {
+    filteredMaterials = filteredMaterials.filter(
+      (material) => material.state === filterState
+    );
+  }
+
+  if (scope === "selected" && selectedIds.length > 0) {
+    filteredMaterials = filteredMaterials.filter(
+      (material) => selectedIds.map(String).includes(String(material.id))
+    );
+  }
+
+  const headers = selectedFields.map((field) => field.label);
+
+  const rows = filteredMaterials.map((material) =>
+    selectedFields.map((field) => {
+      const value = material[field.key];
+      return value ?? "";
+    })
+  );
+
+  return { headers, rows };
+}

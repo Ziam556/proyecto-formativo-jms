@@ -6,8 +6,9 @@ import { HomePage } from "@/features/home";
 import { ConfigPage } from "@/features/config";
 import { GroupsListPage, CreateGroupPage } from "@/features/groups";
 import { ReturnableMaterialPage, ListReturnableMaterialPage, CreateReturnableMaterialPage } from "@/features/returnable-material";
+import { ConsumableMaterialPage,  ListConsumableMaterialPage, CreateConsumableMaterialPage } from "@/features/consumable-material";
 import { BrandsPage, CreateBrandPage } from "@/features/brands";
-
+import { LoansPage, CreateLoansPage, ListWeLendAssetsPage } from "@/features/loans";
 
 
 const router = createBrowserRouter([
@@ -34,8 +35,13 @@ const router = createBrowserRouter([
             { path: "returnable-material", element: <ReturnableMaterialPage /> },
             { path: "returnable-material/list", element: <ListReturnableMaterialPage /> },
             { path: "returnable-material/create", element: <CreateReturnableMaterialPage /> },
+            { path: "consumable-material", element: <ConsumableMaterialPage /> },
+            { path: "consumable-material/create", element: <CreateConsumableMaterialPage /> },
+            { path: "consumable-material/list", element: <ListConsumableMaterialPage /> },
+            { path: "loans", element: <LoansPage /> },
+            { path: "loans/create", element: <CreateLoansPage /> },
+            { path: "loans/list", element: <ListWeLendAssetsPage /> },
             { path: "brands", element: <BrandsPage /> },
-
             { path: "config/brands", element: <CreateBrandPage /> },
             { path: "config", element: <ConfigPage /> },
             { path: "config/groups", element: <GroupsListPage /> },
