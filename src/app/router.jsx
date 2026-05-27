@@ -6,9 +6,9 @@ import { HomePage } from "@/features/home";
 import { ConfigPage } from "@/features/config";
 import { GroupsListPage, CreateGroupPage } from "@/features/groups";
 import { ReturnableMaterialPage, ListReturnableMaterialPage, CreateReturnableMaterialPage } from "@/features/returnable-material";
-import { ConsumableMaterialPage,  ListConsumableMaterialPage, CreateConsumableMaterialPage } from "@/features/consumable-material";
+import { ConsumableMaterialPage,  ListConsumableMaterialPage, CreateConsumableMaterialPage, ViewMaterialConsumablePage } from "@/features/consumable-material";
 import { BrandsPage, CreateBrandPage } from "@/features/brands";
-import { LoansPage, CreateLoansPage, ListWeLendAssetsPage } from "@/features/loans";
+import { LoansPage, CreateLoansPage, ListWeLendAssetsPage, ViewLoansPage } from "@/features/loans";
 
 
 const router = createBrowserRouter([
@@ -38,9 +38,11 @@ const router = createBrowserRouter([
             { path: "consumable-material", element: <ConsumableMaterialPage /> },
             { path: "consumable-material/create", element: <CreateConsumableMaterialPage /> },
             { path: "consumable-material/list", element: <ListConsumableMaterialPage /> },
+            { path: "consumable-material/visualize", element: <ViewMaterialConsumablePage/> },
             { path: "loans", element: <LoansPage /> },
             { path: "loans/create", element: <CreateLoansPage /> },
             { path: "loans/list", element: <ListWeLendAssetsPage /> },
+            { path: "loans/visualize", element: <ViewLoansPage /> },
             { path: "brands", element: <BrandsPage /> },
             { path: "config/brands", element: <CreateBrandPage /> },
             { path: "config", element: <ConfigPage /> },
