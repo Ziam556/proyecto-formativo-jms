@@ -27,7 +27,7 @@ export default function InputForList({
 
             {/* Label */}
             {label && (
-                <label className={`text-[0.75rem] font-medium ${labelClassName ?? ""}`}>
+                <label className={`text-white text-[0.75rem] font-medium ${labelClassName ?? ""}`}>
                     {label}
                 </label>
             )}

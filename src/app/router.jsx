@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { AuthLayout, DashboardLayout } from "@/shared";
 import { Login } from "@/features/auth";
-import { UserPage, CreateUserPage, ListUserPage } from "@/features/users";
+import { UserPage, CreateUserPage, ListUserPage, ViewUserPage } from "@/features/users";
 import { HomePage } from "@/features/home";
 import { ConfigPage } from "@/features/config";
 import { GroupsListPage, CreateGroupPage } from "@/features/groups";
@@ -32,6 +32,7 @@ const router = createBrowserRouter([
             { path: "userpage", element: <UserPage /> },
             { path: "userpage/create", element: <CreateUserPage /> },
             { path: "userpage/list", element: <ListUserPage /> },
+            { path: "userpage/:id/view", element: <ViewUserPage /> },
             { path: "returnable-material", element: <ReturnableMaterialPage /> },
             { path: "returnable-material/list", element: <ListReturnableMaterialPage /> },
             { path: "returnable-material/create", element: <CreateReturnableMaterialPage /> },
