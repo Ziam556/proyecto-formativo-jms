@@ -15,15 +15,28 @@ const formatCurrency = (v) =>
 export default function DataTable({
     data = [],
     columns: colDefs = [],
-    rowSelection = {},
-    onRowSelectionChange,
+    rowSelection: externalRowSelection,
+    onRowSelectionChange: externalOnRowSelectionChange,
     initialPageSize = 5,
+    onReportColsChange,
 }) {
-    const [reportCols, setReportCols] = useState(
+    const [reportCols, setReportColsInternal] = useState(
         Object.fromEntries(colDefs.map((c) => [c.id, true]))
     );
 
+    const setReportCols = (updater) => {
+        setReportColsInternal((prev) => {
+            const next = typeof updater === "function" ? updater(prev) : updater;
+            onReportColsChange?.(next);
+            return next;
+        });
+    };
+
     const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: initialPageSize });
+    const [internalRowSelection, setInternalRowSelection] = useState({});
+
+    const rowSelection = externalRowSelection ?? internalRowSelection;
+    const onRowSelectionChange = externalOnRowSelectionChange ?? setInternalRowSelection;
 
     const columns = useMemo(() => [
         {
@@ -48,7 +61,9 @@ export default function DataTable({
             accessorKey: col.accessor ?? undefined,
             size: col.width ? undefined : undefined,
             meta: { width: col.width },
-            header: () => (
+            header: () => col.noToggle
+                ? <span style={{ fontSize: "0.8rem", fontWeight: 600 }}>{col.label}</span>
+                : (
                 <ColumnToggle
                     label={col.label}
                     active={reportCols[col.id]}

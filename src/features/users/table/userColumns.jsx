@@ -40,8 +40,24 @@ export const userColumns = [
         accessor: "address",
     },
     {
+        id:       "userType",
+        label:    "Tipo de usuario",
+        accessor: "userType",
+    },
+    {
+        id:       "startDate",
+        label:    "Fecha de inicio",
+        accessor: "startDate",
+    },
+    {
+        id:       "endDate",
+        label:    "Fecha de finalizacion",
+        accessor: "endDate",
+    },
+    {
         id:         "actions",
-        label:      "Acciones",
+        label:      "",
+        noToggle:   true,
         renderCell: (user) => <UserRowActions user={user} />,
     },
 ];

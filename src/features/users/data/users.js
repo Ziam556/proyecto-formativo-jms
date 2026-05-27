@@ -7,6 +7,9 @@ export const users = [
     documentType: "CC",
     document: "1001234567",
     phone: "3101234567",
+    userType: "Cliente",
+    startDate: "2023-03-14",
+    endDate: "2024-03-14",
   },
   {
     id: 2,
@@ -16,6 +19,9 @@ export const users = [
     documentType: "CC",
     document: "1002345678",
     phone: "3112345678",
+    userType: "Cliente",
+    startDate: "2024-07-02",
+    endDate: "2025-01-02",
   },
   {
     id: 3,
@@ -25,6 +31,9 @@ export const users = [
     documentType: "TI",
     document: "1003456789",
     phone: "3123456789",
+    userType: "Cliente",
+    startDate: "2023-11-20",
+    endDate: "2024-11-20",
   },
   {
     id: 4,
@@ -34,6 +43,9 @@ export const users = [
     documentType: "CC",
     document: "1004567890",
     phone: "3134567890",
+    userType: "Cliente",
+    startDate: "2024-01-08",
+    endDate: "2024-02-08",
   },
   {
     id: 5,
@@ -43,6 +55,9 @@ export const users = [
     documentType: "CE",
     document: "1005678901",
     phone: "3145678901",
+    userType: "Cliente",
+    startDate: "2023-06-15",
+    endDate: "2023-12-15",
   },
   {
     id: 6,
@@ -52,6 +67,9 @@ export const users = [
     documentType: "CC",
     document: "1006789012",
     phone: "3156789012",
+    userType: "Cliente",
+    startDate: "2024-04-22",
+    endDate: "2025-04-22",
   },
   {
     id: 7,
@@ -61,6 +79,9 @@ export const users = [
     documentType: "CC",
     document: "1007890123",
     phone: "3167890123",
+    userType: "Cliente",
+    startDate: "2023-08-05",
+    endDate: "2024-08-05",
   },
   {
     id: 8,
@@ -70,6 +91,9 @@ export const users = [
     documentType: "TI",
     document: "1008901234",
     phone: "3178901234",
+    userType: "Cliente",
+    startDate: "2024-02-17",
+    endDate: "2024-03-17",
   },
   {
     id: 9,
@@ -79,6 +103,9 @@ export const users = [
     documentType: "CC",
     document: "1009012345",
     phone: "3189012345",
+    userType: "Cliente",
+    startDate: "2023-05-30",
+    endDate: "2023-11-30",
   },
   {
     id: 10,
@@ -88,6 +115,9 @@ export const users = [
     documentType: "CC",
     document: "1010123456",
     phone: "3190123456",
+    userType: "Cliente",
+    startDate: "2024-09-11",
+    endDate: "2025-09-11",
   },
   {
     id: 11,
@@ -97,6 +127,9 @@ export const users = [
     documentType: "CC",
     document: "1011234567",
     phone: "3201234567",
+    userType: "Cliente",
+    startDate: "2023-01-25",
+    endDate: "2024-01-25",
   },
   {
     id: 12,
@@ -106,6 +139,9 @@ export const users = [
     documentType: "CE",
     document: "1012345678",
     phone: "3212345678",
+    userType: "Cliente",
+    startDate: "2024-06-03",
+    endDate: "2024-07-03",
   },
   {
     id: 13,
@@ -115,6 +151,9 @@ export const users = [
     documentType: "CC",
     document: "1013456789",
     phone: "3223456789",
+    userType: "Cliente",
+    startDate: "2023-10-19",
+    endDate: "2024-04-19",
   },
   {
     id: 14,
@@ -124,6 +163,9 @@ export const users = [
     documentType: "TI",
     document: "1014567890",
     phone: "3234567890",
+    userType: "Cliente",
+    startDate: "2024-03-07",
+    endDate: "2025-03-07",
   },
   {
     id: 15,
@@ -133,6 +175,9 @@ export const users = [
     documentType: "CC",
     document: "1015678901",
     phone: "3245678901",
+    userType: "Cliente",
+    startDate: "2023-07-28",
+    endDate: "2023-08-28",
   },
   {
     id: 16,
@@ -142,6 +187,9 @@ export const users = [
     documentType: "CC",
     document: "1016789012",
     phone: "3256789012",
+    userType: "Cliente",
+    startDate: "2024-11-14",
+    endDate: "2025-11-14",
   },
   {
     id: 17,
@@ -151,6 +199,9 @@ export const users = [
     documentType: "CC",
     document: "1017890123",
     phone: "3267890123",
+    userType: "Cliente",
+    startDate: "2023-04-09",
+    endDate: "2023-10-09",
   },
   {
     id: 18,
@@ -160,6 +211,9 @@ export const users = [
     documentType: "CE",
     document: "1018901234",
     phone: "3278901234",
+    userType: "Cliente",
+    startDate: "2024-08-26",
+    endDate: "2025-08-26",
   },
   {
     id: 19,
@@ -169,6 +223,9 @@ export const users = [
     documentType: "CC",
     document: "1019012345",
     phone: "3289012345",
+    userType: "Cliente",
+    startDate: "2023-12-01",
+    endDate: "2024-06-01",
   },
   {
     id: 20,
@@ -178,6 +235,9 @@ export const users = [
     documentType: "TI",
     document: "1020123456",
     phone: "3290123456",
+    userType: "Cliente",
+    startDate: "2024-05-18",
+    endDate: "2024-06-18",
   },
   {
     id: 21,
@@ -187,6 +247,9 @@ export const users = [
     documentType: "CC",
     document: "1021234567",
     phone: "3101234568",
+    userType: "Cliente",
+    startDate: "2023-02-22",
+    endDate: "2024-02-22",
   },
   {
     id: 22,
@@ -196,6 +259,9 @@ export const users = [
     documentType: "CC",
     document: "1022345678",
     phone: "3112345679",
+    userType: "Cliente",
+    startDate: "2024-10-05",
+    endDate: "2025-04-05",
   },
   {
     id: 23,
@@ -205,6 +271,9 @@ export const users = [
     documentType: "CC",
     document: "1023456789",
     phone: "3123456780",
+    userType: "Cliente",
+    startDate: "2023-09-13",
+    endDate: "2024-09-13",
   },
   {
     id: 24,
@@ -214,6 +283,9 @@ export const users = [
     documentType: "TI",
     document: "1024567890",
     phone: "3134567891",
+    userType: "Cliente",
+    startDate: "2024-01-30",
+    endDate: "2024-02-29",
   },
   {
     id: 25,
@@ -223,6 +295,9 @@ export const users = [
     documentType: "CC",
     document: "1025678901",
     phone: "3145678902",
+    userType: "Cliente",
+    startDate: "2023-06-07",
+    endDate: "2023-12-07",
   },
   {
     id: 26,
@@ -232,6 +307,9 @@ export const users = [
     documentType: "CC",
     document: "1026789012",
     phone: "3156789013",
+    userType: "Cliente",
+    startDate: "2024-04-14",
+    endDate: "2025-04-14",
   },
   {
     id: 27,
@@ -241,6 +319,9 @@ export const users = [
     documentType: "CE",
     document: "1027890123",
     phone: "3167890124",
+    userType: "Cliente",
+    startDate: "2023-11-02",
+    endDate: "2024-05-02",
   },
   {
     id: 28,
@@ -250,6 +331,9 @@ export const users = [
     documentType: "CC",
     document: "1028901234",
     phone: "3178901235",
+    userType: "Cliente",
+    startDate: "2024-07-19",
+    endDate: "2025-07-19",
   },
   {
     id: 29,
@@ -259,6 +343,9 @@ export const users = [
     documentType: "CC",
     document: "1029012345",
     phone: "3189012346",
+    userType: "Cliente",
+    startDate: "2023-03-28",
+    endDate: "2023-04-28",
   },
   {
     id: 30,
@@ -268,6 +355,9 @@ export const users = [
     documentType: "TI",
     document: "1030123456",
     phone: "3190123457",
+    userType: "Cliente",
+    startDate: "2024-09-06",
+    endDate: "2025-09-06",
   },
   {
     id: 31,
@@ -277,6 +367,9 @@ export const users = [
     documentType: "CC",
     document: "1031234567",
     phone: "3201234568",
+    userType: "Cliente",
+    startDate: "2023-07-11",
+    endDate: "2024-01-11",
   },
   {
     id: 32,
@@ -286,6 +379,9 @@ export const users = [
     documentType: "CC",
     document: "1032345678",
     phone: "3212345679",
+    userType: "Cliente",
+    startDate: "2024-02-24",
+    endDate: "2025-02-24",
   },
   {
     id: 33,
@@ -295,6 +391,9 @@ export const users = [
     documentType: "CC",
     document: "1033456789",
     phone: "3223456780",
+    userType: "Cliente",
+    startDate: "2023-05-16",
+    endDate: "2023-06-16",
   },
   {
     id: 34,
@@ -304,6 +403,9 @@ export const users = [
     documentType: "CE",
     document: "1034567890",
     phone: "3234567891",
+    userType: "Cliente",
+    startDate: "2024-11-29",
+    endDate: "2025-05-29",
   },
   {
     id: 35,
@@ -313,6 +415,9 @@ export const users = [
     documentType: "CC",
     document: "1035678901",
     phone: "3245678902",
+    userType: "Cliente",
+    startDate: "2023-10-04",
+    endDate: "2024-10-04",
   },
   {
     id: 36,
@@ -322,6 +427,9 @@ export const users = [
     documentType: "CC",
     document: "1036789012",
     phone: "3256789013",
+    userType: "Cliente",
+    startDate: "2024-06-21",
+    endDate: "2024-07-21",
   },
   {
     id: 37,
@@ -331,6 +439,9 @@ export const users = [
     documentType: "TI",
     document: "1037890123",
     phone: "3267890124",
+    userType: "Cliente",
+    startDate: "2023-01-17",
+    endDate: "2023-07-17",
   },
   {
     id: 38,
@@ -340,6 +451,9 @@ export const users = [
     documentType: "CC",
     document: "1038901234",
     phone: "3278901235",
+    userType: "Cliente",
+    startDate: "2024-08-09",
+    endDate: "2025-08-09",
   },
   {
     id: 39,
@@ -349,6 +463,9 @@ export const users = [
     documentType: "CC",
     document: "1039012345",
     phone: "3289012346",
+    userType: "Cliente",
+    startDate: "2023-04-25",
+    endDate: "2023-05-25",
   },
   {
     id: 40,
@@ -358,6 +475,9 @@ export const users = [
     documentType: "CE",
     document: "1040123456",
     phone: "3290123457",
+    userType: "Cliente",
+    startDate: "2024-03-12",
+    endDate: "2025-03-12",
   },
   {
     id: 41,
@@ -367,6 +487,9 @@ export const users = [
     documentType: "CC",
     document: "1041234567",
     phone: "3101234569",
+    userType: "Cliente",
+    startDate: "2023-08-30",
+    endDate: "2024-02-29",
   },
   {
     id: 42,
@@ -376,6 +499,9 @@ export const users = [
     documentType: "CC",
     document: "1042345678",
     phone: "3112345670",
+    userType: "Cliente",
+    startDate: "2024-12-07",
+    endDate: "2025-12-07",
   },
   {
     id: 43,
@@ -385,6 +511,9 @@ export const users = [
     documentType: "TI",
     document: "1043456789",
     phone: "3123456781",
+    userType: "Cliente",
+    startDate: "2023-02-14",
+    endDate: "2023-08-14",
   },
   {
     id: 44,
@@ -394,6 +523,9 @@ export const users = [
     documentType: "CC",
     document: "1044567890",
     phone: "3134567892",
+    userType: "Cliente",
+    startDate: "2024-07-28",
+    endDate: "2025-07-28",
   },
   {
     id: 45,
@@ -403,6 +535,9 @@ export const users = [
     documentType: "CC",
     document: "1045678901",
     phone: "3145678903",
+    userType: "Cliente",
+    startDate: "2023-11-10",
+    endDate: "2023-12-10",
   },
   {
     id: 46,
@@ -412,6 +547,9 @@ export const users = [
     documentType: "CC",
     document: "1046789012",
     phone: "3156789014",
+    userType: "Cliente",
+    startDate: "2024-05-01",
+    endDate: "2025-05-01",
   },
   {
     id: 47,
@@ -421,6 +559,9 @@ export const users = [
     documentType: "CE",
     document: "1047890123",
     phone: "3167890125",
+    userType: "Cliente",
+    startDate: "2023-09-22",
+    endDate: "2024-03-22",
   },
   {
     id: 48,
@@ -430,6 +571,9 @@ export const users = [
     documentType: "CC",
     document: "1048901234",
     phone: "3178901236",
+    userType: "Cliente",
+    startDate: "2024-01-15",
+    endDate: "2025-01-15",
   },
   {
     id: 49,
@@ -439,6 +583,9 @@ export const users = [
     documentType: "CC",
     document: "1049012345",
     phone: "3189012347",
+    userType: "Cliente",
+    startDate: "2023-06-29",
+    endDate: "2023-07-29",
   },
   {
     id: 50,
@@ -448,6 +595,9 @@ export const users = [
     documentType: "TI",
     document: "1050123456",
     phone: "3190123458",
+    userType: "Cliente",
+    startDate: "2024-10-16",
+    endDate: "2025-04-16",
   },
   {
     id: 51,
@@ -457,6 +607,9 @@ export const users = [
     documentType: "CC",
     document: "1051234567",
     phone: "3201234569",
+    userType: "Cliente",
+    startDate: "2023-03-03",
+    endDate: "2024-03-03",
   },
   {
     id: 52,
@@ -466,6 +619,9 @@ export const users = [
     documentType: "CC",
     document: "1052345678",
     phone: "3212345670",
+    userType: "Cliente",
+    startDate: "2024-08-20",
+    endDate: "2024-09-20",
   },
   {
     id: 53,
@@ -475,6 +631,9 @@ export const users = [
     documentType: "CC",
     document: "1053456789",
     phone: "3223456781",
+    userType: "Cliente",
+    startDate: "2023-12-27",
+    endDate: "2024-06-27",
   },
   {
     id: 54,
@@ -484,6 +643,9 @@ export const users = [
     documentType: "CE",
     document: "1054567890",
     phone: "3234567892",
+    userType: "Cliente",
+    startDate: "2024-04-08",
+    endDate: "2025-04-08",
   },
   {
     id: 55,
@@ -493,6 +655,9 @@ export const users = [
     documentType: "CC",
     document: "1055678901",
     phone: "3245678903",
+    userType: "Cliente",
+    startDate: "2023-07-05",
+    endDate: "2023-08-05",
   },
   {
     id: 56,
@@ -502,6 +667,9 @@ export const users = [
     documentType: "CC",
     document: "1056789012",
     phone: "3256789014",
+    userType: "Cliente",
+    startDate: "2024-11-22",
+    endDate: "2025-11-22",
   },
   {
     id: 57,
@@ -511,6 +679,9 @@ export const users = [
     documentType: "TI",
     document: "1057890123",
     phone: "3267890125",
+    userType: "Cliente",
+    startDate: "2023-05-11",
+    endDate: "2023-11-11",
   },
   {
     id: 58,
@@ -520,6 +691,9 @@ export const users = [
     documentType: "CC",
     document: "1058901234",
     phone: "3278901236",
+    userType: "Cliente",
+    startDate: "2024-02-06",
+    endDate: "2025-02-06",
   },
   {
     id: 59,
@@ -529,6 +703,9 @@ export const users = [
     documentType: "CC",
     document: "1059012345",
     phone: "3289012347",
+    userType: "Cliente",
+    startDate: "2023-10-31",
+    endDate: "2023-11-30",
   },
   {
     id: 60,
@@ -538,6 +715,9 @@ export const users = [
     documentType: "CC",
     document: "1060123456",
     phone: "3290123459",
+    userType: "Cliente",
+    startDate: "2024-06-17",
+    endDate: "2025-06-17",
   },
   {
     id: 61,
@@ -547,6 +727,9 @@ export const users = [
     documentType: "CE",
     document: "1061234567",
     phone: "3101234560",
+    userType: "Cliente",
+    startDate: "2023-01-09",
+    endDate: "2024-01-09",
   },
   {
     id: 62,
@@ -556,6 +739,9 @@ export const users = [
     documentType: "CC",
     document: "1062345678",
     phone: "3112345671",
+    userType: "Cliente",
+    startDate: "2024-09-24",
+    endDate: "2025-03-24",
   },
   {
     id: 63,
@@ -565,6 +751,9 @@ export const users = [
     documentType: "CC",
     document: "1063456789",
     phone: "3123456782",
+    userType: "Cliente",
+    startDate: "2023-04-18",
+    endDate: "2023-05-18",
   },
   {
     id: 64,
@@ -574,6 +763,9 @@ export const users = [
     documentType: "TI",
     document: "1064567890",
     phone: "3134567893",
+    userType: "Cliente",
+    startDate: "2024-07-05",
+    endDate: "2025-07-05",
   },
   {
     id: 65,
@@ -583,6 +775,9 @@ export const users = [
     documentType: "CC",
     document: "1065678901",
     phone: "3145678904",
+    userType: "Cliente",
+    startDate: "2023-08-23",
+    endDate: "2024-02-23",
   },
   {
     id: 66,
@@ -592,6 +787,9 @@ export const users = [
     documentType: "CC",
     document: "1066789012",
     phone: "3156789015",
+    userType: "Cliente",
+    startDate: "2024-12-10",
+    endDate: "2025-12-10",
   },
   {
     id: 67,
@@ -601,5 +799,8 @@ export const users = [
     documentType: "CC",
     document: "1067890123",
     phone: "3167890126",
+    userType: "Cliente",
+    startDate: "2023-07-14",
+    endDate: "2024-01-14",
   },
 ];
