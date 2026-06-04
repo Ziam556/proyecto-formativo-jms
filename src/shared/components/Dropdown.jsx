@@ -6,6 +6,7 @@ import {
     useState,
     cloneElement
 } from "react"
+import { createPortal } from "react-dom"
 
 export const DropdownContext = createContext(null)
 
@@ -30,16 +31,17 @@ export function Dropdown ({
     }
 
     const containerRef = useRef(null)
+    const portalRef    = useRef(null)
 
-    // click outside
+    // click outside — checks both the trigger container and the portal content
     useEffect(() => {
         const handleClickOutside = (e) => {
-            if (containerRef.current && !containerRef.current.contains(e.target)){
-                setOpen(false)
-            }
+            const inContainer = containerRef.current?.contains(e.target)
+            const inPortal    = portalRef.current?.contains(e.target)
+            if (!inContainer && !inPortal) setOpen(false)
         }
         document.addEventListener("mousedown", handleClickOutside)
-        return () => document.removeEventListener("mousedown",handleClickOutside)
+        return () => document.removeEventListener("mousedown", handleClickOutside)
     }, [])
 
     // Escape key
@@ -47,13 +49,12 @@ export function Dropdown ({
         const handleEscape = (e) => {
             if (e.key === "Escape") setOpen(false)
         }
-
-        document.addEventListener("keydown",handleEscape)
+        document.addEventListener("keydown", handleEscape)
         return () => document.removeEventListener("keydown", handleEscape)
     }, [])
 
     return (
-        <DropdownContext.Provider value={{open, setOpen}}>
+        <DropdownContext.Provider value={{ open, setOpen, containerRef, portalRef }}>
             <div ref={containerRef} className={`relative inline-block ${className}`}>
                 {children}
             </div>
@@ -63,8 +64,8 @@ export function Dropdown ({
 
 
 // Trigger
-export function DropdownTrigger({ children}) {
-    const {open, setOpen} = useContext(DropdownContext)
+export function DropdownTrigger({ children }) {
+    const { open, setOpen } = useContext(DropdownContext)
 
     if (!children) return null
 
@@ -79,18 +80,29 @@ export function DropdownTrigger({ children}) {
 }
 
 
-// Content (renombrado, no borro nada)
-export function DropdownContent({ children, className = ""}) {
-    const { open } = useContext(DropdownContext)
+// Content — usa Portal para escapar de cualquier overflow:hidden padre
+export function DropdownContent({ children, className = "" }) {
+    const { open, containerRef, portalRef } = useContext(DropdownContext)
+    const [coords, setCoords] = useState(null)
 
-    if (!open) return null
+    useEffect(() => {
+        if (open && containerRef?.current) {
+            const rect = containerRef.current.getBoundingClientRect()
+            setCoords({
+                top:   rect.bottom + 4,
+                right: window.innerWidth - rect.right,
+            })
+        }
+    }, [open])
 
-    return (
+    if (!open || !coords) return null
+
+    return createPortal(
         <div
+            ref={portalRef}
             role="menu"
+            style={{ position: "fixed", top: coords.top, right: coords.right, zIndex: 9999 }}
             className={`
-                absolute
-                mt-1
                 min-w-48
                 border
                 text-text-inverse
@@ -103,12 +115,12 @@ export function DropdownContent({ children, className = ""}) {
                 hover:shadow-black
                 text-white
                 transition-shadow duration-700
-                z-50 
                 ${className}
             `}
         >
             {children}
-        </div>
+        </div>,
+        document.body
     )
 }
 
