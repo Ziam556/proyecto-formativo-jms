@@ -207,7 +207,7 @@ export default function ListWeLendAssetsPage() {
         </div>
 
         {/* TABLA */}
-        <div className="rounded-xl overflow-hidden">
+        <div className="rounded-xl overflow-visible">
 
           <DataTable
             data={filtered}

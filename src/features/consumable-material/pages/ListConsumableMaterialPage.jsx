@@ -336,7 +336,7 @@ export default function ListConsumableMaterialPage() {
         </div>
 
         {/* TABLA */}
-        <div className="rounded-xl overflow-hidden">
+        <div className="rounded-xl overflow-visible">
 
           <DataTable
             data={filtered}

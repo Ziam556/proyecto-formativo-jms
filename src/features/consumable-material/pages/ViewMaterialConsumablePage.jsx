@@ -1,22 +1,19 @@
-import ViewMaterialConsumable from "../components/ViewMaterialConsumable";
+import { useLocation, useNavigate } from "react-router-dom";
+import ViewConsumableMaterial from "../components/ViewConsumableMaterial";
 
-export default function ViewMaterialConsumablePage() {
+export default function ViewConsumableMaterialPage() {
 
-  const handleNext = (data) => {
-    console.log(data);
-  };
-
-  const handleCancel = () => {
-    console.log("Editar");
-  };
+  const location = useLocation();
+  const navigate  = useNavigate();
+  const material  = location.state?.material ?? null;
 
   return (
 
     <div className="min-h-[calc(100vh-64px)] px-6 py-5">
 
-      <ViewMaterialConsumable
-        onNext={handleNext}
-        onCancel={handleCancel}
+      <ViewConsumableMaterial
+        material={material}
+        onCancel={() => navigate("/dashboard/consumable-material/edit", { state: { material } })}
       />
 
     </div>

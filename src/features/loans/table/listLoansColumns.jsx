@@ -1,8 +1,11 @@
-import { Undo2 } from "lucide-react";
+import { Undo2, EllipsisVertical } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
   Dropdown,
   DropdownTrigger,
   DropdownContent,
+  DropdownItem,
+  IconButton,
 } from "@/shared";
 
 // ── Chip de tipo de material ─────────────────────────────────────────────────
@@ -71,20 +74,37 @@ function MaterialesCell({ materiales = [] }) {
   );
 }
 
-// ── Botón Devolver ────────────────────────────────────────────────────────────
-function DevolverButton({ row }) {
-  const handleDevolver = () => {
-    console.log("Devolver préstamo:", row.id);
-  };
+// ── Celda de acciones ────────────────────────────────────────────────────────
+function AccionesCell({ row }) {
+  const navigate = useNavigate();
 
   return (
-    <button
-      onClick={handleDevolver}
-      className="inline-flex items-center gap-[5px] py-[5px] px-3 border-[1.5px] border-[#71277A] rounded-[6px] bg-white text-[#71277A] text-[0.8rem] font-semibold cursor-pointer whitespace-nowrap transition-colors duration-150 hover:bg-[#71277A] hover:text-white"
-    >
-      <Undo2 size={14} />
-      Devolver
-    </button>
+    <div className="flex items-center gap-2">
+      <Dropdown>
+        <DropdownTrigger>
+          <IconButton ariaLabel="Más opciones">
+            <EllipsisVertical size={16} />
+          </IconButton>
+        </DropdownTrigger>
+
+        <DropdownContent className="right-0 w-40 bg-[#1e1230]">
+          <DropdownItem onClick={() => console.log("Devolver préstamo:", row.id)}>
+            <span className="inline-flex items-center gap-[5px]">
+              <Undo2 size={13} />
+              Devolver
+            </span>
+          </DropdownItem>
+
+          <DropdownItem onClick={() => navigate("/dashboard/loans/visualize", { state: { loan: row } })}>
+            Visualizar
+          </DropdownItem>
+
+          <DropdownItem onClick={() => navigate("/dashboard/loans/edit")}>
+            Editar
+          </DropdownItem>
+        </DropdownContent>
+      </Dropdown>
+    </div>
   );
 }
 
@@ -126,6 +146,6 @@ export const listLoansColumns = [
     label: "Acción",
     accessor: null,
     width: "14%",
-    renderCell: (row) => <DevolverButton row={row} />,
+    renderCell: (row) => <AccionesCell row={row} />,
   },
 ];

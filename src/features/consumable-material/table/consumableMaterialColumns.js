@@ -3,6 +3,9 @@
 // format: 'currency' | 'state' | 'link'
 // accessor: clave del objeto de datos
 
+import { createElement } from "react";
+import ConsumableMaterialRowActions from "../components/ConsumableMaterialRowActions";
+
 export const consumableMaterialColumns = [
   { id: "id",             label: "ID",                  accessor: "id" },
   { id: "plateSena",      label: "Placa Sena",          accessor: "plateSena" },
@@ -17,4 +20,5 @@ export const consumableMaterialColumns = [
   { id: "state",          label: "Estado",              accessor: "state",        format: "state" },
   { id: "accountHolder",  label: "Cuentadante",         accessor: "accountHolder" },
   { id: "location",       label: "Ubicación",           accessor: "location" },
+  { id: "actions",        label: "Acciones",            accessor: null,           renderCell: (material) => createElement(ConsumableMaterialRowActions, { material }) },
 ];
