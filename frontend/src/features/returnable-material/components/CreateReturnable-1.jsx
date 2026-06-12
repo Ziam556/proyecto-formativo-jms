@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Input, Button, Select } from "@/shared";
 
@@ -35,7 +36,7 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
   return (
     <div className="grid grid-cols-[320px_320px] gap-6 mx-auto">
       <Input
-        label="ID"
+        label="ID" 
         name="returnableMaterialId"
         placeholder="Ej: HER-001"
         value={fields.returnableMaterialId}
@@ -74,3 +75,5 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
     </div>
   );
 }
+
+

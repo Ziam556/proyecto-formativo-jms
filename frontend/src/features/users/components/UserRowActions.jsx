@@ -48,6 +48,7 @@ import { useNavigate } from "react-router-dom";
         <button
             className="p-1 rounded hover:bg-gray-100"
         >
+
             <Dropdown>
                 <DropdownTrigger>
                     <IconButton ariaLabel="Más opciones">
@@ -79,3 +80,4 @@ import { useNavigate } from "react-router-dom";
         </div>
     );
     }
+

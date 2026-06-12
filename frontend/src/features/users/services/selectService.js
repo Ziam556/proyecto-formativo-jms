@@ -8,3 +8,4 @@ export async function getDocumentTypes() {
 export async function getUserTypes() {
     return userTypesData;
 }
+
