@@ -10,12 +10,10 @@ export default function CreateConsumable1({
     const [categories, setCategories] = useState([]);
 
     const [fields, setFields] = useState({
-        consumableMaterialId:
-            formData?.consumableMaterialId || "",
-        materialPlate: formData?.materialPlate || "",
-        materialBrand: formData?.materialBrand || "",
-        materialElementName:
-            formData?.materialElementName || "",
+        consumableMaterialId: formData?.consumableMaterialId || "",
+        materialPlate:        formData?.materialPlate        || "",
+        materialElementName:  formData?.materialElementName  || "",
+        materialBrand:        formData?.materialBrand        || "",
     });
 
     const [errors, setErrors] = useState({});
@@ -71,7 +69,7 @@ export default function CreateConsumable1({
             <Input
                 label="ID"
                 name="consumableMaterialId"
-                placeholder="ID"
+                placeholder="Ej:001"
                 value={fields.consumableMaterialId}
                 onChange={handleChange}
                 error={errors.consumableMaterialId}

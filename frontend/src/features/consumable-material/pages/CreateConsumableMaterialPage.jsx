@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { createConsumableMaterial } from "../services/consumableMaterialService";
 
 import CreateConsumable1 from "../components/CreateConsumable-1";
 import CreateConsumable2 from "../components/CreateConsumable-2";
@@ -31,15 +32,28 @@ export default function CreateConsumableMaterialPage() {
     const handleBack = () =>
         setCurrentStep((prev) => prev - 1);
 
-    const handleSave = (data) => {
-        const finalData = {
-            ...formData,
-            ...data,
-        };
+    const handleSave = async (data) => {
+        const finalData = { ...formData, ...data };
 
-        console.log("Material guardado:", finalData);
+        try {
+            // MaterialPurchaseDate viene como objeto Date del datepicker, lo convertimos a string
+            const purchaseDate = finalData.MaterialPurchaseDate
+                ? new Date(finalData.MaterialPurchaseDate).toISOString().split("T")[0]
+                : null;
 
-        navigate("/dashboard/consumable-material");
+            const payload = { ...finalData, materialPurchaseDate: purchaseDate };
+
+            // La imagen es un array de File, tomamos el primero
+            const imageFile = finalData.materialImage?.[0] ?? null;
+
+            await createConsumableMaterial(payload, imageFile);
+
+            navigate("/dashboard/consumable-material");
+
+        } catch (err) {
+            console.error("Error al guardar material:", err);
+            alert("Error al guardar: " + err.message);
+        }
     };
 
     const stepComponents = [

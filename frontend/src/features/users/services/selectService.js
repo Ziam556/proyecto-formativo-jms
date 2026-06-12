@@ -1,15 +1,11 @@
+import documentTypesData from "../../../../data/selects/documentTypes.json";
+import userTypesData from "../../../../data/selects/userTypes.json";
+
 export async function getDocumentTypes() {
-
-    const response = await fetch("/../../data/selects/documentTypes.json")
-
-    return response.json();
-    
-} 
+    return documentTypesData;
+}
 
 export async function getUserTypes() {
+    return userTypesData;
+}
 
-    const response = await fetch("/../../data/selects/userTypes.json")
-
-    return response.json();
-    
-} 

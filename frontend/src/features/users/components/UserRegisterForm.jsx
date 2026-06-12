@@ -4,10 +4,12 @@ import { Input, Button, Select, DatePicker, FileInput } from "@/shared";
 import { getDocumentTypes, getUserTypes } from "@/features/users/services/selectService";
 import { userSchema } from "../schemas/userSchema";
 import { initialGroups } from "@/features/groups/data/groups";
+import { createUser } from "../services/userService";
 import { useNavigate } from "react-router-dom";
 
 // ─── Overlay: Asignar Grupo ────────────────────────────────────────────────
 function GroupOverlay({ groups, selectedId, onConfirm, onClose }) {
+
     const [tempId, setTempId] = useState(selectedId);
     const enabled = groups.filter((g) => g.enabled);
 
@@ -126,6 +128,8 @@ function SecondaryPhoneOverlay({ current, onConfirm, onClose }) {
 // ─── Componente principal ──────────────────────────────────────────────────
 export default function UserRegisterForm({ onCancel }) {
     const navigate = useNavigate();
+    const [IsSubmitting, setIsSubmitting] = useState(false)
+
     const [documentTypes, setDocumentTypes] = useState([]);
     const [userTypes, setUserTypes]         = useState([]);
     const [groups, setGroups]               = useState([]);
@@ -189,8 +193,8 @@ export default function UserRegisterForm({ onCancel }) {
         setShowPhoneModal(false);
     };
 
-    // Submit: primero verifica campos vacíos, luego valida formatos con Zod
-    const handleSubmit = () => {
+    // Submit: primero verifica campos vacíos, luego valida formatos con Zod, luego llama al backend
+    const handleSubmit = async () => {
 
         // ── 1. Verificación de campos requeridos vacíos ──────────────────────
         const requiredFields = {
@@ -233,10 +237,33 @@ export default function UserRegisterForm({ onCancel }) {
             return;
         }
 
-        // ── 3. Todo OK → registrar y navegar ─────────────────────────────────
-        setErrors({});
-        console.log("Usuario registrado:", result.data);
-        navigate("/dashboard/userpage");
+        // ── 3. Llamada al backend ─────────────────────────────────────────────
+        try {
+            setIsSubmitting(true);
+            setErrors({});
+
+            // Combinamos los datos validados por Zod con los campos opcionales
+            // que Zod no valida. userImage se excluye porque son File objects.
+            const payload = {
+                ...result.data,
+                userEmailInstitutional: formData.userEmailInstitutional || null,
+                userSecondaryPhone:     formData.userSecondaryPhone     || null,
+                userGroup:              formData.userGroup               || null,
+                userImage:              null,
+            };
+
+            // Pasamos el archivo de imagen (primer elemento del array) como segundo argumento
+            const imageFile = formData.userImage?.[0] ?? null;
+            await createUser(payload, imageFile);
+
+            navigate("/dashboard/userpage");
+
+        } catch (err) {
+            console.error("Error al registrar usuario:", err);
+            setErrors({ general: err.message });
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const selectedGroup = groups.find((g) => g.id === formData.userGroup);
@@ -277,7 +304,7 @@ export default function UserRegisterForm({ onCancel }) {
                 </div>
 
                 {/* ── Formulario (derecha) ── */}
-                <form onSubmit={(e) => e.preventDefault()}>
+                <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
                     <div className="grid grid-cols-[320px_320px] gap-5">
 
                         {/* Fila 1 */}
@@ -428,10 +455,22 @@ export default function UserRegisterForm({ onCancel }) {
                             error={errors.userEmail}
                         />
 
+                        {/* Error general del backend */}
+                        {errors.general && (
+                            <div className="col-span-2 text-red-400 text-sm bg-red-900/30 border border-red-500/40 rounded-lg p-3">
+                                {errors.general}
+                            </div>
+                        )}
+
                         {/* Botón Registrar */}
-                        <Button onClick={handleSubmit} variant="primary" size="md" type="button">
-                            Registrar
-                        </Button>
+                        <Button
+                        variant="primary"
+                        size="sm"
+                        type="submit"
+                        disabled={IsSubmitting}
+                    >
+                        {IsSubmitting ? "Guardando..." : "Guardar"}
+                    </Button>
                     </div>
                 </form>
             </div>

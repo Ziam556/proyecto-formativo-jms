@@ -59,7 +59,7 @@ export default function ViewLoans({ loan: initialLoan, onCancel }) {
 
       {/* HEADER */}
       <div className="flex items-center gap-3 mb-6">
-        <BackButton to="/dashboard/loans/list" />
+        <BackButton to="/dashboard/loans" />
         <h1 className="text-white text-2xl font-bold">
           Visualizar Préstamo
         </h1>

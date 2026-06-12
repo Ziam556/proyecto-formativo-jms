@@ -13,7 +13,7 @@ export default function ViewLoansPage() {
 
       <ViewLoans
         loan={loan}
-        onCancel={() => navigate("/dashboard/loans/edit", { state: { loan } })}
+        onCancel={() => navigate("/dashboard/loans", { state: { loan } })}
       />
 
     </div>

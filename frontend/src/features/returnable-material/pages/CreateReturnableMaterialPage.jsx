@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { createReturnableMaterial } from "../services/returnableMaterialService";
 import CreateReturnable1 from "../components/CreateReturnable-1";
 import CreateReturnable2 from "../components/CreateReturnable-2";
 import CreateReturnable3 from "../components/CreateReturnable-3";
 import CreateReturnable4 from "../components/CreateReturnable-4";
 
 const steps = [
-    "1. ID - Placa SENA - Selección categoria - Nombre del elemento",
+    "1. ID - Placa SENA - Categoría - Nombre del elemento",
     "2. Marca - Modelo - Serial - Imagen - Fecha de compra",
     "3. Cuentadante - Cantidad - Valor unitario - Valor total",
     "4. Estado - Ficha tecnica - Descripcion - Ubicacion - Dimesiones",
@@ -25,10 +26,26 @@ export default function CreateReturnableMaterialPage() {
 
     const handleBack = () => setCurrentStep((prev) => prev - 1);
 
-    const handleSave = (data) => {
+    const handleSave = async (data) => {
         const finalData = { ...formData, ...data };
-        console.log("Material guardado:", finalData);
-        navigate("/dashboard/returnable-material");
+
+        try {
+            const purchaseDate = finalData.MaterialPurchaseDate
+                ? new Date(finalData.MaterialPurchaseDate).toISOString().split("T")[0]
+                : null;
+
+            const payload = { ...finalData, materialPurchaseDate: purchaseDate };
+
+            const imageFile          = finalData.materialImage?.[0]          ?? null;
+            const technicalSheetFile = finalData.materialTechnicalSheet?.[0] ?? null;
+
+            await createReturnableMaterial(payload, imageFile, technicalSheetFile);
+            navigate("/dashboard/returnable-material");
+
+        } catch (err) {
+            console.error("Error al guardar material devolutivo:", err);
+            alert("Error al guardar: " + err.message);
+        }
     };
 
     const stepComponents = [

@@ -9,7 +9,7 @@ export default function LoansRowActions({ loan }) {
   const navigate = useNavigate();
 
   const handleEdit = () => navigate(`/dashboard/loans/${loan.id}/edit`);
-  const handleDevolver = () => navigate(`/dashboard/loans/${loan.id}/return`);
+  const handleDevolver = () => navigate("/dashboard/loans/return", { state: { loan } });
 
   return (
     <div className="flex gap-2 items-center">

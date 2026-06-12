@@ -1,0 +1,22 @@
+CREATE TABLE IF NOT EXISTS returnable_material (
+    returnable_material_id   VARCHAR(50)    PRIMARY KEY,
+    material_plate           VARCHAR(50),
+    material_category        VARCHAR(100)   NOT NULL,
+    material_element_name    VARCHAR(150)   NOT NULL,
+    material_brand           VARCHAR(100)   NOT NULL,
+    material_model           VARCHAR(100),
+    material_serial          VARCHAR(100),
+    material_image           TEXT,
+    material_purchase_date   DATE,
+    material_story_teller    VARCHAR(150),
+    material_amount          INTEGER,
+    material_unit_value      DECIMAL(12,2),
+    material_total_value     DECIMAL(12,2),
+    material_state           VARCHAR(50),
+    material_technical_sheet TEXT,
+    material_description     TEXT,
+    material_location        VARCHAR(150),
+    material_width           DECIMAL(8,2),
+    material_length          DECIMAL(8,2),
+    material_depth           DECIMAL(8,2)
+);

@@ -88,7 +88,7 @@ function AccionesCell({ row }) {
         </DropdownTrigger>
 
         <DropdownContent className="right-0 w-40 bg-[#1e1230]">
-          <DropdownItem onClick={() => console.log("Devolver préstamo:", row.id)}>
+          <DropdownItem onClick={() => navigate("/dashboard/loans/return", { state: { loan: row } })}>
             <span className="inline-flex items-center gap-[5px]">
               <Undo2 size={13} />
               Devolver

@@ -11,10 +11,12 @@ export default function LoginForm() {
     });
 
     const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState("");
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
+        setError("");
     };
 
     const handleSubmit = (e) => {
@@ -28,9 +30,7 @@ export default function LoginForm() {
 
                 {/* Panel izquierdo */}
                 <div className="flex-1 bg-[linear-gradient(160deg,rgba(140,60,160,0.7)_0%,rgba(80,60,160,0.6)_100%)] backdrop-blur-[12px] flex flex-col justify-center items-center px-8 py-12 text-white text-center">
-                    <h2 className="text-[1.6rem] font-bold mb-3">
-                        ¡Hola!
-                    </h2>
+                    <h2 className="text-[1.6rem] font-bold mb-3">¡Hola!</h2>
                     <p className="text-[0.95rem] opacity-90 leading-[1.7]">
                         Bienvenid@ a<br />nuestro Sistema de<br />inventario
                     </p>
@@ -70,19 +70,21 @@ export default function LoginForm() {
                             onClick={() => setShowPassword((v) => !v)}
                             className="bg-transparent border-0 cursor-pointer flex"
                         >
-                            {showPassword
-                                ? <EyeOff size={18} color="#555" />
-                                : <Eye size={18} color="#555" />
-                            }
+                            {showPassword ? <EyeOff size={18} color="#555" /> : <Eye size={18} color="#555" />}
                         </button>
                     </div>
+
+                    {/* Error */}
+                    {error && (
+                        <p className="text-red-500 text-[0.85rem] text-center m-0">{error}</p>
+                    )}
 
                     {/* Olvidé contraseña */}
                     <p className="text-center text-[0.85rem] text-[#8b3a8b] cursor-pointer m-0">
                         ¡Olvidé mi contraseña!
                     </p>
 
-                    {/* Botón — hover con Tailwind */}
+                    {/* Botón */}
                     <button
                         type="submit"
                         className="bg-[linear-gradient(90deg,#9b2d8a,#7b2080)] text-white border-0 rounded-full py-[14px] text-[1rem] font-semibold cursor-pointer transition-opacity duration-200 hover:opacity-[0.88]"
