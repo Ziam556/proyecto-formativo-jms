@@ -1,0 +1,37 @@
+import express from "express";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+import userRoutes from "./features/users/user.routes.js";
+import authRoutes from "./features/auth/auth.routes.js";
+import consumableMaterialRoutes from "./features/consumableMaterial/consumableMaterial.routes.js";
+import returnableMaterialRoutes from "./features/returnableMaterial/returnableMaterial.routes.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname  = path.dirname(__filename);
+
+const app = express();
+
+// CORS: solo permite peticiones desde el frontend en desarrollo
+app.use(cors({ origin: "http://localhost:5173" }));
+
+// Parsear JSON (para rutas que no usan multer)
+app.use(express.json());
+
+// Archivos estáticos: imágenes subidas accesibles en /uploads/...
+// Ej: http://localhost:4000/uploads/profiles/foto.jpg
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+
+// Rutas de la API
+app.use("/api/users", userRoutes);
+app.use("/api/consumableMaterial", consumableMaterialRoutes);
+app.use("/api/returnableMaterial", returnableMaterialRoutes);
+app.use("/api/auth", authRoutes);
+
+// Manejador de errores global — siempre devuelve JSON
+app.use((err, req, res, next) => {
+  console.error("ERROR GLOBAL:", err.message);
+  res.status(err.status || 500).json({ error: err.message || "Error interno del servidor" });
+});
+
+export default app;
