@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { User, Lock, Eye, EyeOff } from "lucide-react";
+import { loginSchema } from "../schemas/loginSchema";
+import { login } from "../services/authService";
 
 export default function LoginForm() {
     const navigate = useNavigate();
@@ -11,17 +13,43 @@ export default function LoginForm() {
     });
 
     const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState("");
+    const [errors, setErrors] = useState({});
+    const [serverError, setServerError] = useState("");
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
-        setError("");
+        setErrors({});
+        setServerError("");
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        navigate("/dashboard/home");
+
+        const result = loginSchema.safeParse(formData);
+
+        if (!result.success) {
+            const fieldErrors = {};
+            result.error.issues.forEach((issue) => {
+                fieldErrors[issue.path[0]] = issue.message;
+            });
+            setErrors(fieldErrors);
+            return;
+        }
+
+        setErrors({});
+
+        try {
+            const data = await login(result.data);
+
+            if (data.token) {
+                sessionStorage.setItem("token", data.token);
+            }
+
+            navigate("/dashboard/home");
+        } catch (error) {
+            setServerError(error.message);
+        }
     };
 
     return (
@@ -74,9 +102,14 @@ export default function LoginForm() {
                         </button>
                     </div>
 
-                    {/* Error */}
-                    {error && (
-                        <p className="text-red-500 text-[0.85rem] text-center m-0">{error}</p>
+                    {errors.userEmail && (
+                        <p className="text-red-500 text-[0.85rem] text-center m-0">{errors.userEmail}</p>
+                    )}
+                    {errors.userPassword && (
+                        <p className="text-red-500 text-[0.85rem] text-center m-0">{errors.userPassword}</p>
+                    )}
+                    {serverError && (
+                        <p className="text-red-500 text-[0.85rem] text-center m-0">{serverError}</p>
                     )}
 
                     {/* Olvidé contraseña */}
