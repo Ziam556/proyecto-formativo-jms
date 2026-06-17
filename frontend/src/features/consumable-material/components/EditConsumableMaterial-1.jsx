@@ -70,7 +70,7 @@ export default function EditConsumableMaterial1({
     return (
 
        
-        <div className="grid grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
 
             
 
@@ -111,7 +111,7 @@ export default function EditConsumableMaterial1({
             />
            
             {/* BOTONES */}
-            <div className="col-span-2 flex justify-end gap-4 mt-4">
+            <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-4">
                 <Button
                     variant="secondary"
                     size="sm"

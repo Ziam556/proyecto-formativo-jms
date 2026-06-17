@@ -52,7 +52,7 @@ export default function CreateConsumable3({ formData, onSave, onBack }) {
   };
 
   return (
-    <div className="grid grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
 
       <Select
         label="Estado"
@@ -106,7 +106,7 @@ export default function CreateConsumable3({ formData, onSave, onBack }) {
         error={errors.materialLocation}
       />
 
-      <div className="col-span-2 flex justify-end gap-4 mt-2">
+      <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-2">
         <Button variant="secondary" size="sm" onClick={onBack}>
           Atrás
         </Button>

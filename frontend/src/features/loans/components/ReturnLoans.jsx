@@ -236,7 +236,7 @@ export default function ReturnLoans({ loan: initialLoan }) {
           </div>
 
           {/* ACCIONES */}
-          <div className="flex justify-end gap-4 mt-8">
+          <div className="flex flex-col sm:flex-row justify-end gap-4 mt-8">
             <Button
               variant="secondary"
               size="sm"

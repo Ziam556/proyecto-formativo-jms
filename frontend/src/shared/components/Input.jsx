@@ -5,7 +5,7 @@ export default function Input({
     ...props
 }){
     return (
-        <div className="w-[320px]">
+        <div className="w-full">
 
             {/* Label opcional, se pone rojo si hay error */}
             {label && (

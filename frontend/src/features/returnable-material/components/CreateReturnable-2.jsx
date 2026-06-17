@@ -92,7 +92,7 @@ export default function CreateReturnable2({ formData, onNext, onBack }) {
         )}
       </div>
 
-      <div className="col-span-2 flex justify-end gap-4 mt-2">
+      <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-2">
         <Button variant="secondary" size="sm" onClick={onBack}>Atrás</Button>
         <Button variant="primary"   size="md" onClick={handleNext}>Siguiente</Button>
       </div>

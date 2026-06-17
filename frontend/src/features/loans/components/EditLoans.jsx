@@ -77,7 +77,7 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
   };
 
   return (
-    <div className="ml-190 w-[1200px] rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md shadow-2xl p-4">
+    <div className="w-full max-w-[1100px] mx-auto rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md shadow-2xl p-4">
       <div className="bg-white/10 rounded-2xl border border-white/20 backdrop-blur-xl px-4 py-4">
 
         {/* HEADER */}
@@ -87,9 +87,9 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
         </div>
 
         {/* ID + CARD MATERIAL */}
-        <div className="flex items-end justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
 
-          <div className="w-[320px]">
+          <div className="w-full sm:w-[320px]">
             <Input
               label="ID Prestamo"
               name="loansId"
@@ -142,7 +142,7 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
           <div className="flex-1 h-px bg-white/20" />
         </div>
 
-        <div className="mt-5 flex gap-6 flex-wrap">
+        <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
 
           <div className="flex flex-col gap-1">
             <label className="text-white/70 text-xs">Ficha / Grupo Aprendices</label>
@@ -150,7 +150,7 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
               name="fichaGrupo"
               value={fields.fichaGrupo}
               onChange={handleChange}
-              className="w-[250px] h-[50px] bg-white/80 rounded-[8px] px-3 text-black text-sm outline-none focus:ring-2 focus:ring-purple-400"
+              className="w-full h-[50px] bg-white/80 rounded-[8px] px-3 text-black text-sm outline-none focus:ring-2 focus:ring-purple-400"
             />
             {errors.fichaGrupo && <span className="text-red-400 text-xs">{errors.fichaGrupo}</span>}
           </div>
@@ -162,7 +162,7 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
               type="number"
               value={fields.cantidadConsumo}
               onChange={handleChange}
-              className="w-[250px] h-[50px] bg-white/80 rounded-[8px] px-3 text-black text-sm outline-none focus:ring-2 focus:ring-purple-400"
+              className="w-full h-[50px] bg-white/80 rounded-[8px] px-3 text-black text-sm outline-none focus:ring-2 focus:ring-purple-400"
             />
             {errors.cantidadConsumo && <span className="text-red-400 text-xs">{errors.cantidadConsumo}</span>}
           </div>
@@ -174,7 +174,7 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
               onChange={(date) => handleDateChange("fechaSalida", date)}
               placeholderText="Seleccione fecha"
               dateFormat="dd/MM/yyyy"
-              className="w-[250px] h-[50px] bg-white/80 rounded-[8px] px-3 text-black text-sm outline-none focus:ring-2 focus:ring-purple-400"
+              className="w-full h-[50px] bg-white/80 rounded-[8px] px-3 text-black text-sm outline-none focus:ring-2 focus:ring-purple-400"
             />
             {errors.fechaSalida && <span className="text-red-400 text-xs">{errors.fechaSalida}</span>}
           </div>
@@ -186,7 +186,7 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
               onChange={(date) => handleDateChange("fechaEntrega", date)}
               placeholderText="Seleccione fecha"
               dateFormat="dd/MM/yyyy"
-              className="w-[250px] h-[50px] bg-white/80 rounded-[8px] px-3 text-black text-sm outline-none focus:ring-2 focus:ring-purple-400"
+              className="w-full h-[50px] bg-white/80 rounded-[8px] px-3 text-black text-sm outline-none focus:ring-2 focus:ring-purple-400"
             />
           </div>
 
@@ -224,7 +224,7 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
         </div>
 
         {/* BOTONES */}
-        <div className="flex justify-end gap-4 mt-10">
+        <div className="flex flex-col sm:flex-row justify-end gap-4 mt-10">
           <Button variant="secondary" size="sm" onClick={onCancel}>
             Cancelar
           </Button>

@@ -23,7 +23,7 @@ export default function InputForList({
     const isSearch = type === "search";
 
     return (
-        <div className="flex flex-col gap-1 w-[320px]">
+        <div className="flex flex-col gap-1 w-full sm:w-[320px]">
 
             {/* Label */}
             {label && (

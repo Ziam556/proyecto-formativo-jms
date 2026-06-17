@@ -68,7 +68,7 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
         onChange={handleChange}
         error={errors.materialElementName}
       />
-      <div className="col-span-2 flex justify-end gap-4">
+      <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4">
         <Button variant="secondary" size="sm" onClick={onCancel}>Cancelar</Button>
         <Button variant="primary"   size="md" onClick={handleNext}>Siguiente</Button>
       </div>

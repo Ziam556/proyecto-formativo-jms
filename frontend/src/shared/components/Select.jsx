@@ -8,7 +8,7 @@ export default function Select({
     placeholder = "Seleccione una opción"
 }){
     return(
-        <div className="w-[320px]">
+        <div className="w-full">
 
             {/* Label opcional, se pone rojo si hay error */}
             {label && (

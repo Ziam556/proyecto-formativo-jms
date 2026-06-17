@@ -231,7 +231,7 @@ export default function ConsumableMaterialReportModal({
         )}
 
         {/* Acciones */}
-        <div className="mt-6 flex justify-end gap-2">
+        <div className="mt-6 flex flex-col sm:flex-row justify-end gap-2">
 
           <Button
             variant="secondary"
