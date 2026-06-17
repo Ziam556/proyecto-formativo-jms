@@ -17,12 +17,8 @@ export const authService = {
             throw new Error("Credenciales invalidas");
         }
 
-        if (!user.is_active) {
-            throw new Error("Usuario inactivo");
-        }
-
         const token = jwt.sign(
-            { id: user.id, email: user.user_email },
+            { email: user.user_email },
             process.env.JWT_SECRET,
             { expiresIn: process.env.JWT_EXPIRES },
         );
@@ -30,7 +26,6 @@ export const authService = {
         return {
             token,
             user: {
-                id: user.id,
                 email: user.user_email,
             },
         };

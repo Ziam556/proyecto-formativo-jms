@@ -2,45 +2,33 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Pencil, Save } from "lucide-react";
 import { Switch } from "@/shared";
-import { initialGroups } from "../data/groups";
-
-const STORAGE_KEY = "grupos_list";
+import { getGroups } from "../services/groupService";
 
 export default function GroupsListPage() {
     const navigate = useNavigate();
     const [groups, setGroups] = useState([]);
 
     useEffect(() => {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        setGroups(saved ? JSON.parse(saved) : initialGroups);
+        getGroups()
+            .then((data) => setGroups(data.map((g) => ({ ...g, isEditing: false }))))
+            .catch(console.error);
     }, []);
 
-    const persist = (updated) => {
-        setGroups(updated);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-    };
-
     const toggleEdit = (id) => {
-        persist(groups.map((g) =>
-            g.id === id ? { ...g, isEditing: !g.isEditing } : g
+        setGroups(groups.map((g) =>
+            g.group_id === id ? { ...g, isEditing: !g.isEditing } : g
         ));
     };
 
     const handleNameChange = (id, value) => {
         setGroups(groups.map((g) =>
-            g.id === id ? { ...g, name: value } : g
+            g.group_id === id ? { ...g, group_name: value } : g
         ));
     };
 
     const handleSave = (id) => {
-        persist(groups.map((g) =>
-            g.id === id ? { ...g, isEditing: false } : g
-        ));
-    };
-
-    const toggleEnabled = (id, value) => {
-        persist(groups.map((g) =>
-            g.id === id ? { ...g, enabled: value } : g
+        setGroups(groups.map((g) =>
+            g.group_id === id ? { ...g, isEditing: false } : g
         ));
     };
 
@@ -71,25 +59,25 @@ export default function GroupsListPage() {
                         </tr>
                     ) : (
                         list.map((group) => (
-                            <tr key={group.id}>
+                            <tr key={group.group_id}>
                                 <td className="p-[10px_16px] text-[0.88rem] text-[#111] border-b border-white/20 bg-[rgba(255,255,255,0.55)] align-middle">
                                     <div className="flex items-center gap-2">
                                         {group.isEditing ? (
                                             <input
-                                                value={group.name}
-                                                onChange={(e) => handleNameChange(group.id, e.target.value)}
-                                                className="border border-[#aaa] rounded-md py-[2px] px-2 text-[0.88rem] w-[120px]"
+                                                value={group.group_name}
+                                                onChange={(e) => handleNameChange(group.group_id, e.target.value)}
+                                                className="border border-[#aaa] rounded-md py-[2px] px-2 text-[0.88rem] w-full max-w-[120px]"
                                                 autoFocus
                                             />
                                         ) : (
-                                            <span>{group.name}</span>
+                                            <span>{group.group_name}</span>
                                         )}
                                         <button
                                             className="bg-transparent border-0 cursor-pointer p-1 flex items-center text-[#444]"
                                             onClick={() =>
                                                 group.isEditing
-                                                    ? handleSave(group.id)
-                                                    : toggleEdit(group.id)
+                                                    ? handleSave(group.group_id)
+                                                    : toggleEdit(group.group_id)
                                             }
                                             title={group.isEditing ? "Guardar" : "Editar"}
                                         >
@@ -101,10 +89,7 @@ export default function GroupsListPage() {
                                     </div>
                                 </td>
                                 <td className="p-[10px_16px] text-[0.88rem] text-[#111] border-b border-white/20 bg-[rgba(255,255,255,0.55)] align-middle text-center">
-                                    <Switch
-                                        checked={group.enabled}
-                                        onChange={(val) => toggleEnabled(group.id, val)}
-                                    />
+                                    —
                                 </td>
                             </tr>
                         ))
@@ -115,8 +100,8 @@ export default function GroupsListPage() {
     );
 
     return (
-        <div className="min-h-[calc(100vh-64px)] flex items-center justify-center p-6">
-            <div className="bg-[linear-gradient(135deg,#700D7C_0%,#88A3C7_50%,#50E5F9_100%)] rounded-[20px] shadow-[0_8px_40px_rgba(0,0,0,0.3)] py-9 px-10 w-full max-w-[900px] relative">
+        <div className="min-h-[calc(100vh-64px)] flex items-center justify-center p-4 sm:p-6">
+            <div className="bg-[linear-gradient(135deg,#700D7C_0%,#88A3C7_50%,#50E5F9_100%)] rounded-[20px] shadow-[0_8px_40px_rgba(0,0,0,0.3)] py-9 px-5 sm:px-10 w-full max-w-[900px] relative">
 
                 {/* Flecha regresar */}
                 <button
@@ -130,28 +115,29 @@ export default function GroupsListPage() {
                 </button>
 
                 {/* Título */}
-                <h2 className="text-center text-white text-[1.3rem] font-bold mb-7">
+                <h2 className="text-center text-white text-[1.1rem] sm:text-[1.3rem] font-bold mb-7">
                     Listar Grupos
                 </h2>
 
-                {/* Dos columnas de tablas */}
-                <div className="grid grid-cols-2 gap-5">
+                {/* Dos columnas en desktop, una en móvil */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     {renderTable(leftGroups)}
                     {renderTable(rightGroups)}
                 </div>
 
                 {/* Botones inferiores */}
-                <div className="flex justify-center gap-6 mt-7">
-                    <button className="py-3 px-8 rounded-[30px] bg-[#50E5F9] border-0 font-semibold text-[0.95rem] cursor-pointer text-[#111]">
+                <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mt-7">
+                    <button className="py-3 px-6 sm:px-8 rounded-[30px] bg-[#50E5F9] border-0 font-semibold text-[0.95rem] cursor-pointer text-[#111]">
                         Editar Grupos
                     </button>
                     <button
                         onClick={() => navigate("/dashboard/config/groups/create")}
-                        className="py-3 px-8 rounded-[30px] bg-[#700D7C] border-0 font-semibold text-[0.95rem] cursor-pointer text-white"
+                        className="py-3 px-6 sm:px-8 rounded-[30px] bg-[#700D7C] border-0 font-semibold text-[0.95rem] cursor-pointer text-white"
                     >
                         Crear grupo
                     </button>
                 </div>
+
             </div>
         </div>
     );

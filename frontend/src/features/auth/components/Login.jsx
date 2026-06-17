@@ -53,13 +53,13 @@ export default function LoginForm() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-6">
-            <div className="flex rounded-[20px] overflow-hidden max-w-[780px] w-full min-h-[380px] shadow-[0_8px_40px_rgba(0,0,0,0.35)]">
+        <div className="min-h-screen flex items-center justify-center p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row rounded-[20px] overflow-hidden max-w-[780px] w-full shadow-[0_8px_40px_rgba(0,0,0,0.35)]">
 
-                {/* Panel izquierdo */}
-                <div className="flex-1 bg-[linear-gradient(160deg,rgba(140,60,160,0.7)_0%,rgba(80,60,160,0.6)_100%)] backdrop-blur-[12px] flex flex-col justify-center items-center px-8 py-12 text-white text-center">
-                    <h2 className="text-[1.6rem] font-bold mb-3">¡Hola!</h2>
-                    <p className="text-[0.95rem] opacity-90 leading-[1.7]">
+                {/* Panel izquierdo — oculto en móvil muy pequeño */}
+                <div className="sm:flex-1 bg-[linear-gradient(160deg,rgba(140,60,160,0.7)_0%,rgba(80,60,160,0.6)_100%)] backdrop-blur-[12px] flex flex-col justify-center items-center px-8 py-8 sm:py-12 text-white text-center">
+                    <h2 className="text-[1.4rem] sm:text-[1.6rem] font-bold mb-3">¡Hola!</h2>
+                    <p className="text-[0.9rem] sm:text-[0.95rem] opacity-90 leading-[1.7]">
                         Bienvenid@ a<br />nuestro Sistema de<br />inventario
                     </p>
                 </div>
@@ -67,7 +67,7 @@ export default function LoginForm() {
                 {/* Panel derecho — formulario */}
                 <form
                     onSubmit={handleSubmit}
-                    className="flex-[1.4] bg-[linear-gradient(160deg,rgba(180,190,220,0.55)_0%,rgba(160,190,220,0.45)_100%)] backdrop-blur-[16px] flex flex-col justify-center px-10 py-12 gap-4"
+                    className="sm:flex-[1.4] bg-[linear-gradient(160deg,rgba(180,190,220,0.55)_0%,rgba(160,190,220,0.45)_100%)] backdrop-blur-[16px] flex flex-col justify-center px-6 sm:px-10 py-8 sm:py-12 gap-4"
                 >
                     {/* Email */}
                     <div className="flex items-center gap-[10px] bg-[rgba(220,225,240,0.55)] rounded-[10px] px-4 py-[14px] border border-white/50">

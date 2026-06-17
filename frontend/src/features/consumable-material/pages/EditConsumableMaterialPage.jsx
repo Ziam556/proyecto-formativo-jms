@@ -59,13 +59,13 @@ export default function EditConsumableMaterialPage() {
     ];
 
     return (
-        <div className="h-[calc(100vh-72px)] flex flex-col box-border px-10 py-6 gap-3 items-center justify-center">
+        <div className="min-h-[calc(100vh-72px)] flex flex-col box-border px-3 sm:px-10 py-6 gap-3 items-center justify-center">
 
             <h1 className="text-white text-[1.2rem] font-semibold m-0">
                 Editar material Consumo
             </h1>
 
-            <div className="w-[90%] h-[75vh] mx-auto rounded-2xl bg-[rgba(217,217,217,0.31)] backdrop-blur-xl border border-white/20 flex items-center justify-center relative">
+            <div className="w-full sm:w-[90%] min-h-[70vh] mx-auto rounded-2xl bg-[rgba(217,217,217,0.31)] backdrop-blur-xl border border-white/20 flex items-center justify-center relative py-8">
 
                 <button
                     onClick={() => navigate("/dashboard/consumable-material")}
@@ -75,13 +75,13 @@ export default function EditConsumableMaterialPage() {
                 </button>
 
                 {/* En paso 1 muestra buscador, en pasos 2 y 3 solo el formulario */}
-                <div className={`h-[89%] flex flex-row gap-4 ${currentStep === 0 ? "w-[95%]" : "w-[84%]"}`}>
+                <div className={`flex flex-col sm:flex-row gap-4 w-full sm:${currentStep === 0 ? "w-[95%]" : "w-[84%]"} px-4 sm:px-0`}>
 
                     {/* CONTENEDOR STEPPER + FORMULARIO */}
-                    <div className="flex-1 rounded-xl bg-white/30 flex flex-row overflow-hidden">
+                    <div className="flex-1 rounded-xl bg-white/30 flex flex-col sm:flex-row overflow-hidden">
 
                         {/* STEPPER */}
-                        <div className="w-[37%] shrink-0 flex flex-col justify-evenly items-center p-6 bg-[rgba(180,190,220,0.25)]">
+                        <div className="w-full sm:w-[37%] shrink-0 flex flex-col justify-evenly items-center p-4 sm:p-6 bg-[rgba(180,190,220,0.25)]">
                             {steps.map((step, i) => (
                                 <div key={i} className="border-l-[3px] border-[#1e1e2e] pl-3 w-[80%]">
                                     <p className={`text-[#1e1e2e] text-[0.88rem] leading-[1.5] m-0 ${
@@ -106,7 +106,7 @@ export default function EditConsumableMaterialPage() {
                     </div>
 
                     {currentStep === 0 && (
-                        <div className="w-[280px] shrink-0 flex flex-col gap-3 p-4 bg-white/20 rounded-xl">
+                        <div className="w-full sm:w-[280px] shrink-0 flex flex-col gap-3 p-4 bg-white/20 rounded-xl">
 
                             <div className="relative">
                                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-black text-sm">

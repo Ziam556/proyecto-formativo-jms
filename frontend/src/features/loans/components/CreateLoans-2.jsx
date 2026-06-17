@@ -43,7 +43,7 @@ export default function CreateLoans2({ onNext, onBack }) {
       </div>
 
       {/* INPUTS 2 COLUMNAS */}
-      <div className="grid grid-cols-2 gap-x-4 gap-y-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-5">
 
         {/* FICHA */}
         <InputForList

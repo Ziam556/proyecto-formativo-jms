@@ -14,7 +14,7 @@ export default function DatePicker({
     label,
 }) {
     return (
-        <div className="w-[320px]">
+        <div className="w-full">
 
             {/* Label opcional, se pone rojo si hay error */}
             {label && (
@@ -40,8 +40,8 @@ export default function DatePicker({
                     })
                 }
                 dateFormat="dd/MM/yyyy"
-                wrapperClassName="w-[320px]"
-                className={`w-[320px] h-12 px-4 text-base focus:outline-none bg-[rgba(217,217,217,0.54)] rounded-[8px] border ${error ? "border-red-500" : "border-black"}`}
+                wrapperClassName="w-full"
+                className={`w-full h-12 px-4 text-base focus:outline-none bg-[rgba(217,217,217,0.54)] rounded-[8px] border ${error ? "border-red-500" : "border-black"}`}
             />
 
             {/* Mensaje de error visible solo si hay error */}

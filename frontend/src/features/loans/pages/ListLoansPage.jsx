@@ -227,7 +227,7 @@ export default function ListLoansPage() {
               }))
             }
             className="
-              w-[220px]
+              w-full sm:w-[220px]
               h-[56px]
               bg-[rgba(217,217,217,0.54)]
               border-none

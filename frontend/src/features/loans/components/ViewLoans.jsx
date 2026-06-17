@@ -9,7 +9,7 @@ const TYPE_STYLES = {
 
 function Field({ label, value }) {
   return (
-    <div className="bg-white/80 rounded-[8px] p-3 min-w-[220px]">
+    <div className="bg-white/80 rounded-[8px] p-3 flex-1 min-w-[140px]">
       <span className="text-black/50 text-xs font-semibold uppercase tracking-wide">
         {label}
       </span>
@@ -66,7 +66,7 @@ export default function ViewLoans({ loan: initialLoan, onCancel }) {
       </div>
 
       {/* BUSCADOR POR ID */}
-      <div className="flex items-end gap-3 mb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 mb-6">
         <div className="flex flex-col gap-1">
           <label className="text-white text-sm font-medium">
             ID Préstamo
@@ -78,7 +78,7 @@ export default function ViewLoans({ loan: initialLoan, onCancel }) {
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             placeholder="Ej: PR-2026-00072"
             className="
-              h-[44px] w-[260px] rounded-md px-4
+              h-[44px] w-full sm:w-[260px] rounded-md px-4
               bg-white/70 text-black outline-none
               border border-white/30
             "

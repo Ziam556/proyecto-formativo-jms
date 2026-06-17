@@ -4,6 +4,8 @@ import { ArrowLeft, Check } from "lucide-react";
 import CreateLoans1 from "../components/CreateLoans-1";
 import CreateLoans2 from "../components/CreateLoans-2";
 import CreateLoans3 from "../components/CreateLoans-3";
+import { createLoan } from "../services/loanService";
+import { Loans } from "../data/Loans";
 
 const steps = [
   { num: 1, title: "Materiales a prestar",  sub: "Búsqueda y selección"      },
@@ -12,7 +14,7 @@ const steps = [
 ];
 
 // Clase de padding horizontal del panel de contenido según el paso
-const stepPaddingXClass = ["px-[28px]", "px-[18%]", "px-[22%]"];
+const stepPaddingXClass = ["px-3 sm:px-[28px]", "px-4 sm:px-[18%]", "px-4 sm:px-[22%]"];
 
 export default function CreateLoansPage() {
   const navigate = useNavigate();
@@ -26,10 +28,41 @@ export default function CreateLoansPage() {
 
   const handleBack = () => setCurrentStep((prev) => prev - 1);
 
-  const handleSave = (data) => {
+  const handleSave = async (data) => {
     const finalData = { ...formData, ...data };
-    console.log("Prestamo guardado:", finalData);
-    navigate("/dashboard/loans");
+
+    // Convertir rowSelection (índices) a items del préstamo
+    const selectedIndexes = Object.keys(finalData.rowSelection || {}).filter(
+      (k) => finalData.rowSelection[k]
+    );
+    const items = selectedIndexes.map((i) => ({
+      materialName: Loans[i].material,
+      materialType: Loans[i].materialtype,
+      amount: Loans[i].amount,
+    }));
+
+    const body = {
+      fileGroup: finalData.file || null,
+      amount: finalData.amount ? parseInt(finalData.amount) : null,
+      departureDate: finalData.departureDates
+        ? new Date(finalData.departureDates).toISOString().split("T")[0]
+        : null,
+      deliveryDate: finalData.deliveryDates
+        ? new Date(finalData.deliveryDates).toISOString().split("T")[0]
+        : null,
+      justification: finalData.justificationForUse || null,
+      requestingUser: finalData.user,
+      verificationCode: finalData.verificationCode,
+      items,
+    };
+
+    try {
+      await createLoan(body);
+      setFormData({});
+      setCurrentStep(0);
+    } catch (error) {
+      console.error("Error al guardar préstamo:", error.message);
+    }
   };
 
   const stepComponents = [
@@ -39,23 +72,46 @@ export default function CreateLoansPage() {
   ];
 
   return (
-    <div className="px-16 py-10 min-h-[calc(100vh-64px)]">
+    <div className="px-4 sm:px-16 py-6 sm:py-10 min-h-[calc(100vh-64px)]">
 
       <h1 className="text-white text-sm font-semibold mb-4">
         Registro de prestamo
       </h1>
 
-      <div className="flex bg-white/10 rounded-2xl overflow-hidden min-h-[520px]">
+      <div className="flex flex-col sm:flex-row bg-white/10 rounded-2xl overflow-hidden">
 
         {/* ── STEPPER ─────────────────────────────────────────── */}
-        <div className="w-[280px] flex-shrink-0 p-8 flex flex-col">
+        <div className="sm:w-[280px] flex-shrink-0 p-4 sm:p-8 flex flex-col">
 
-          {/* Botón volver */}
+          {/* En móvil: stepper horizontal compacto */}
+          <div className="flex sm:hidden items-center gap-2 mb-4">
+            <button
+              onClick={() => navigate("/dashboard/loans")}
+              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/30 text-white transition mr-2"
+            >
+              <ArrowLeft size={16} />
+            </button>
+            {steps.map((step, i) => {
+              const isCompleted = i < currentStep;
+              const isCurrent   = i === currentStep;
+              return (
+                <div key={step.num} className="flex items-center gap-1">
+                  <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${isCompleted ? "bg-green-500 text-white" : isCurrent ? "bg-purple-700 text-white" : "bg-white/20 text-black/60"}`}>
+                    {isCompleted ? <Check size={12} /> : step.num}
+                  </div>
+                  {i < steps.length - 1 && <div className={`w-6 h-[2px] ${isCompleted ? "bg-green-400" : "bg-white/30"}`} />}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Botón volver — solo en desktop */}
           <button
             onClick={() => navigate("/dashboard/loans")}
             className="
+              hidden sm:flex
               w-9 h-9 mb-8
-              flex items-center justify-center
+              items-center justify-center
               rounded-full
               hover:bg-white/30
               text-white
@@ -65,8 +121,8 @@ export default function CreateLoansPage() {
             <ArrowLeft size={16} />
           </button>
 
-          {/* Pasos */}
-          <div className="flex flex-col gap-0">
+          {/* Pasos — solo en desktop */}
+          <div className="hidden sm:flex flex-col gap-0">
             {steps.map((step, i) => {
               const isCompleted = i < currentStep;
               const isCurrent   = i === currentStep;

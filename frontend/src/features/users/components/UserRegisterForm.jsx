@@ -256,7 +256,25 @@ export default function UserRegisterForm({ onCancel }) {
             const imageFile = formData.userImage?.[0] ?? null;
             await createUser(payload, imageFile);
 
-            navigate("/dashboard/userpage");
+            setFormData({
+                userName:              "",
+                userEmail:             "",
+                userEmailVerification: "",
+                userEmailInstitutional:"",
+                userPhone:             "",
+                userSecondaryPhone:    "",
+                userDocumentType:      "",
+                userDocumentNumber:    "",
+                userType:              "",
+                userAddress:           "",
+                userPassword:          "",
+                startDate:             "",
+                endDate:               "",
+                userGroup:             null,
+                userImage:             [],
+            });
+            setErrors({});
+            setPhotoPreview(null);
 
         } catch (err) {
             console.error("Error al registrar usuario:", err);
@@ -270,7 +288,7 @@ export default function UserRegisterForm({ onCancel }) {
 
     return (
         <>
-            <div className="flex flex-row gap-12 items-start w-fit mx-auto">
+            <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center md:items-start w-full mx-auto">
 
                 {/* ── Foto de perfil (izquierda) ── */}
                 <div className="flex flex-col items-center gap-4 min-w-[160px]">
@@ -304,8 +322,8 @@ export default function UserRegisterForm({ onCancel }) {
                 </div>
 
                 {/* ── Formulario (derecha) ── */}
-                <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
-                    <div className="grid grid-cols-[320px_320px] gap-5">
+                <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="w-full">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 
                         {/* Fila 1 */}
                         <Input
@@ -438,6 +456,7 @@ export default function UserRegisterForm({ onCancel }) {
                                 type="button"
                                 variant="secondary"
                                 size="sm"
+                                className="w-full"
                                 onClick={() => setShowGroupModal(true)}
                             >
                                 Asignar Grupo
@@ -464,13 +483,14 @@ export default function UserRegisterForm({ onCancel }) {
 
                         {/* Botón Registrar */}
                         <Button
-                        variant="primary"
-                        size="sm"
-                        type="submit"
-                        disabled={IsSubmitting}
-                    >
-                        {IsSubmitting ? "Guardando..." : "Guardar"}
-                    </Button>
+                            variant="primary"
+                            size="sm"
+                            type="submit"
+                            className="w-full"
+                            disabled={IsSubmitting}
+                        >
+                            {IsSubmitting ? "Guardando..." : "Guardar"}
+                        </Button>
                     </div>
                 </form>
             </div>

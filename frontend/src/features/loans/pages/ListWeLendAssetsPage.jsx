@@ -104,7 +104,7 @@ export default function ListWeLendAssetsPage() {
 
   return (
 
-    <div className="min-h-[calc(100vh-64px)] px-6 py-5">
+    <div className="min-h-[calc(100vh-64px)] px-3 sm:px-6 py-5">
 
       {/* HEADER */}
       <div className="flex items-center gap-3 mb-5">
@@ -156,7 +156,7 @@ export default function ListWeLendAssetsPage() {
         <div className="flex flex-wrap items-end gap-4 mb-6">
 
           {/* ID */}
-          <div className="w-[320px]">
+          <div className="w-full sm:w-[320px]">
 
             <InputForList
               label="ID préstamo"

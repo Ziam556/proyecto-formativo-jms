@@ -19,8 +19,8 @@ export default function Button({
     }
 
     const bgClasses = {
-        primary: "bg-[#71277A] rounded-full min-w-[320px]",
-        secondary: "bg-[#00C8DC] rounded-full min-w-[240px]",
+        primary: "bg-[#71277A] rounded-full w-full lg:w-auto lg:min-w-[320px]",
+        secondary: "bg-[#00C8DC] rounded-full w-full lg:w-auto lg:min-w-[240px]",
     }
 
     return(

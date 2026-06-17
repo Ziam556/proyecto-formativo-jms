@@ -1,16 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
-
-const STORAGE_KEY = "grupos_list";
-
-const MOCK_USERS = [
-    { id: "001", label: "User-001" },
-    { id: "002", label: "User-002" },
-    { id: "003", label: "User-003" },
-    { id: "004", label: "User-004" },
-    { id: "005", label: "User-005" },
-];
+import { createGroup } from "../services/groupService";
 
 const permissionModules = [
     {
@@ -61,18 +52,70 @@ const permissionModules = [
             "Regresar Material Devolutivo",
         ],
     },
+    {
+        name: "Marcas",
+        permissions: [
+            "Asignar todos los permisos",
+            "Crear Marca",
+            "Listar Marcas",
+            "Editar Marca",
+            "Habilitar / Deshabilitar Marca",
+            "Eliminar Marca",
+        ],
+    },
 ];
+
+const permissionCodenames = {
+    "Módulo Usuarios": {
+        "Crear Usuarios": "create_user",
+        "Editar Usuarios": "edit_user",
+        "Listar Usuarios": "list_user",
+        "Habilitar / Deshabilitar Usuarios": "toggle_user",
+        "Reportes Usuarios": "report_user",
+    },
+    "Prestamo": {
+        "Crear Prestamo": "create_loan",
+        "Visualizar Prestamo": "view_loan",
+        "Editar Prestamo": "edit_loan",
+        "Reportes Prestamo": "report_loan",
+        "Listar Prestamos": "list_loan",
+    },
+    "Material Consumo": {
+        "Crear Material Consumo": "create_consumable",
+        "Visualizar Material Consumo": "view_consumable",
+        "Editar Material Consumo": "edit_consumable",
+        "Habilitar / Deshabilitar Material Consumo": "toggle_consumable",
+        "Reportes Material Consumo": "report_consumable",
+        "Listar Material Consumo": "list_consumable",
+        "Retornar Sobrante Material Consumo": "return_consumable",
+    },
+    "Material devolutivo": {
+        "Crear Material Devolutivo": "create_returnable",
+        "Listar Material Devolutivo": "list_returnable",
+        "Visualizar Material Devolutivo": "view_returnable",
+        "Editar Material Devolutivo": "edit_returnable",
+        "Habilitar / Deshabilitar Material Devolutivo": "toggle_returnable",
+        "Reportes Material Devolutivo": "report_returnable",
+        "Regresar Material Devolutivo": "return_returnable",
+    },
+    "Marcas": {
+        "Crear Marca": "create_brand",
+        "Listar Marcas": "list_brand",
+        "Editar Marca": "edit_brand",
+        "Habilitar / Deshabilitar Marca": "toggle_brand",
+        "Eliminar Marca": "delete_brand",
+    },
+};
 
 export default function CreateGroupPage() {
     const navigate = useNavigate();
 
-    const [permisoType, setPermisoType] = useState("grupal"); // "individual" | "grupal"
+    const [permisoType, setPermisoType] = useState("grupal");
     const [identifier, setIdentifier] = useState("");
     const [groupName, setGroupName] = useState("");
     const [ficha, setFicha] = useState("");
     const [selectedPerms, setSelectedPerms] = useState({});
 
-    // Combobox de usuarios
     const [userSearch, setUserSearch] = useState("");
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
@@ -88,9 +131,7 @@ export default function CreateGroupPage() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    const filteredUsers = MOCK_USERS.filter((u) =>
-        u.label.toLowerCase().includes(userSearch.toLowerCase())
-    );
+    const filteredUsers = [];
 
     const handleSelectUser = (user) => {
         setSelectedUser(user);
@@ -114,35 +155,35 @@ export default function CreateGroupPage() {
         return !!selectedPerms[key];
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         const name = permisoType === "grupal" ? groupName : identifier;
         if (!name.trim()) {
             alert("Por favor ingresa el nombre del grupo o número de identificación.");
             return;
         }
 
-        const newGroup = {
-            id: Date.now(),
-            name: name.trim(),
-            enabled: true,
-            isEditing: false,
-            permisoType,
-            identifier,
-            groupName,
-            ficha,
-            permissions: selectedPerms,
-        };
+        const codenames = [];
+        for (const mod of permissionModules) {
+            for (const perm of mod.permissions) {
+                if (perm === "Asignar todos los permisos") continue;
+                if (isChecked(mod.name, perm)) {
+                    const codename = permissionCodenames[mod.name]?.[perm];
+                    if (codename) codenames.push(codename);
+                }
+            }
+        }
 
-        const saved = localStorage.getItem(STORAGE_KEY);
-        const existing = saved ? JSON.parse(saved) : [];
-        localStorage.setItem(STORAGE_KEY, JSON.stringify([...existing, newGroup]));
-
-        navigate("/dashboard/config/groups");
+        try {
+            await createGroup(name.trim(), codenames);
+            navigate("/dashboard/config/groups");
+        } catch (error) {
+            alert("Error al guardar el grupo: " + error.message);
+        }
     };
 
     return (
-        <div className="min-h-[calc(100vh-64px)] flex items-center justify-center p-6">
-            <div className="bg-[linear-gradient(135deg,#700D7C_0%,#88A3C7_50%,#50E5F9_100%)] rounded-[20px] shadow-[0_8px_40px_rgba(0,0,0,0.3)] py-9 px-10 w-full max-w-[1100px] relative">
+        <div className="min-h-[calc(100vh-64px)] flex items-center justify-center p-4 sm:p-6">
+            <div className="bg-[linear-gradient(135deg,#700D7C_0%,#88A3C7_50%,#50E5F9_100%)] rounded-[20px] shadow-[0_8px_40px_rgba(0,0,0,0.3)] py-9 px-5 sm:px-10 w-full max-w-[1100px] relative">
 
                 {/* Flecha regresar */}
                 <button
@@ -155,10 +196,10 @@ export default function CreateGroupPage() {
                     </svg>
                 </button>
 
-                <div className="flex gap-10">
+                <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
 
                     {/* Panel izquierdo */}
-                    <div className="min-w-[220px] flex flex-col gap-5">
+                    <div className="w-full lg:min-w-[220px] lg:max-w-[260px] flex flex-col gap-5">
 
                         {/* Radio buttons */}
                         <div className="flex flex-col gap-[10px] pt-10">
@@ -286,7 +327,7 @@ export default function CreateGroupPage() {
                     </div>
 
                     {/* Panel derecho — módulos de permisos */}
-                    <div className="flex-1 grid grid-cols-2 gap-4 content-start">
+                    <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 content-start">
                         {permissionModules.map((mod) => (
                             <div key={mod.name} className="bg-[rgba(100,80,160,0.5)] rounded-[10px] p-[14px_16px]">
                                 <p className="text-white font-bold text-[0.9rem] mb-[10px] pb-[6px] border-b border-white/20">

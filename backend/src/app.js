@@ -7,6 +7,9 @@ import authRoutes from "./features/auth/auth.routes.js";
 import consumableMaterialRoutes from "./features/consumableMaterial/consumableMaterial.routes.js";
 import returnableMaterialRoutes from "./features/returnableMaterial/returnableMaterial.routes.js";
 import brandsRoutes from "./features/brands/brands.routes.js";
+import groupsRoutes from "./features/groups/groups.routes.js";
+import accessRoutes from "./features/access/access.routes.js";
+import loansRoutes from "./features/loans/loans.routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
@@ -29,6 +32,9 @@ app.use("/api/consumableMaterial", consumableMaterialRoutes);
 app.use("/api/returnableMaterial", returnableMaterialRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/brands", brandsRoutes);
+app.use("/api/groups", groupsRoutes);
+app.use("/api/access", accessRoutes);
+app.use("/api/loans", loansRoutes);
 
 // Manejador de errores global — siempre devuelve JSON
 app.use((err, req, res, next) => {

@@ -79,18 +79,18 @@ export default function ListReturnableMaterialPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] py-4 px-6">
+    <div className="min-h-[calc(100vh-64px)] py-4 px-3 sm:px-6">
 
       {/* Header */}
       <div className="flex items-center gap-3 mb-4">
         <BackButton to="/dashboard/returnable-material" />
-        <h1 className="text-white text-[1.2rem] font-bold m-0">
+        <h1 className="text-white text-[1rem] sm:text-[1.2rem] font-bold m-0">
           Lista materiales devolutivo
         </h1>
       </div>
 
       {/* Stats */}
-      <div className="mb-[6px]">
+      <div className="mb-[6px] overflow-x-auto">
         <StatsPills stats={statsPills} />
       </div>
 
@@ -114,13 +114,13 @@ export default function ListReturnableMaterialPage() {
           placeholder="Ingrese nombre del cuentadante"
         />
 
-        {/* Estado — select nativo con el mismo estilo que los InputForList */}
-        <div className="flex flex-col gap-1 w-[320px]">
+        {/* Estado */}
+        <div className="flex flex-col gap-1 w-full sm:w-[320px]">
           <label className="text-xs text-[#c4b5fd] font-medium">Estado</label>
           <select
             value={filters.state}
             onChange={(e) => setFilters((f) => ({ ...f, state: e.target.value }))}
-            className="w-[320px] h-14 bg-[rgba(217,217,217,0.54)] border-0 rounded text-[0.85rem] text-[#111] outline-none box-border backdrop-blur-sm px-[14px]"
+            className="w-full sm:w-[320px] h-14 bg-[rgba(217,217,217,0.54)] border-0 rounded text-[0.85rem] text-[#111] outline-none box-border backdrop-blur-sm px-[14px]"
           >
             <option value="">Selecciona el estado</option>
             {uniqueStates.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -136,18 +136,18 @@ export default function ListReturnableMaterialPage() {
         />
 
         {/* Limpiar filtros + Reportes */}
-        <div className="flex gap-[10px] items-end">
+        <div className="flex flex-wrap gap-[10px] items-end w-full sm:w-auto">
 
           <button
             onClick={clearFilters}
-            className="w-[189px] h-14 flex items-center justify-center gap-[6px] rounded border-0 bg-[#0e7490] text-white text-[0.82rem] font-semibold cursor-pointer shrink-0 box-border"
+            className="flex-1 sm:flex-none sm:w-[189px] h-14 flex items-center justify-center gap-[6px] rounded border-0 bg-[#0e7490] text-white text-[0.82rem] font-semibold cursor-pointer box-border"
           >
             <SlidersHorizontal size={15} />
             Limpiar Filtros
           </button>
 
           {/* Reportes apilados */}
-          <div className="flex flex-col gap-[6px]">
+          <div className="flex flex-col gap-[6px] w-full sm:w-auto">
             <ReportDropdown
               label="Generar reporte de todos los materiales devolutivos"
               color="#00304D"

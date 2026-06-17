@@ -19,4 +19,9 @@ export default defineConfig({
       '@' : resolve(__dirname, 'src'), //Cuando veas @, interpretalo como /src
     },
   },
+  server: {
+    proxy: {
+      '/api': 'http://localhost:4000',
+    },
+  },
 })

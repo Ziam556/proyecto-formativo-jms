@@ -146,35 +146,24 @@ export default function ListConsumableMaterialPage() {
 
   return (
 
-    <div className="min-h-[calc(100vh-64px)] px-6 py-5">
+    <div className="min-h-[calc(100vh-64px)] px-3 sm:px-6 py-5">
 
       {/* HEADER */}
       <div className="flex items-center gap-3 mb-5">
 
         <BackButton to="/dashboard/consumable-material" />
 
-        <h1 className="text-white text-2xl font-bold">
+        <h1 className="text-white text-[1rem] sm:text-2xl font-bold">
           Lista materiales consumo
         </h1>
 
       </div>
 
       {/* CARD GENERAL */}
-      <div
-        className="
-          w-full
-          rounded-2xl
-          border
-          border-white/10
-          bg-white/10
-          backdrop-blur-md
-          shadow-2xl
-          p-6
-        "
-      >
+      <div className="w-full rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md shadow-2xl p-4 sm:p-6">
 
         {/* STATS */}
-        <div className="mb-6">
+        <div className="mb-6 overflow-x-auto">
           <StatsPills stats={statsPills} />
         </div>
 
@@ -182,7 +171,7 @@ export default function ListConsumableMaterialPage() {
         <div className="flex flex-wrap items-end gap-4 mb-6">
 
           {/* NOMBRE */}
-          <div className="w-[320px]">
+          <div className="w-full sm:w-[320px]">
 
             <InputForList
               label="Nombre del elemento"
@@ -200,7 +189,7 @@ export default function ListConsumableMaterialPage() {
           </div>
 
           {/* CUENTADANTE */}
-          <div className="w-[320px]">
+          <div className="w-full sm:w-[320px]">
 
             <InputForList
               label="Cuentadante"
@@ -217,7 +206,7 @@ export default function ListConsumableMaterialPage() {
           </div>
 
           {/* ESTADO */}
-          <div className="flex flex-col gap-1 w-[320px]">
+          <div className="flex flex-col gap-1 w-full sm:w-[320px]">
 
             <label className="text-sm font-medium text-white">
               Estado
@@ -256,7 +245,7 @@ export default function ListConsumableMaterialPage() {
           </div>
 
           {/* SERIAL */}
-          <div className="w-[320px]">
+          <div className="w-full sm:w-[320px]">
 
             <InputForList
               label="Serial"
