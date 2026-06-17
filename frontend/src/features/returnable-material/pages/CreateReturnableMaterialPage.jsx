@@ -15,6 +15,7 @@ const steps = [
 ];
 
 export default function CreateReturnableMaterialPage() {
+    console.log("CREATE PAGE RENDER");
     const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(0);
     const [formData, setFormData] = useState({});

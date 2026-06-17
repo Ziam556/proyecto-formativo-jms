@@ -138,6 +138,8 @@ export const consumableMaterialColumns = [
   {
     id: "actions",
 
+    header: "Acciones",
+
     cell: ({ row }) => (
       <ConsumableMaterialRowActions
         material={row.original}

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Plus, Pencil, List, Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { Plus, Pencil, List, Eye, ArrowLeft } from "lucide-react";
 import { MenuButton } from "@/shared";
 
 // Acciones disponibles dentro del módulo de material devolutivo
@@ -7,7 +7,6 @@ const menuItems = [
     { label: "Crear", icon: Plus, to: "/dashboard/returnable-material/create" },
     { label: "Editar", icon: Pencil, to: "/dashboard/returnable-material/edit" },
     { label: "Listar", icon: List, to: "/dashboard/returnable-material/list" },
-    { label: "Habilitar / Deshabilitar", icon: EyeOff, to: "/dashboard/returnable-material/toggle" },
     { label: "Visualizar", icon: Eye, to: "/dashboard/returnable-material/visualize" },
 ];
 

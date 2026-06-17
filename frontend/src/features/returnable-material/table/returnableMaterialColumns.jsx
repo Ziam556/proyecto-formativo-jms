@@ -78,6 +78,7 @@ export const returnableMaterialColumns = [
   { accessorKey: "dimensions", header: "Dimensiones" },
   {
     id: "actions",
+    header: "Acciones",
     cell: ({ row }) => <ReturnableMaterialRowActions material={row.original} />,
   },
 ];

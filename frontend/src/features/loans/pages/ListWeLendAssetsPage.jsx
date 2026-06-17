@@ -8,7 +8,7 @@ import {
   StatsPills,
   ReportDropdown,
   BackButton,
-  InputForList,
+  Input,
 } from "@/shared";
 
 import { listLoansColumns } from "../table/listLoansColumns.jsx";
@@ -156,20 +156,14 @@ export default function ListWeLendAssetsPage() {
         <div className="flex flex-wrap items-end gap-4 mb-6">
 
           {/* ID */}
-          <div className="w-full sm:w-[320px]">
-
-            <InputForList
-              label="ID préstamo"
+          <div className="flex flex-col gap-1 w-full sm:w-[320px]">
+            <label className="text-white text-[0.75rem] font-medium">ID préstamo</label>
+            <Input
+              name="id"
               value={filters.id}
-              onChange={(e) =>
-                setFilters((f) => ({
-                  ...f,
-                  id: e.target.value,
-                }))
-              }
+              onChange={(e) => setFilters((f) => ({ ...f, id: e.target.value }))}
               placeholder="Buscar ID"
             />
-
           </div>
 
           {/* REPORTE TODOS */}

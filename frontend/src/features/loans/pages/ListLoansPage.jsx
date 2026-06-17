@@ -11,7 +11,8 @@ import {
   StatsPills,
   ReportDropdown,
   BackButton,
-  InputForList,
+  Input,
+  Select,
 } from "@/shared";
 
 import { LoansColumns } from "../table/loansColumns.js";
@@ -184,76 +185,36 @@ export default function ListLoansPage() {
       {/* FILTROS */}
       <div className="flex gap-[10px] items-end mb-3 flex-wrap">
 
-        <InputForList
-          label="Nombre del elemento"
-          type="search"
-          value={filters.elementName}
-          onChange={(e) =>
-            setFilters((f) => ({
-              ...f,
-              elementName:
-                e.target.value,
-            }))
-          }
-          placeholder="Buscar nombre elemento"
-        />
+        <div className="flex flex-col gap-1 w-full sm:w-[320px]">
+          <label className="text-white text-[0.75rem] font-medium">Nombre del elemento</label>
+          <Input
+            name="elementName"
+            value={filters.elementName}
+            onChange={(e) => setFilters((f) => ({ ...f, elementName: e.target.value }))}
+            placeholder="Buscar nombre elemento"
+          />
+        </div>
 
-        <InputForList
-          label="Cuentadante"
-          value={filters.accountHolder}
-          onChange={(e) =>
-            setFilters((f) => ({
-              ...f,
-              accountHolder:
-                e.target.value,
-            }))
-          }
-          placeholder="Ingrese nombre del cuentadante"
-        />
+        <div className="flex flex-col gap-1 w-full sm:w-[320px]">
+          <label className="text-white text-[0.75rem] font-medium">Cuentadante</label>
+          <Input
+            name="accountHolder"
+            value={filters.accountHolder}
+            onChange={(e) => setFilters((f) => ({ ...f, accountHolder: e.target.value }))}
+            placeholder="Ingrese nombre del cuentadante"
+          />
+        </div>
 
         {/* SELECT */}
-        <div className="flex flex-col gap-1">
-
-          <label className="text-[0.75rem] text-[#c4b5fd] font-medium">
-            Estado
-          </label>
-
-          <select
+        <div className="flex flex-col gap-1 w-full sm:w-[320px]">
+          <label className="text-white text-[0.75rem] font-medium">Estado</label>
+          <Select
+            name="state"
             value={filters.state}
-            onChange={(e) =>
-              setFilters((f) => ({
-                ...f,
-                state: e.target.value,
-              }))
-            }
-            className="
-              w-full sm:w-[220px]
-              h-[56px]
-              bg-[rgba(217,217,217,0.54)]
-              border-none
-              rounded
-              px-[14px]
-              text-[0.85rem]
-              text-[#111]
-              outline-none
-              box-border
-              backdrop-blur-[4px]
-            "
-          >
-
-            <option value="">
-              Selecciona el estado
-            </option>
-
-            {uniqueStates.map((s) => (
-              <option
-                key={s}
-                value={s}
-              >
-                {s}
-              </option>
-            ))}
-          </select>
+            options={uniqueStates.map((s) => ({ id: s, label: s }))}
+            onChange={(e) => setFilters((f) => ({ ...f, state: e.target.value }))}
+            placeholder="Selecciona el estado"
+          />
         </div>
 
         {/* BOTON */}

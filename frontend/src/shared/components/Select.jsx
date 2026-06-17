@@ -6,20 +6,15 @@ export default function Select({
     value,
     onChange,
     placeholder = "Seleccione una opción"
-}){
-    return(
+}) {
+    return (
         <div className="w-full">
-
-            {/* Label opcional, se pone rojo si hay error */}
             {label && (
                 <label className={`block text-caption mb-1 place-self-start ${error ? "text-red-600" : "text-text-secondary"}`}>
                     {label}
                 </label>
             )}
 
-            {/* Select con opciones cargadas dinamicamente
-                options debe tener formato { id, label }
-                el placeholder es la primera opcion deshabilitada */}
             <select
                 name={name}
                 value={value}
@@ -39,15 +34,20 @@ export default function Select({
                 <option value="">{placeholder}</option>
 
                 {options.map((opt) => (
-                    <option key={opt.id} value={opt.id}>
+                    <option
+                        key={opt.value ?? opt.id}
+                        value={opt.value ?? opt.id}
+                    >
                         {opt.label}
                     </option>
                 ))}
-
             </select>
 
-            {/* Mensaje de error visible solo si hay error */}
-            {error && <p className="text-caption text-red-600 place-self-start">{error}</p>}
+            {error && (
+                <p className="text-caption text-red-600 place-self-start">
+                    {error}
+                </p>
+            )}
         </div>
-    )
+    );
 }

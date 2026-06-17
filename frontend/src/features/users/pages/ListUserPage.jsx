@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import { users as usersData } from "../data/users.js";
-import { DataTable, StatsPills, ReportDropdown, BackButton, InputForList } from "@/shared";
+import { DataTable, StatsPills, ReportDropdown, BackButton, Input, Select } from "@/shared";
 import { userColumns } from "../table/userColumns.jsx";
 import { userReportFields } from "../reports/config/userReportFields.js";
 import { generateUserReport } from "../reports/services/generateUserReport.js";
@@ -108,45 +108,46 @@ export default function ListUserPage() {
             {/* Filtros */}
             <div className="flex gap-[10px] items-end mb-3 flex-wrap">
 
-                <InputForList
-                    label="Nombre"
-                    type="search"
-                    value={filters.name}
-                    onChange={(e) => setFilters((f) => ({ ...f, name: e.target.value }))}
-                    placeholder="Buscar por nombre"
-                />
-
-                <InputForList
-                    label="Correo electrónico"
-                    type="search"
-                    value={filters.email}
-                    onChange={(e) => setFilters((f) => ({ ...f, email: e.target.value }))}
-                    placeholder="Buscar por correo"
-                />
-
                 <div className="flex flex-col gap-1 w-full sm:w-[320px]">
-                    <label className="text-xs text-[#c4b5fd] font-medium">
-                        Tipo de documento
-                    </label>
-                    <select
-                        value={filters.documentType}
-                        onChange={(e) => setFilters((f) => ({ ...f, documentType: e.target.value }))}
-                        className="w-full sm:w-[320px] h-14 bg-[rgba(217,217,217,0.54)] border-0 rounded text-[0.85rem] text-[#111] outline-none box-border backdrop-blur-sm px-[14px]"
-                    >
-                        <option value="">Selecciona el tipo</option>
-                        {uniqueDocTypes.map((d) => (
-                            <option key={d} value={d}>{d}</option>
-                        ))}
-                    </select>
+                    <label className="text-white text-[0.75rem] font-medium">Nombre</label>
+                    <Input
+                        name="name"
+                        value={filters.name}
+                        onChange={(e) => setFilters((f) => ({ ...f, name: e.target.value }))}
+                        placeholder="Buscar por nombre"
+                    />
                 </div>
 
-                <InputForList
-                    label="Teléfono"
-                    type="search"
-                    value={filters.phone}
-                    onChange={(e) => setFilters((f) => ({ ...f, phone: e.target.value }))}
-                    placeholder="Buscar por teléfono"
-                />
+                <div className="flex flex-col gap-1 w-full sm:w-[320px]">
+                    <label className="text-white text-[0.75rem] font-medium">Correo electrónico</label>
+                    <Input
+                        name="email"
+                        value={filters.email}
+                        onChange={(e) => setFilters((f) => ({ ...f, email: e.target.value }))}
+                        placeholder="Buscar por correo"
+                    />
+                </div>
+
+                <div className="flex flex-col gap-1 w-full sm:w-[320px]">
+                    <label className="text-white text-[0.75rem] font-medium">Tipo de documento</label>
+                    <Select
+                        name="documentType"
+                        value={filters.documentType}
+                        options={uniqueDocTypes.map((d) => ({ id: d, label: d }))}
+                        onChange={(e) => setFilters((f) => ({ ...f, documentType: e.target.value }))}
+                        placeholder="Selecciona el tipo"
+                    />
+                </div>
+
+                <div className="flex flex-col gap-1 w-full sm:w-[320px]">
+                    <label className="text-white text-[0.75rem] font-medium">Teléfono</label>
+                    <Input
+                        name="phone"
+                        value={filters.phone}
+                        onChange={(e) => setFilters((f) => ({ ...f, phone: e.target.value }))}
+                        placeholder="Buscar por teléfono"
+                    />
+                </div>
 
                 {/* Limpiar filtros + Reportes */}
                 <div className="flex flex-wrap gap-[10px] items-end w-full sm:w-auto">
@@ -159,20 +160,15 @@ export default function ListUserPage() {
                         Limpiar Filtros
                     </button>
 
-                    <div className="flex flex-col gap-[6px] w-full sm:w-auto">
+                    <div className="flex flex-row gap-[6px] w-full sm:w-auto flex-wrap">
                         <ReportDropdown
                             label="Generar reporte de todos los usuarios"
-                            color="#00304D"
-                            width={280}
-                            height={70}
+                            
                             onPDF={() => handleAllReport("pdf")}
                             onExcel={() => handleAllReport("excel")}
                         />
                         <ReportDropdown
                             label="Generar reporte de usuario seleccionado"
-                            color="#00304D"
-                            width={280}
-                            height={70}
                             onPDF={() => handleSelectedReport("pdf")}
                             onExcel={() => handleSelectedReport("excel")}
                         />

@@ -3,6 +3,9 @@
 // format: 'currency' | 'state' | 'link'
 // accessor: clave del objeto de datos
 
+import { createElement } from "react";
+import ReturnableMaterialRowActions from "../components/ReturnableMaterialRowActions";
+
 export const returnableMaterialColumns = [
   { id: "id",             label: "ID",                  accessor: "id" },
   { id: "plateSena",      label: "Placa Sena",          accessor: "plateSena" },
@@ -20,4 +23,5 @@ export const returnableMaterialColumns = [
   { id: "accountHolder",  label: "Cuentadante",         accessor: "accountHolder" },
   { id: "location",       label: "Ubicación",           accessor: "location" },
   { id: "dimensions",     label: "Dimensiones",         accessor: "dimensions" },
+  { id: "actions",        label: "Acciones",            accessor: null,           noToggle: true, renderCell: (material) => createElement(ReturnableMaterialRowActions, { material }) },
 ];

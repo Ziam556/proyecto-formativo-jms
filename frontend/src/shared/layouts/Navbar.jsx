@@ -42,9 +42,9 @@ export default function Navbar() {
                             </Link>
                         </DropdownItem>
                         <DropdownItem>
-                            <button className="block w-full text-left">
+                            <Link to="/dashboard/userpage/profile" className="block w-full">
                                 Ver perfil
-                            </button>
+                            </Link>
                         </DropdownItem>
                         <DropdownItem>
                             <Link to="/dashboard/config" className="block w-full">

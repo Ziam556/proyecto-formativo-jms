@@ -1,11 +1,11 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { AuthLayout, DashboardLayout, ProtectedRoute } from "@/shared";
 import { Login } from "@/features/auth";
-import { UserPage, CreateUserPage, ListUserPage, ViewUserPage } from "@/features/users";
+import { UserPage, CreateUserPage, ListUserPage, ViewUserPage, EditUserPage, UserProfilePage } from "@/features/users";
 import { HomePage } from "@/features/home";
 import { ConfigPage } from "@/features/config";
 import { GroupsListPage, CreateGroupPage } from "@/features/groups";
-import { ReturnableMaterialPage, ListReturnableMaterialPage, CreateReturnableMaterialPage } from "@/features/returnable-material";
+import { ReturnableMaterialPage, ListReturnableMaterialPage, CreateReturnableMaterialPage, EditReturnableMaterialPage, ViewReturnableMaterialPage } from "@/features/returnable-material";
 import { ConsumableMaterialPage, ListConsumableMaterialPage, CreateConsumableMaterialPage, ViewConsumableMaterialPage, EditConsumableMaterialPage } from "@/features/consumable-material";
 import { BrandsPage, CreateBrandPage } from "@/features/brands";
 import { LoansPage, CreateLoansPage, ListWeLendAssetsPage, ViewLoansPage, EditLoansPage, ReturnLoansPage } from "@/features/loans";
@@ -36,9 +36,13 @@ const router = createBrowserRouter([
             { path: "userpage/create", element: <CreateUserPage /> },
             { path: "userpage/list", element: <ListUserPage /> },
             { path: "userpage/:id/view", element: <ViewUserPage /> },
+            { path: "userpage/edit", element: <EditUserPage /> },
+            { path: "userpage/profile", element: <UserProfilePage /> },
             { path: "returnable-material", element: <ReturnableMaterialPage /> },
             { path: "returnable-material/list", element: <ListReturnableMaterialPage /> },
             { path: "returnable-material/create", element: <CreateReturnableMaterialPage /> },
+            { path: "returnable-material/edit", element: <EditReturnableMaterialPage /> },
+            { path: "returnable-material/visualize", element: <ViewReturnableMaterialPage /> },
             { path: "consumable-material", element: <ConsumableMaterialPage /> },
             { path: "consumable-material/create", element: <CreateConsumableMaterialPage /> },
             { path: "consumable-material/list", element: <ListConsumableMaterialPage /> },

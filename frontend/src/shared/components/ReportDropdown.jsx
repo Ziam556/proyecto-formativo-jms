@@ -96,11 +96,11 @@ export default function ReportDropdown({
       {/* BOTÓN PRINCIPAL */}
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="flex items-center justify-between gap-2 text-white border-0 rounded-[8px] text-[0.82rem] font-semibold cursor-pointer box-border p-[10px_16px]"
+        className="flex  items-center justify-between gap-2 text-white border-0 rounded-[8px] text-[0.82rem] font-semibold cursor-pointer box-border p-[10px_16px]"
         style={{
-          background: color,
+          background: "#00304D",
           width: width ?? "220px",
-          height: height ?? "56px",
+          height: height ?? "48px",
         }}
       >
         <span>{label}</span>

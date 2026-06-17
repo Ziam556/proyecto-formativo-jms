@@ -15,7 +15,7 @@ export default function ColumnToggle({ label, active = true, onChange }) {
                 className={`flex items-center justify-center w-4 h-4 rounded-[4px] shrink-0 transition-colors duration-150 ${active ? "bg-green-600" : "bg-[#FDC300]"}`}
             >
                 {active
-                    ? <Check size={11} color="#000000" strokeWidth={3} />
+                    ? <Check size={11} color="#ffffff" strokeWidth={3} />
                     : <X size={11} color="#000000" strokeWidth={3} />
                 }
             </span>
