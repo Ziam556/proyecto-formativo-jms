@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import { returnableMaterials } from "../data/returnableMaterials.js";
-import { DataTable, StatsPills, ReportDropdown, BackButton, InputForList } from "@/shared";
+import { DataTable, StatsPills, ReportDropdown, BackButton, Input, Select } from "@/shared";
 import { returnableMaterialColumns } from "../table/returnableMaterialColumns";
 import { returnableMaterialReportFields } from "../reports/config/returnableMaterialReportFields.js";
 import { generateReturnableMaterialReport } from "../reports/services/generateReturnableMaterialReport.js";
@@ -98,42 +98,49 @@ export default function ListReturnableMaterialPage() {
       <div className="flex gap-[10px] items-end mb-3 flex-wrap">
 
         {/* Nombre del elemento */}
-        <InputForList
-          label="Nombre del elemento"
-          type="search"
-          value={filters.elementName}
-          onChange={(e) => setFilters((f) => ({ ...f, elementName: e.target.value }))}
-          placeholder="Buscar nombre elemento"
-        />
+        <div className="flex flex-col gap-1 w-full sm:w-[320px]">
+          <label className="text-white text-[0.75rem] font-medium">Nombre del elemento</label>
+          <Input
+            name="elementName"
+            value={filters.elementName}
+            onChange={(e) => setFilters((f) => ({ ...f, elementName: e.target.value }))}
+            placeholder="Buscar nombre elemento"
+          />
+        </div>
 
         {/* Cuentadante */}
-        <InputForList
-          label="Cuentadante"
-          value={filters.accountHolder}
-          onChange={(e) => setFilters((f) => ({ ...f, accountHolder: e.target.value }))}
-          placeholder="Ingrese nombre del cuentadante"
-        />
+        <div className="flex flex-col gap-1 w-full sm:w-[320px]">
+          <label className="text-white text-[0.75rem] font-medium">Cuentadante</label>
+          <Input
+            name="accountHolder"
+            value={filters.accountHolder}
+            onChange={(e) => setFilters((f) => ({ ...f, accountHolder: e.target.value }))}
+            placeholder="Ingrese nombre del cuentadante"
+          />
+        </div>
 
         {/* Estado */}
         <div className="flex flex-col gap-1 w-full sm:w-[320px]">
-          <label className="text-xs text-[#c4b5fd] font-medium">Estado</label>
-          <select
+          <label className="text-white text-[0.75rem] font-medium">Estado</label>
+          <Select
+            name="state"
             value={filters.state}
+            options={uniqueStates.map((s) => ({ id: s, label: s }))}
             onChange={(e) => setFilters((f) => ({ ...f, state: e.target.value }))}
-            className="w-full sm:w-[320px] h-14 bg-[rgba(217,217,217,0.54)] border-0 rounded text-[0.85rem] text-[#111] outline-none box-border backdrop-blur-sm px-[14px]"
-          >
-            <option value="">Selecciona el estado</option>
-            {uniqueStates.map((s) => <option key={s} value={s}>{s}</option>)}
-          </select>
+            placeholder="Selecciona el estado"
+          />
         </div>
 
         {/* Serial */}
-        <InputForList
-          label="Serial"
-          value={filters.serial}
-          onChange={(e) => setFilters((f) => ({ ...f, serial: e.target.value }))}
-          placeholder="Ingrese número de serial"
-        />
+        <div className="flex flex-col gap-1 w-full sm:w-[320px]">
+          <label className="text-white text-[0.75rem] font-medium">Serial</label>
+          <Input
+            name="serial"
+            value={filters.serial}
+            onChange={(e) => setFilters((f) => ({ ...f, serial: e.target.value }))}
+            placeholder="Ingrese número de serial"
+          />
+        </div>
 
         {/* Limpiar filtros + Reportes */}
         <div className="flex flex-wrap gap-[10px] items-end w-full sm:w-auto">
@@ -146,8 +153,8 @@ export default function ListReturnableMaterialPage() {
             Limpiar Filtros
           </button>
 
-          {/* Reportes apilados */}
-          <div className="flex flex-col gap-[6px] w-full sm:w-auto">
+          {/* Reportes en fila */}
+          <div className="flex flex-row gap-[6px] w-full sm:w-auto flex-wrap">
             <ReportDropdown
               label="Generar reporte de todos los materiales devolutivos"
               color="#00304D"

@@ -64,15 +64,10 @@ export default function EditConsumableMaterial1({
 
         onNext(fields);
     };
-   
 
-    
     return (
 
-       
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
-
-            
 
             <Input
                 label="ID"
@@ -109,7 +104,7 @@ export default function EditConsumableMaterial1({
                 onChange={handleChange}
                 error={errors.materialBrand}
             />
-           
+
             {/* BOTONES */}
             <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-4">
                 <Button
@@ -127,13 +122,9 @@ export default function EditConsumableMaterial1({
                 >
                     Siguiente
                 </Button>
-
-
-
-                
             </div>
-             
+
         </div>
-        
+
     );
 }

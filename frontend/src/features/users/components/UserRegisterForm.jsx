@@ -51,19 +51,19 @@ function GroupOverlay({ groups, selectedId, onConfirm, onClose }) {
 
                 {/* Acciones */}
                 <div className="flex gap-3 justify-end">
-                    <button
+                    <Button
                         onClick={onClose}
-                        className="py-[10px] px-6 rounded-full bg-[rgba(255,255,255,0.2)] border-0 text-white cursor-pointer font-medium"
+                        variant = "secondary"
                     >
                         Cancelar
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         onClick={() => onConfirm(tempId)}
                         disabled={!tempId}
-                        className={`py-[10px] px-6 rounded-full border-0 font-semibold ${tempId ? "bg-[#50E5F9] text-[#111] cursor-pointer" : "bg-[rgba(255,255,255,0.2)] text-white cursor-not-allowed"}`}
+                        variant = "primary"
                     >
                         Confirmar
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>
@@ -107,18 +107,18 @@ function SecondaryPhoneOverlay({ current, onConfirm, onClose }) {
 
                 {/* Acciones */}
                 <div className="flex gap-3 justify-end mt-6">
-                    <button
+                    <Button
+                        variant="secondary"
                         onClick={onClose}
-                        className="py-[10px] px-6 rounded-full bg-[rgba(255,255,255,0.2)] border-0 text-white cursor-pointer font-medium"
                     >
                         Cancelar
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         onClick={() => onConfirm(phone)}
-                        className="py-[10px] px-6 rounded-full bg-[#50E5F9] border-0 text-[#111] cursor-pointer font-semibold"
+                        variant="primary"
                     >
                         Guardar
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>
@@ -321,6 +321,8 @@ export default function UserRegisterForm({ onCancel }) {
                     </div>
                 </div>
 
+                
+
                 {/* ── Formulario (derecha) ── */}
                 <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="w-full">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -446,22 +448,21 @@ export default function UserRegisterForm({ onCancel }) {
                         />
 
                         {/* Botón Asignar Grupo */}
-                        <div className="flex flex-col gap-1 justify-end">
+                        <div>
                             {selectedGroup && (
                                 <span className="text-[0.75rem] text-white">
                                     Grupo: <strong>{selectedGroup.name}</strong>
                                 </span>
                             )}
                             <Button
-                                type="button"
                                 variant="secondary"
-                                size="sm"
-                                className="w-full"
                                 onClick={() => setShowGroupModal(true)}
                             >
                                 Asignar Grupo
                             </Button>
                         </div>
+
+                        
 
                         {/* Fila 7 */}
                         <Input
@@ -482,15 +483,15 @@ export default function UserRegisterForm({ onCancel }) {
                         )}
 
                         {/* Botón Registrar */}
-                        <Button
+                        <div>
+                            <Button
                             variant="primary"
-                            size="sm"
-                            type="submit"
-                            className="w-full"
                             disabled={IsSubmitting}
                         >
                             {IsSubmitting ? "Guardando..." : "Guardar"}
                         </Button>
+                        </div>
+                        
                     </div>
                 </form>
             </div>

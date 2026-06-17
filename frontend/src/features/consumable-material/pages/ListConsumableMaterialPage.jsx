@@ -1,14 +1,15 @@
 import { useState, useMemo } from "react";
 import { SlidersHorizontal } from "lucide-react";
 
-import { consumableMaterials } from "../data/consumableMaterials.js";
+import { consumableMaterials } from "../data/ConsumableMaterials.js";
 
 import {
   DataTable,
   StatsPills,
   ReportDropdown,
   BackButton,
-  InputForList,
+  Input,
+  Select,
 } from "@/shared";
 
 import { consumableMaterialColumns } from "../table/consumableMaterialColumns.js";
@@ -170,95 +171,46 @@ export default function ListConsumableMaterialPage() {
         {/* FILTROS + REPORTES */}
         <div className="flex flex-wrap items-end gap-4 mb-6">
 
-          {/* NOMBRE */}
-          <div className="w-full sm:w-[320px]">
-
-            <InputForList
-              label="Nombre del elemento"
-              type="search"
+          <div className="flex flex-col gap-1 w-full sm:w-[320px]">
+            <label className="text-white text-[0.75rem] font-medium">Nombre del elemento</label>
+            <Input
+              name="elementName"
               value={filters.elementName}
-              onChange={(e) =>
-                setFilters((f) => ({
-                  ...f,
-                  elementName: e.target.value,
-                }))
-              }
+              onChange={(e) => setFilters((f) => ({ ...f, elementName: e.target.value }))}
               placeholder="Buscar nombre elemento"
             />
-
           </div>
 
-          {/* CUENTADANTE */}
-          <div className="w-full sm:w-[320px]">
-
-            <InputForList
-              label="Cuentadante"
+          <div className="flex flex-col gap-1 w-full sm:w-[320px]">
+            <label className="text-white text-[0.75rem] font-medium">Cuentadante</label>
+            <Input
+              name="accountHolder"
               value={filters.accountHolder}
-              onChange={(e) =>
-                setFilters((f) => ({
-                  ...f,
-                  accountHolder: e.target.value,
-                }))
-              }
+              onChange={(e) => setFilters((f) => ({ ...f, accountHolder: e.target.value }))}
               placeholder="Ingrese nombre del cuentadante"
             />
-
           </div>
 
           {/* ESTADO */}
           <div className="flex flex-col gap-1 w-full sm:w-[320px]">
-
-            <label className="text-sm font-medium text-white">
-              Estado
-            </label>
-
-            <select
+            <label className="text-white text-[0.75rem] font-medium">Estado</label>
+            <Select
+              name="state"
               value={filters.state}
-              onChange={(e) =>
-                setFilters((f) => ({
-                  ...f,
-                  state: e.target.value,
-                }))
-              }
-              className="
-                w-full
-                h-[56px]
-                rounded-md
-                px-4
-                bg-white/70
-                text-black
-                outline-none
-              "
-            >
-              <option value="">
-                Selecciona el estado
-              </option>
-
-              {uniqueStates.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-
-            </select>
-
+              options={uniqueStates.map((s) => ({ id: s, label: s }))}
+              onChange={(e) => setFilters((f) => ({ ...f, state: e.target.value }))}
+              placeholder="Selecciona el estado"
+            />
           </div>
 
-          {/* SERIAL */}
-          <div className="w-full sm:w-[320px]">
-
-            <InputForList
-              label="Serial"
+          <div className="flex flex-col gap-1 w-full sm:w-[320px]">
+            <label className="text-white text-[0.75rem] font-medium">Serial</label>
+            <Input
+              name="serial"
               value={filters.serial}
-              onChange={(e) =>
-                setFilters((f) => ({
-                  ...f,
-                  serial: e.target.value,
-                }))
-              }
+              onChange={(e) => setFilters((f) => ({ ...f, serial: e.target.value }))}
               placeholder="Ingrese serial"
             />
-
           </div>
 
           {/* LIMPIAR */}

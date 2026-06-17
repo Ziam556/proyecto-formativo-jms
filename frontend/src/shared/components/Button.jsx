@@ -14,13 +14,13 @@ export default function Button({
     }
 
     const sizes = {
-        sm: "h-12 px-6",   // secundario: 240×48
-        md: "h-14 px-8",   // primario: 320×56
+        sm: "h-10 px-6",   // secundario: 240×48
+        md: "h-12 px-8",   // primario: 320×56
     }
 
     const bgClasses = {
-        primary: "bg-[#71277A] rounded-full w-full lg:w-auto lg:min-w-[320px]",
-        secondary: "bg-[#00C8DC] rounded-full w-full lg:w-auto lg:min-w-[240px]",
+        primary: "bg-[#71277A] rounded-full w-full lg:w-auto",
+        secondary: "bg-[#00C8DC] rounded-full w-full lg:w-auto ",
     }
 
     return(

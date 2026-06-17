@@ -20,5 +20,5 @@ export const consumableMaterialColumns = [
   { id: "state",          label: "Estado",              accessor: "state",        format: "state" },
   { id: "accountHolder",  label: "Cuentadante",         accessor: "accountHolder" },
   { id: "location",       label: "Ubicación",           accessor: "location" },
-  { id: "actions",        label: "Acciones",            accessor: null,           renderCell: (material) => createElement(ConsumableMaterialRowActions, { material }) },
+  { id: "actions",        label: "Acciones",            accessor: null,           noToggle: true, renderCell: (material) => createElement(ConsumableMaterialRowActions, { material }) },
 ];

@@ -56,7 +56,7 @@ export const userColumns = [
     },
     {
         id:         "actions",
-        label:      "",
+        label:      "Acciones",
         noToggle:   true,
         renderCell: (user) => <UserRowActions user={user} />,
     },
