@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Input, Button } from "@/shared";
+import { Input, Button, alertSuccess, alertError, alertWarning } from "@/shared";
 import { getCategoriesTypes } from "../services/selectService";
 
 export default function CreateConsumable1({

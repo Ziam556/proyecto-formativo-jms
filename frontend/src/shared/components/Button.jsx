@@ -7,20 +7,18 @@ export default function Button({
     ...props
 }){
     const variants = {
-        // morado con texto blanco
-        primary: "text-white",
-        // cyan con texto negro
+        primary:   "text-white",
         secondary: "text-black",
     }
 
     const sizes = {
-        sm: "h-10 px-6",   // secundario: 240×48
-        md: "h-12 px-8",   // primario: 320×56
+        sm: "h-10 px-6",
+        md: "h-12 px-8",
     }
 
     const bgClasses = {
-        primary: "bg-[#71277A] rounded-full w-full lg:w-auto",
-        secondary: "bg-[#00C8DC] rounded-full w-full lg:w-auto ",
+        primary:   "bg-[#71277A] rounded-full w-full lg:w-auto",
+        secondary: "bg-[#00C8DC] rounded-full w-full lg:w-auto",
     }
 
     return(

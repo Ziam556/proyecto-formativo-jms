@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Input, Button, Select, DatePicker } from "@/shared";
+import { Input, Button, Select, DatePicker, alertSuccess, alertWarning, alertError  } from "@/shared";
 import { getStateTypes } from "../services/selectService";
 
 export default function EditConsumableMaterial3({ formData, onSave, onBack }) {
@@ -43,10 +43,17 @@ export default function EditConsumableMaterial3({ formData, onSave, onBack }) {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      alertWarning("Campos incompletos", "Por favor completa todos los campos requeridos antes de guardar.");
       return;
     }
 
-    onSave(fields);
+    try {
+            onSave(fields);
+        } catch (err) {
+            console.error("Error al guardar material:", err);
+            alertError("Error al guardar", err.message || "Ocurrió un error inesperado. Intenta de nuevo.");
+        }
+    
   };
 
   return (

@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const userSchema = z.object({
 
-    userName : z
+    userName: z
         .string()
         .min(3, "El nombre debe tener minimo 3 caracteres")
         .max(60, "El nombre es demasiado largo"),
@@ -14,6 +14,19 @@ export const userSchema = z.object({
     userEmailVerification: z
         .string()
         .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Debe ingresar el email correctamente"),
+
+    // ── Opcionales ──────────────────────────────────────────────────────────
+    userEmailInstitutional: z
+        .string()
+        .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Debe ingresar un email institucional válido")
+        .optional()
+        .or(z.literal("")),
+
+    userSecondaryPhone: z
+        .string()
+        .regex(/^[0-9]{10}$/, "El teléfono secundario debe tener 10 dígitos")
+        .optional()
+        .or(z.literal("")),
 
     userPhone: z
         .string()
@@ -62,5 +75,12 @@ export const userSchema = z.object({
     {
         message: "La fecha de finalización debe ser mayor a la fecha de inicio",
         path: ["endDate"],
+    }
+)
+.refine(
+    (data) => data.userEmail === data.userEmailVerification,
+    {
+        message: "Los correos electrónicos no coinciden",
+        path: ["userEmailVerification"],
     }
 );
