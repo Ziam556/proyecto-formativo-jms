@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { ClipboardList, Info, SlidersHorizontal } from "lucide-react";
+import { ClipboardList, Info } from "lucide-react";
 
 import { ListLoans } from "../data/ListLoans.js";
 
@@ -9,6 +9,7 @@ import {
   ReportDropdown,
   BackButton,
   Input,
+  ClearFiltersButton,
 } from "@/shared";
 
 import { listLoansColumns } from "../table/listLoansColumns.jsx";
@@ -166,37 +167,33 @@ export default function ListWeLendAssetsPage() {
             />
           </div>
 
-          {/* REPORTE TODOS */}
-          <ReportDropdown
-            label="Generar reporte de todos los préstamos"
-            color="#00304D"
-            width={320}
-            height={56}
-            onPDF={() =>
-              generateLoansReport({
-                format: "pdf",
-                selectedFields: loansReportFields,
-                scope: "all",
-              })
-            }
-            onExcel={() =>
-              generateLoansReport({
-                format: "excel",
-                selectedFields: loansReportFields,
-                scope: "all",
-              })
-            }
-          />
+          {/* Limpiar filtros + Reportes */}
+          <ClearFiltersButton onClick={clearFilters} />
 
-          {/* REPORTE SELECCIONADOS */}
-          <ReportDropdown
-            label="Generar reporte del prestamo seleccionado"
-            color="#00304D"
-            width={320}
-            height={56}
-            onPDF={() => generateSelectedReport("pdf")}
-            onExcel={() => generateSelectedReport("excel")}
-          />
+          <div className="flex flex-row gap-[6px] w-full sm:w-auto flex-wrap">
+            <ReportDropdown
+              label="Generar reporte de todos los préstamos"
+              onPDF={() =>
+                generateLoansReport({
+                  format: "pdf",
+                  selectedFields: loansReportFields,
+                  scope: "all",
+                })
+              }
+              onExcel={() =>
+                generateLoansReport({
+                  format: "excel",
+                  selectedFields: loansReportFields,
+                  scope: "all",
+                })
+              }
+            />
+            <ReportDropdown
+              label="Generar reporte del prestamo seleccionado"
+              onPDF={() => generateSelectedReport("pdf")}
+              onExcel={() => generateSelectedReport("excel")}
+            />
+          </div>
 
         </div>
 

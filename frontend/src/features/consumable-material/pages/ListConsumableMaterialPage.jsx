@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import { SlidersHorizontal } from "lucide-react";
 
 import { consumableMaterials } from "../data/ConsumableMaterials.js";
 
@@ -10,6 +9,7 @@ import {
   BackButton,
   Input,
   Select,
+  ClearFiltersButton,
 } from "@/shared";
 
 import { consumableMaterialColumns } from "../table/consumableMaterialColumns.js";
@@ -213,35 +213,12 @@ export default function ListConsumableMaterialPage() {
             />
           </div>
 
-          {/* LIMPIAR */}
-          <button
-            onClick={clearFilters}
-            className="
-              h-[56px]
-              px-6
-              rounded-md
-              bg-cyan-700
-              hover:bg-cyan-800
-              text-white
-              font-semibold
-              flex
-              items-center
-              gap-2
-              transition
-            "
-          >
-            <SlidersHorizontal size={18} />
-            Limpiar filtros
-          </button>
+          {/* Limpiar filtros + Reportes */}
+          <ClearFiltersButton onClick={clearFilters} />
 
-          {/* REPORTE TODOS */}
-          <div className="mt-[1px]">
-
+          <div className="flex flex-row gap-[6px] w-full sm:w-auto flex-wrap">
             <ReportDropdown
               label="Generar reporte de todos los materiales consumo"
-              color="#00304D"
-              width={320}
-              height={56}
               onPDF={() =>
                 generateConsumableMaterialReport({
                   format: "pdf",
@@ -257,21 +234,11 @@ export default function ListConsumableMaterialPage() {
                 })
               }
             />
-
-          </div>
-
-          {/* REPORTE SELECCIONADOS */}
-          <div className="mt-[1px]">
-
             <ReportDropdown
               label="Generar reporte de material consumo seleccionado"
-              color="#00304D"
-              width={320}
-              height={56}
               onPDF={() => generateSelectedReport("pdf")}
               onExcel={() => generateSelectedReport("excel")}
             />
-
           </div>
 
         </div>

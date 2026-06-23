@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BackButton } from "@/shared";
+import { BackButton , Field } from "@/shared";
 import { returnableMaterials } from "../data/returnableMaterials";
 
 const STATE_CLASS = {
@@ -11,16 +11,6 @@ const STATE_CLASS = {
   Mantenimiento:   "bg-gray-500",
 };
 
-function Field({ label, value }) {
-  return (
-    <div className="bg-white/80 rounded-[8px] p-3 flex-1 min-w-[140px]">
-      <span className="text-black/50 text-xs font-semibold uppercase tracking-wide">
-        {label}
-      </span>
-      <p className="text-black font-medium mt-[2px]">{value ?? "—"}</p>
-    </div>
-  );
-}
 
 export default function ViewReturnableMaterial({ material: initialMaterial, onEdit }) {
 

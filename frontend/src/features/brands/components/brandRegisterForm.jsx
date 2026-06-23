@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
-import { SearchField, InputForList, Button, BrandTable } from "@/shared";
+import { SearchField, Input, Button, BrandTable, BackButton } from "@/shared";
 import { getBrands, createBrand, updateBrand, toggleBrand } from "../services/brandService";
 
 const PAGE_SIZE = 24;
@@ -88,20 +87,17 @@ export default function BrandRegisterForm() {
     ];
 
     return (
-        <div className="mt-4 border border-white bg-app-gradient w-full rounded-3xl flex flex-col lg:flex-row overflow-hidden">
+        <div className="mt-4 border border-white bg-app-gradient w-full rounded-3xl grid grid-cols-1 lg:grid-cols-[260px_1fr] overflow-hidden">
 
             {/* ── Panel izquierdo (agregar marca) ─────────────────────────── */}
-            <div className="p-6 border-b lg:border-b-0 lg:border-r border-white bg-brand lg:min-h-full flex flex-col gap-4">
+            <div className="p-6 border-b lg:border-b-0 lg:border-r border-white bg-brand flex flex-col gap-4">
 
-                <ArrowLeft
-                    className="text-white size-7 cursor-pointer"
-                    onClick={() => navigate(-1)}
-                />
+                <BackButton />
 
                 <div className="text-white font-bold mt-2">Agregar marcas</div>
 
-                <InputForList
-                    placeholder="Escribe el nombre de la marca"
+                <Input
+                    placeholder="Escribe la marca"
                     label="Nombre de la marca"
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}

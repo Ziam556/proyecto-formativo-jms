@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Check } from "lucide-react";
+import { Check } from "lucide-react";
+import { BackButton } from "@/shared";
 import CreateLoans1 from "../components/CreateLoans-1";
 import CreateLoans2 from "../components/CreateLoans-2";
 import CreateLoans3 from "../components/CreateLoans-3";
@@ -85,12 +86,7 @@ export default function CreateLoansPage() {
 
           {/* En móvil: stepper horizontal compacto */}
           <div className="flex sm:hidden items-center gap-2 mb-4">
-            <button
-              onClick={() => navigate("/dashboard/loans")}
-              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/30 text-white transition mr-2"
-            >
-              <ArrowLeft size={16} />
-            </button>
+            <div className="mr-2"><BackButton to="/dashboard/loans" /></div>
             {steps.map((step, i) => {
               const isCompleted = i < currentStep;
               const isCurrent   = i === currentStep;
@@ -106,20 +102,7 @@ export default function CreateLoansPage() {
           </div>
 
           {/* Botón volver — solo en desktop */}
-          <button
-            onClick={() => navigate("/dashboard/loans")}
-            className="
-              hidden sm:flex
-              w-9 h-9 mb-8
-              items-center justify-center
-              rounded-full
-              hover:bg-white/30
-              text-white
-              transition
-            "
-          >
-            <ArrowLeft size={16} />
-          </button>
+          <div className="hidden sm:flex mb-8"><BackButton to="/dashboard/loans" /></div>
 
           {/* Pasos — solo en desktop */}
           <div className="hidden sm:flex flex-col gap-0">

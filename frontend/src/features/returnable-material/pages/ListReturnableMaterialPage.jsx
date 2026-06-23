@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
-import { SlidersHorizontal } from "lucide-react";
 import { returnableMaterials } from "../data/returnableMaterials.js";
-import { DataTable, StatsPills, ReportDropdown, BackButton, Input, Select } from "@/shared";
+import { DataTable, StatsPills, ReportDropdown, BackButton, Input, Select, ClearFiltersButton } from "@/shared";
 import { returnableMaterialColumns } from "../table/returnableMaterialColumns";
 import { returnableMaterialReportFields } from "../reports/config/returnableMaterialReportFields.js";
 import { generateReturnableMaterialReport } from "../reports/services/generateReturnableMaterialReport.js";
@@ -145,21 +144,11 @@ export default function ListReturnableMaterialPage() {
         {/* Limpiar filtros + Reportes */}
         <div className="flex flex-wrap gap-[10px] items-end w-full sm:w-auto">
 
-          <button
-            onClick={clearFilters}
-            className="flex-1 sm:flex-none sm:w-[189px] h-14 flex items-center justify-center gap-[6px] rounded border-0 bg-[#0e7490] text-white text-[0.82rem] font-semibold cursor-pointer box-border"
-          >
-            <SlidersHorizontal size={15} />
-            Limpiar Filtros
-          </button>
+          <ClearFiltersButton onClick={clearFilters} />
 
-          {/* Reportes en fila */}
           <div className="flex flex-row gap-[6px] w-full sm:w-auto flex-wrap">
             <ReportDropdown
               label="Generar reporte de todos los materiales devolutivos"
-              color="#00304D"
-              width={280}
-              height={70}
               onPDF={() =>
                 generateReturnableMaterialReport({
                   format: "pdf",
@@ -177,9 +166,6 @@ export default function ListReturnableMaterialPage() {
             />
             <ReportDropdown
               label="Generar reporte de material devolutivo seleccionado"
-              color="#00304D"
-              width={280}
-              height={70}
               onPDF={() => generateSelectedReport("pdf")}
               onExcel={() => generateSelectedReport("excel")}
             />

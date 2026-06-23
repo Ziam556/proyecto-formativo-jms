@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { BackButton } from "@/shared";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 import { consumableMaterials } from "../data/ConsumableMaterials";
 import EditConsumableMaterial1 from "../components/EditConsumableMaterial-1";
 import EditConsumableMaterial2 from "../components/EditConsumableMaterial-2";
@@ -67,15 +67,10 @@ export default function EditConsumableMaterialPage() {
 
             <div className="w-full sm:w-[90%] min-h-[70vh] mx-auto rounded-2xl bg-[rgba(217,217,217,0.31)] backdrop-blur-xl border border-white/20 flex items-center justify-center relative py-8">
 
-                <button
-                    onClick={() => navigate("/dashboard/consumable-material")}
-                    className="absolute top-4 left-4 bg-transparent border-none cursor-pointer text-white z-[1]"
-                >
-                    <ArrowLeft size={24} />
-                </button>
+                <BackButton to="/dashboard/consumable-material" />
 
                 {/* En paso 1 muestra buscador, en pasos 2 y 3 solo el formulario */}
-                <div className={`flex flex-col sm:flex-row gap-4 w-full sm:${currentStep === 0 ? "w-[95%]" : "w-[84%]"} px-4 sm:px-0`}>
+                <div className={`flex flex-col sm:flex-row gap-4 px-4 sm:px-0 ${currentStep === 0 ? "w-full sm:w-[95%]" : "w-full sm:w-[84%]"}`}>
 
                     {/* CONTENEDOR STEPPER + FORMULARIO */}
                     <div className="flex-1 rounded-xl bg-white/30 flex flex-col sm:flex-row overflow-hidden">

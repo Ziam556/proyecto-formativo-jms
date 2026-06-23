@@ -1,26 +1,7 @@
+import { StateChip } from "@/shared";
 import ConsumableMaterialRowActions from "../components/ConsumableMaterialRowActions";
 
-const stateColors = {
-  Disponible: "bg-green-500",
-  "No Disponible": "bg-amber-500",
-  Prestamo: "bg-blue-500",
-  Baja: "bg-red-500",
-  Traslado: "bg-purple-500",
-  Mantenimiento: "bg-gray-500",
-};
 
-function StateChip({ value }) {
-  const colorClass =
-    stateColors[value] || "bg-gray-500";
-
-  return (
-    <span
-      className={`${colorClass} text-white rounded-full px-[10px] py-[2px] text-[0.78rem] font-semibold whitespace-nowrap`}
-    >
-      {value}
-    </span>
-  );
-}
 
 export const consumableMaterialColumns = [
   {
@@ -121,7 +102,14 @@ export const consumableMaterialColumns = [
     header: "Estado",
 
     cell: ({ getValue }) => (
-      <StateChip value={getValue()} />
+      <StateChip value={getValue()} customClasses={
+  Disponible:      "bg-green-500 text-white",
+  "No Disponible": "bg-amber-500 text-white",
+  Prestamo:        "bg-blue-500 text-white",
+  Baja:            "bg-red-500 text-white",
+  Traslado:        "bg-purple-500 text-white",
+  Mantenimiento:   "bg-gray-500 text-white",
+} />
     ),
   },
 

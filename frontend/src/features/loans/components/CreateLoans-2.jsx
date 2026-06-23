@@ -1,7 +1,5 @@
-import { InputForList, Button } from "@/shared";
+import { Input, Button, DatePicker } from "@/shared";
 import { useState } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { CalendarDays } from "lucide-react";
 
 const inputClass = `
@@ -17,8 +15,8 @@ export default function CreateLoans2({ onNext, onBack }) {
   const [fields, setFields] = useState({
     file: "",
     amount: "",
-    departureDates: null,
-    deliveryDates: null,
+    departureDates: "",
+    deliveryDates: "",
     justificationForUse: "",
   });
 
@@ -46,9 +44,8 @@ export default function CreateLoans2({ onNext, onBack }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-5">
 
         {/* FICHA */}
-        <InputForList
+        <Input
           label="Ficha/Grupo aprendices"
-          labelClassName="text-black font-semibold text-sm"
           type="text"
           value={fields.file}
           onChange={(e) => setFields((p) => ({ ...p, file: e.target.value }))}
@@ -56,9 +53,8 @@ export default function CreateLoans2({ onNext, onBack }) {
         />
 
         {/* CANTIDAD */}
-        <InputForList
+        <Input
           label="Cantidad (Consumo)"
-          labelClassName="text-black font-semibold text-sm"
           type="number"
           value={fields.amount}
           onChange={(e) => setFields((p) => ({ ...p, amount: e.target.value }))}
@@ -66,34 +62,22 @@ export default function CreateLoans2({ onNext, onBack }) {
         />
 
         {/* FECHA SALIDA */}
-        <div className="flex flex-col gap-1">
-          <label className="text-sm font-semibold text-black">
-            Fecha de salida
-          </label>
-          <DatePicker
-            selected={fields.departureDates}
-            onChange={(date) => setFields((p) => ({ ...p, departureDates: date }))}
-            placeholderText="Seleccione la fecha de salida"
-            dateFormat="dd/MM/yyyy"
-            wrapperClassName="w-full"
-            className={inputClass}
-          />
-        </div>
+        <DatePicker
+          label="Fecha de salida"
+          name="departureDates"
+          value={fields.departureDates}
+          onChange={(e) => setFields((p) => ({ ...p, departureDates: e.target.value }))}
+          placeholder="Seleccione la fecha de salida"
+        />
 
         {/* FECHA ENTREGA */}
-        <div className="flex flex-col gap-1">
-          <label className="text-sm font-semibold text-black">
-            Fecha de entrega (Devolutivo)
-          </label>
-          <DatePicker
-            selected={fields.deliveryDates}
-            onChange={(date) => setFields((p) => ({ ...p, deliveryDates: date }))}
-            placeholderText="Seleccione la fecha de entrega"
-            dateFormat="dd/MM/yyyy"
-            wrapperClassName="w-full"
-            className={inputClass}
-          />
-        </div>
+        <DatePicker
+          label="Fecha de entrega (Devolutivo)"
+          name="deliveryDates"
+          value={fields.deliveryDates}
+          onChange={(e) => setFields((p) => ({ ...p, deliveryDates: e.target.value }))}
+          placeholder="Seleccione la fecha de entrega"
+        />
 
       </div>
 

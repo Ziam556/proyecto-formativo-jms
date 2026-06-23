@@ -1,4 +1,4 @@
-import { InputForList, DataTable, Button } from "@/shared";
+import { Input, DataTable, Button, Select } from "@/shared";
 import { useState, useMemo } from "react";
 import materialsTypes from "../../../../data/selects/materialsTypes.json";
 import { Loans } from "../data/Loans.js";
@@ -38,21 +38,21 @@ export default function CreateLoans1({ formData, onNext }) {
 
       {/* FILTROS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <InputForList
+        <Input
           label="Placa Sena"
           type="search"
           value={filters.materialPlate}
           onChange={(e) => setFilters((f) => ({ ...f, materialPlate: e.target.value }))}
           placeholder="Ingrese la placa SENA"
         />
-        <InputForList
+        <Input
           label="Serial"
           type="search"
           value={filters.materialSerial}
           onChange={(e) => setFilters((f) => ({ ...f, materialSerial: e.target.value }))}
           placeholder="Ingrese el serial"
         />
-        <InputForList
+        <Input
           label="Nombre del material"
           type="search"
           value={filters.elementName}
@@ -60,30 +60,14 @@ export default function CreateLoans1({ formData, onNext }) {
           placeholder="Buscar material"
         />
 
-        {/* SELECT TIPO */}
-        <div className="flex flex-col gap-1">
-          <label className="text-sm font-semibold text-black">
-            Tipo de Material
-          </label>
-          <select
-            value={filters.materialsTypes}
-            onChange={(e) => setFilters((f) => ({ ...f, materialsTypes: e.target.value }))}
-            className="
-              w-full h-[56px]
-              rounded-md
-              border border-black/20
-              px-3 text-sm text-black
-              bg-[rgba(217,217,217,0.54)]
-              outline-none
-              backdrop-blur-sm
-            "
-          >
-            <option value="">Selecciona el tipo de material</option>
-            {materialsTypes.map((s) => (
-              <option key={s.id} value={s.id}>{s.label}</option>
-            ))}
-          </select>
-        </div>
+        <Select
+          label="Tipo de Material"
+          name="materialsTypes"
+          value={filters.materialsTypes}
+          options={materialsTypes}
+          onChange={(e) => setFilters((f) => ({ ...f, materialsTypes: e.target.value }))}
+          placeholder="Selecciona el tipo de material"
+        />
       </div>
 
       {/* TABLA */}

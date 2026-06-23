@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
-import { Input, Button, Select } from "@/shared";
-import DatePicker from "react-datepicker";
+import { Input, Button, Select, DatePicker } from "@/shared";
 import { getStateTypes } from "../services/selectService";
-import "react-datepicker/dist/react-datepicker.css";
 
 export default function CreateConsumable3({ formData, onSave, onBack }) {
   const [states, setStates] = useState([]);
@@ -10,7 +8,7 @@ export default function CreateConsumable3({ formData, onSave, onBack }) {
   const [fields, setFields] = useState({
     materialState: formData.materialState || "",
     materialDescription: formData.materialDescription || "",
-    MaterialPurchaseDate: formData.MaterialPurchaseDate || null,
+    MaterialPurchaseDate: formData.MaterialPurchaseDate || "",
     materialLocation: formData.materialLocation || "",
   });
 
@@ -72,30 +70,13 @@ export default function CreateConsumable3({ formData, onSave, onBack }) {
         error={errors.materialDescription}
       />
 
-      <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium text-text-primary">
-          Fecha de compra
-        </label>
-
-        <DatePicker
-          selected={fields.MaterialPurchaseDate}
-          onChange={(date) =>
-            setFields((prev) => ({
-              ...prev,
-              MaterialPurchaseDate: date,
-            }))
-          }
-          placeholderText="Selecciona la fecha de compra"
-          dateFormat="dd/MM/yyyy"
-          className="w-full rounded-lg px-4 py-3 text-sm bg-slate-200/70"
-        />
-
-        {errors.MaterialPurchaseDate && (
-          <span className="text-red-500 text-xs">
-            {errors.MaterialPurchaseDate}
-          </span>
-        )}
-      </div>
+      <DatePicker
+        label="Fecha de compra"
+        name="MaterialPurchaseDate"
+        value={fields.MaterialPurchaseDate}
+        onChange={handleChange}
+        error={errors.MaterialPurchaseDate}
+      />
 
       <Input
         label="Ubicación"

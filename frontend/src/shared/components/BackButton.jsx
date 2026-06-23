@@ -6,7 +6,8 @@ import { ArrowLeft } from "lucide-react";
 // Usa IconButton internamente, así no hay que repetir estilos.
 // Si recibe "to" navega a esa ruta, si no, va a la página anterior con navigate(-1).
 
-export default function BackButton({ to, onClick }) {
+// dark=true → flecha negra (para fondos claros como UserProfilePage)
+export default function BackButton({ to, onClick, dark = false }) {
     const navigate = useNavigate();
 
     const handleClick = () => {
@@ -15,6 +16,8 @@ export default function BackButton({ to, onClick }) {
         navigate(-1);
     };
 
+    const color = dark ? "#000" : "#fff";
+
     return (
         <IconButton
             onClick={handleClick}
@@ -22,9 +25,9 @@ export default function BackButton({ to, onClick }) {
             variant="ghost"
             hitSize={36}
             iconSize={22}
-            className="text-white shrink-0"
+            className={dark ? "text-black shrink-0" : "text-white shrink-0"}
         >
-            <ArrowLeft size={22} color="#fff" />
+            <ArrowLeft size={22} color={color} />
         </IconButton>
     );
 }
