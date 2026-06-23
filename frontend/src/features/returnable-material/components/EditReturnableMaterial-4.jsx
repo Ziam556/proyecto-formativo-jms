@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Input, Button, Select, FileInput } from "@/shared";
+import { Input, Button, Select, FileInput, alertWarning, alertError  } from "@/shared";
 
 const STATE_OPTIONS = [
   { value: "Disponible",    label: "Disponible" },
@@ -53,8 +53,16 @@ export default function EditReturnableMaterial4({ formData = {}, onSave, onBack 
       if (!fields.materialLength) newErrors.materialLength = "El largo es requerido";
       if (!fields.materialDepth)  newErrors.materialDepth  = "La profundidad es requerida";
     }
-    if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return; }
-    onSave({ ...fields, isEnabled });
+    if (Object.keys(newErrors).length > 0) 
+      { setErrors(newErrors); 
+        alertWarning("Campos incompletos", "Por favor completa todos los campos requeridos antes de guardar.");
+        return; }
+    try {
+            onSave(fields);
+        } catch (err) {
+            console.error("Error al guardar material:", err);
+            alertError("Error al guardar", err.message || "Ocurrió un error inesperado. Intenta de nuevo.");
+        }
   };
 
   return (
