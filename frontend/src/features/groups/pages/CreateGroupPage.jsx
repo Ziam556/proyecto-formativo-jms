@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { createGroup } from "../services/groupService";
+import { Input, Button } from "@/shared";
 
 const permissionModules = [
     {
@@ -295,10 +296,9 @@ export default function CreateGroupPage() {
                         </div>
 
                         {/* Permisos grupales */}
-                        <div>
-                            <label className="text-white text-[0.85rem]">Permisos grupales</label>
-                            <input
-                                className={`w-full p-[10px_14px] rounded-lg border border-[rgba(0,0,0,0.2)] bg-[rgba(217,217,217,0.54)] text-[0.9rem] mt-1 ${permisoType === "grupal" ? "opacity-100" : "opacity-50"}`}
+                        <div className={permisoType === "grupal" ? "opacity-100" : "opacity-50"}>
+                            <Input
+                                label="Permisos grupales"
                                 placeholder="Nombre del grupo"
                                 value={groupName}
                                 onChange={(e) => setGroupName(e.target.value)}
@@ -308,9 +308,8 @@ export default function CreateGroupPage() {
 
                         {/* Número de ficha */}
                         <div>
-                            <label className="text-white text-[0.85rem]">Numero de ficha</label>
-                            <input
-                                className="w-full p-[10px_14px] rounded-lg border border-[rgba(0,0,0,0.2)] bg-[rgba(217,217,217,0.54)] text-[0.9rem] mt-1"
+                            <Input
+                                label="Numero de ficha"
                                 placeholder="Numero"
                                 value={ficha}
                                 onChange={(e) => setFicha(e.target.value)}
@@ -318,12 +317,11 @@ export default function CreateGroupPage() {
                         </div>
 
                         {/* Botón Guardar */}
-                        <button
-                            onClick={handleSave}
-                            className="mt-2 py-3 px-3 rounded-[30px] bg-[#700D7C] border-0 text-white font-semibold text-[0.95rem] cursor-pointer"
-                        >
-                            Guardar
-                        </button>
+                        <div className="mt-2">
+                            <Button variant="primary" onClick={handleSave} className="w-full">
+                                Guardar
+                            </Button>
+                        </div>
                     </div>
 
                     {/* Panel derecho — módulos de permisos */}

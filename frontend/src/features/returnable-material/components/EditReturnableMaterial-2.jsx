@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Input, Button, FileInput } from "@/shared";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import { Input, Button, FileInput, DatePicker } from "@/shared";
 
 export default function EditReturnableMaterial2({ formData = {}, onNext, onBack }) {
   const [fields, setFields] = useState({
@@ -9,7 +7,7 @@ export default function EditReturnableMaterial2({ formData = {}, onNext, onBack 
     materialModel:        formData.materialModel        || "",
     materialSerial:       formData.materialSerial       || "",
     materialImage:        formData.materialImage        || [],
-    materialPurchaseDate: formData.materialPurchaseDate || null,
+    materialPurchaseDate: formData.materialPurchaseDate || "",
   });
   const [errors, setErrors] = useState({});
 
@@ -71,24 +69,13 @@ export default function EditReturnableMaterial2({ formData = {}, onNext, onBack 
         )}
       </div>
 
-      <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium text-text-primary">
-          Fecha de compra <span className="text-red-400">*</span>
-        </label>
-        <DatePicker
-          selected={fields.materialPurchaseDate}
-          onChange={(date) => {
-            setFields((prev) => ({ ...prev, materialPurchaseDate: date }));
-            setErrors((prev) => ({ ...prev, materialPurchaseDate: "" }));
-          }}
-          placeholderText="Selecciona la fecha"
-          dateFormat="dd/MM/yyyy"
-          className="w-full rounded-lg px-4 py-3 text-sm bg-[rgba(220,225,240,0.7)]"
-        />
-        {errors.materialPurchaseDate && (
-          <span className="text-red-500 text-xs">{errors.materialPurchaseDate}</span>
-        )}
-      </div>
+      <DatePicker
+        label="Fecha de compra *"
+        name="materialPurchaseDate"
+        value={fields.materialPurchaseDate}
+        onChange={handleChange}
+        error={errors.materialPurchaseDate}
+      />
 
       <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-4">
         <Button variant="secondary" size="sm" onClick={onBack}>Atrás</Button>

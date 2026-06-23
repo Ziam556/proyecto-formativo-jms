@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { BackButton } from "@/shared";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 import { createReturnableMaterial } from "../services/returnableMaterialService";
 import CreateReturnable1 from "../components/CreateReturnable-1";
 import CreateReturnable2 from "../components/CreateReturnable-2";
@@ -70,12 +70,7 @@ export default function CreateReturnableMaterialPage() {
             <div className="w-full max-w-[95%] mx-auto rounded-2xl bg-[rgba(217,217,217,0.31)] backdrop-blur-[16px] border border-white/20 flex items-center justify-center relative py-8 sm:py-0 sm:h-[75vh]">
 
                 {/* Flecha arriba izquierda */}
-                <button
-                    onClick={() => navigate("/dashboard/returnable-material")}
-                    className="absolute top-4 left-4 bg-transparent border-0 cursor-pointer text-white z-[1]"
-                >
-                    <ArrowLeft size={24} />
-                </button>
+                <BackButton to="/dashboard/returnable-material" />
 
                 {/* Contenedor interior */}
                 <div className="w-[95%] sm:w-[84%] h-auto sm:h-[89%] rounded-xl bg-[rgba(255,255,255,0.31)] flex flex-col sm:flex-row overflow-hidden">

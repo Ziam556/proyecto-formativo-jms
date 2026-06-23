@@ -1,12 +1,9 @@
-import { Input } from "@/shared";
 import { useEffect, useState, useMemo } from "react";
+import { Input, Button, BackButton, DataTable, DatePicker, Textarea } from "@/shared";
 import { Loans } from "../data/Loans";
 import { loansColumns } from "../table/loansColumns";
-import { Button, BackButton, DataTable } from "@/shared";
 import prestamo from "@/assets/images/prestamo.png";
 import { getMaterialsTypes } from "../services/selectService";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 
 const STATE_CLASS = {
   Disponible: "bg-green-600",
@@ -34,8 +31,8 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
     loansId:         formData?.loansId        || "",
     fichaGrupo:      formData?.fichaGrupo     || "Ficha 2850123",
     cantidadConsumo: formData?.cantidadConsumo || "20",
-    fechaSalida:     formData?.fechaSalida     ? new Date(formData.fechaSalida)  : new Date("2026-05-26"),
-    fechaEntrega:    formData?.fechaEntrega    ? new Date(formData.fechaEntrega) : new Date("2026-05-30"),
+    fechaSalida:     formData?.fechaSalida     ? formData.fechaSalida  : "2026-05-26",
+    fechaEntrega:    formData?.fechaEntrega    ? formData.fechaEntrega : "2026-05-30",
     justificacion:   formData?.justificacion   || "Materiales requeridos para practica del modulo de mantenimiento preventivo en el laboratorio de sistemas",
     usuarioSolicita: formData?.usuarioSolicita || "@NameUser",
   });
@@ -52,19 +49,13 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  const handleDateChange = (name, date) => {
-    setFields((prev) => ({ ...prev, [name]: date }));
-    setErrors((prev) => ({ ...prev, [name]: "" }));
-  };
-
   const handleSave = () => {
     const newErrors = {};
 
     if (!fields.loansId)         newErrors.loansId         = "El ID es requerido";
     if (!fields.fichaGrupo)      newErrors.fichaGrupo      = "La ficha es requerida";
     if (!fields.cantidadConsumo) newErrors.cantidadConsumo = "La cantidad es requerida";
-    if (!fields.fechaSalida || !(fields.fechaSalida instanceof Date))
-                                 newErrors.fechaSalida     = "La fecha de salida es requerida";
+    if (!fields.fechaSalida)     newErrors.fechaSalida     = "La fecha de salida es requerida";
     if (!fields.usuarioSolicita) newErrors.usuarioSolicita = "El usuario es requerido";
     if (!fields.justificacion)   newErrors.justificacion   = "La justificación es requerida";
 
@@ -144,64 +135,49 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
 
         <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-          <div className="flex flex-col gap-1">
-            <label className="text-white/70 text-xs">Ficha / Grupo Aprendices</label>
-            <input
-              name="fichaGrupo"
-              value={fields.fichaGrupo}
-              onChange={handleChange}
-              className="w-full h-[50px] bg-white/80 rounded-[8px] px-3 text-black text-sm outline-none focus:ring-2 focus:ring-purple-400"
-            />
-            {errors.fichaGrupo && <span className="text-red-400 text-xs">{errors.fichaGrupo}</span>}
-          </div>
+          <Input
+            label="Ficha / Grupo Aprendices"
+            name="fichaGrupo"
+            value={fields.fichaGrupo}
+            onChange={handleChange}
+            error={errors.fichaGrupo}
+          />
 
-          <div className="flex flex-col gap-1">
-            <label className="text-white/70 text-xs">Cantidad (Consumo)</label>
-            <input
-              name="cantidadConsumo"
-              type="number"
-              value={fields.cantidadConsumo}
-              onChange={handleChange}
-              className="w-full h-[50px] bg-white/80 rounded-[8px] px-3 text-black text-sm outline-none focus:ring-2 focus:ring-purple-400"
-            />
-            {errors.cantidadConsumo && <span className="text-red-400 text-xs">{errors.cantidadConsumo}</span>}
-          </div>
+          <Input
+            label="Cantidad (Consumo)"
+            name="cantidadConsumo"
+            type="number"
+            value={fields.cantidadConsumo}
+            onChange={handleChange}
+            error={errors.cantidadConsumo}
+          />
 
-          <div className="flex flex-col gap-1">
-            <label className="text-white/70 text-xs">Fecha Salida</label>
-            <DatePicker
-              selected={fields.fechaSalida}
-              onChange={(date) => handleDateChange("fechaSalida", date)}
-              placeholderText="Seleccione fecha"
-              dateFormat="dd/MM/yyyy"
-              className="w-full h-[50px] bg-white/80 rounded-[8px] px-3 text-black text-sm outline-none focus:ring-2 focus:ring-purple-400"
-            />
-            {errors.fechaSalida && <span className="text-red-400 text-xs">{errors.fechaSalida}</span>}
-          </div>
+          <DatePicker
+            label="Fecha Salida"
+            name="fechaSalida"
+            value={fields.fechaSalida}
+            onChange={handleChange}
+            error={errors.fechaSalida}
+          />
 
-          <div className="flex flex-col gap-1">
-            <label className="text-white/70 text-xs">Fecha Entrega (Devolutivo)</label>
-            <DatePicker
-              selected={fields.fechaEntrega}
-              onChange={(date) => handleDateChange("fechaEntrega", date)}
-              placeholderText="Seleccione fecha"
-              dateFormat="dd/MM/yyyy"
-              className="w-full h-[50px] bg-white/80 rounded-[8px] px-3 text-black text-sm outline-none focus:ring-2 focus:ring-purple-400"
-            />
-          </div>
+          <DatePicker
+            label="Fecha Entrega (Devolutivo)"
+            name="fechaEntrega"
+            value={fields.fechaEntrega}
+            onChange={handleChange}
+          />
 
         </div>
 
-        <div className="mt-4 flex flex-col gap-1">
-          <label className="text-white/70 text-xs">Justificación de uso</label>
-          <textarea
+        <div className="mt-4">
+          <Textarea
+            label="Justificación de uso"
             name="justificacion"
             value={fields.justificacion}
             onChange={handleChange}
             rows={3}
-            className="w-full bg-white/80 rounded-[8px] px-3 py-2 text-black text-sm outline-none focus:ring-2 focus:ring-purple-400 resize-none"
+            error={errors.justificacion}
           />
-          {errors.justificacion && <span className="text-red-400 text-xs">{errors.justificacion}</span>}
         </div>
 
         {/* USUARIO */}
@@ -211,16 +187,13 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
         </div>
 
         <div className="mt-5">
-          <div className="flex flex-col gap-1">
-            <label className="text-white/70 text-xs">Usuario solicitante</label>
-            <input
-              name="usuarioSolicita"
-              value={fields.usuarioSolicita}
-              onChange={handleChange}
-              className="w-full h-[50px] bg-white/80 rounded-[8px] px-3 text-black text-sm outline-none focus:ring-2 focus:ring-purple-400"
-            />
-            {errors.usuarioSolicita && <span className="text-red-400 text-xs">{errors.usuarioSolicita}</span>}
-          </div>
+          <Input
+            label="Usuario solicitante"
+            name="usuarioSolicita"
+            value={fields.usuarioSolicita}
+            onChange={handleChange}
+            error={errors.usuarioSolicita}
+          />
         </div>
 
         {/* BOTONES */}

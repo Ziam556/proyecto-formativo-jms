@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BackButton } from "@/shared";
+import { BackButton , Field } from "@/shared";
 import { ListLoans } from "../data/ListLoans";
 
 const TYPE_STYLES = {
@@ -7,16 +7,6 @@ const TYPE_STYLES = {
   Consumo:    { background: "#00C8DC", color: "#fff" },
 };
 
-function Field({ label, value }) {
-  return (
-    <div className="bg-white/80 rounded-[8px] p-3 flex-1 min-w-[140px]">
-      <span className="text-black/50 text-xs font-semibold uppercase tracking-wide">
-        {label}
-      </span>
-      <p className="text-black font-medium mt-[2px]">{value ?? "—"}</p>
-    </div>
-  );
-}
 
 function TypeChip({ value }) {
   const s = TYPE_STYLES[value] || { background: "#6b7280", color: "#fff" };

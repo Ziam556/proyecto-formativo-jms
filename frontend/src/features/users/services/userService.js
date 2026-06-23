@@ -35,3 +35,37 @@ export async function createUser(userData, imageFile) {
 
   return data;
 }
+
+export async function updateUser(id, userData, imageFile) {
+  const formData = new FormData();
+
+  const fields = [
+    "userName", "userEmail", "userEmailVerification", "userEmailInstitutional",
+    "userPhone", "userSecondaryPhone", "userDocumentType", "userDocumentNumber",
+    "userType", "userAddress", "userPassword", "startDate", "endDate",
+    "userGroup", "isEnabled",
+  ];
+
+  fields.forEach((key) => {
+    if (userData[key] !== null && userData[key] !== undefined) {
+      formData.append(key, userData[key]);
+    }
+  });
+
+  if (imageFile) {
+    formData.append("userImage", imageFile);
+  }
+
+  const response = await fetch(`${API_URL}/${id}`, {
+    method: "PUT",
+    body: formData,
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || "Error al actualizar el usuario");
+  }
+
+  return data;
+}

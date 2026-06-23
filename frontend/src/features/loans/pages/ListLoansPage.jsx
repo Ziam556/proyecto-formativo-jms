@@ -1,6 +1,5 @@
 import { useState, useMemo } from "react";
 
-import { SlidersHorizontal } from "lucide-react";
 
 import { Loans } from "../data/Loans.js";
 
@@ -10,6 +9,7 @@ import {
   DataTable,
   StatsPills,
   ReportDropdown,
+  ClearFiltersButton,
   BackButton,
   Input,
   Select,
@@ -217,71 +217,33 @@ export default function ListLoansPage() {
           />
         </div>
 
-        {/* BOTON */}
-        <button
-          onClick={clearFilters}
-          className="
-            h-[56px]
-            px-5
-            flex
-            items-center
-            justify-center
-            gap-[6px]
-            rounded
-            bg-cyan-700
-            border-none
-            text-white
-            text-[0.82rem]
-            font-semibold
-            cursor-pointer
-            whitespace-nowrap
-          "
-        >
+        {/* Limpiar filtros + Reportes */}
+        <ClearFiltersButton onClick={clearFilters} />
 
-          <SlidersHorizontal size={15} />
-
-          Limpiar Filtros
-        </button>
-
-        <ReportDropdown
-          label="Generar reporte de todos los materiales consumos"
-          color="#00304D"
-          width={280}
-          height={56}
-          onPDF={() =>
-            generateConsumableMaterialReport({
-              format: "pdf",
-              selectedFields:
-                consumableMaterialReportFields,
-              scope: "all",
-            })
-          }
-          onExcel={() =>
-            generateConsumableMaterialReport({
-              format: "excel",
-              selectedFields:
-                consumableMaterialReportFields,
-              scope: "all",
-            })
-          }
-        />
-
-        <ReportDropdown
-          label="Generar reporte de material consumo seleccionado"
-          color="#00304D"
-          width={280}
-          height={56}
-          onPDF={() =>
-            generateSelectedReport(
-              "pdf"
-            )
-          }
-          onExcel={() =>
-            generateSelectedReport(
-              "excel"
-            )
-          }
-        />
+        <div className="flex flex-row gap-[6px] w-full sm:w-auto flex-wrap">
+          <ReportDropdown
+            label="Generar reporte de todos los materiales consumos"
+            onPDF={() =>
+              generateConsumableMaterialReport({
+                format: "pdf",
+                selectedFields: consumableMaterialReportFields,
+                scope: "all",
+              })
+            }
+            onExcel={() =>
+              generateConsumableMaterialReport({
+                format: "excel",
+                selectedFields: consumableMaterialReportFields,
+                scope: "all",
+              })
+            }
+          />
+          <ReportDropdown
+            label="Generar reporte de material consumo seleccionado"
+            onPDF={() => generateSelectedReport("pdf")}
+            onExcel={() => generateSelectedReport("excel")}
+          />
+        </div>
       </div>
 
       {/* TABLA */}

@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import { users as usersData } from "../data/users.js";
-import { DataTable, StatsPills, ReportDropdown, BackButton, Input, Select } from "@/shared";
+import { ClearFiltersButton, DataTable, StatsPills, ReportDropdown, BackButton, Input, Select } from "@/shared";
 import { userColumns } from "../table/userColumns.jsx";
 import { userReportFields } from "../reports/config/userReportFields.js";
 import { generateUserReport } from "../reports/services/generateUserReport.js";
@@ -152,18 +152,11 @@ export default function ListUserPage() {
                 {/* Limpiar filtros + Reportes */}
                 <div className="flex flex-wrap gap-[10px] items-end w-full sm:w-auto">
 
-                    <button
-                        onClick={clearFilters}
-                        className="h-14 flex-1 sm:flex-none sm:w-[189px] flex items-center justify-center gap-[6px] rounded border-0 bg-[#0e7490] text-white text-[0.82rem] font-semibold cursor-pointer box-border"
-                    >
-                        <SlidersHorizontal size={15} />
-                        Limpiar Filtros
-                    </button>
+                    <ClearFiltersButton onClick={clearFilters} />
 
                     <div className="flex flex-row gap-[6px] w-full sm:w-auto flex-wrap">
                         <ReportDropdown
                             label="Generar reporte de todos los usuarios"
-                            
                             onPDF={() => handleAllReport("pdf")}
                             onExcel={() => handleAllReport("excel")}
                         />

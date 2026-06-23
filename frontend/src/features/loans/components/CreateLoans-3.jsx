@@ -1,4 +1,4 @@
-import { InputForList, Button } from "@/shared";
+import { Input, Button } from "@/shared";
 import { useState } from "react";
 import { User } from "lucide-react";
 
@@ -39,56 +39,34 @@ export default function CreateLoans3({ onSave, onBack }) {
 
       {/* USUARIO */}
       <div className="mb-5">
-        <InputForList
+        <Input
           label="Usuario solicitante"
-          labelClassName="text-black font-semibold text-sm"
           type="text"
           value={fields.user}
           onChange={(e) => setFields((p) => ({ ...p, user: e.target.value }))}
           placeholder="Nombre completo"
+          error={errors.user}
         />
-        {errors.user && (
-          <p className="text-red-500 text-xs mt-1">{errors.user}</p>
-        )}
+
       </div>
 
       {/* CÓDIGO DE VERIFICACIÓN */}
       <div className="mb-2">
-        <label className="text-sm font-semibold text-black block mb-1">
-          Código de verificación
-        </label>
-        <div className="flex gap-3">
+        <div className="flex gap-3 items-end">
           <div className="flex-1">
-            <input
-              type="number"
+            <Input
+              label="Código de verificación"
               value={fields.verificationCode}
               onChange={(e) => setFields((p) => ({ ...p, verificationCode: e.target.value }))}
               placeholder="Ingrese código"
-              className="
-                w-full h-[56px]
-                rounded-md border border-black/20
-                px-4 text-sm
-                bg-[rgba(217,217,217,0.54)]
-                outline-none backdrop-blur-sm
-              "
+              error={errors.verificationCode}
             />
           </div>
-          <button
-            type="button"
-            className="
-              h-[56px] px-6
-              rounded-md
-              bg-green-600 hover:bg-green-700
-              text-white text-sm font-semibold
-              transition flex-shrink-0
-            "
-          >
+          <Button variant="primary" size="md" className="!min-w-0 px-6 shrink-0">
             Verificar
-          </button>
+          </Button>
         </div>
-        {errors.verificationCode && (
-          <p className="text-red-500 text-xs mt-1">{errors.verificationCode}</p>
-        )}
+
       </div>
 
       {/* BOTONES */}

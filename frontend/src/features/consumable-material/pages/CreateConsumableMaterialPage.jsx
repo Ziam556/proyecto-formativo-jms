@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { BackButton } from "@/shared";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 import { createConsumableMaterial } from "../services/consumableMaterialService";
 
 import CreateConsumable1 from "../components/CreateConsumable-1";
@@ -94,12 +94,7 @@ export default function CreateConsumableMaterialPage() {
             <div className="w-full max-w-[95%] mx-auto rounded-2xl bg-[rgba(217,217,217,0.31)] backdrop-blur-xl border border-white/20 flex items-center justify-center relative py-8 sm:py-0 sm:h-[75vh]">
 
                 {/* FLECHA */}
-                <button
-                    onClick={() => navigate("/dashboard/consumable-material")}
-                    className="absolute top-4 left-4 bg-transparent border-none cursor-pointer text-white z-[1]"
-                >
-                    <ArrowLeft size={24} />
-                </button>
+                <BackButton to="/dashboard/consumable-material" />
 
                 {/* CONTENEDOR INTERIOR */}
                 <div className="w-[95%] sm:w-[84%] h-auto sm:h-[89%] rounded-xl bg-white/30 flex flex-col sm:flex-row overflow-hidden">
