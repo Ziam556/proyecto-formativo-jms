@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Camera, User, Search } from "lucide-react";
-import { FileInput, BackButton } from "@/shared";
+import { Search, User } from "lucide-react";
+import { AvatarUpload, BackButton } from "@/shared";
 import UserEditForm from "../components/UserEditForm";
 import { users } from "../data/users";
 
@@ -12,20 +12,13 @@ export default function EditUserPage() {
 
     const [selectedUser, setSelectedUser] = useState(preloaded);
     const [isEnabled, setIsEnabled]       = useState(preloaded?.enabled ?? true);
-    const [userImage, setUserImage]       = useState([]);
-    const [photoPreview, setPhotoPreview] = useState(null);
+    const [imageFile, setImageFile]       = useState(null);
     const [query, setQuery]               = useState("");
-
-    const handleImageChange = (files) => {
-        setUserImage(files);
-        setPhotoPreview(files.length > 0 ? URL.createObjectURL(files[0]) : null);
-    };
 
     const handleSelectUser = (u) => {
         setSelectedUser(u);
         setIsEnabled(u.enabled ?? true);
-        setUserImage([]);
-        setPhotoPreview(null);
+        setImageFile(null);
         setQuery("");
     };
 
@@ -50,30 +43,15 @@ export default function EditUserPage() {
                     <BackButton to="/dashboard/userpage" />
 
                     {/* Avatar */}
-                    <div className="relative mt-6">
-                        <div className="w-[130px] h-[130px] rounded-full bg-[rgba(200,200,220,0.45)] border-2 border-white/60 overflow-hidden flex items-center justify-center">
-                            {photoPreview
-                                ? <img src={photoPreview} className="w-full h-full object-cover" alt="Foto de perfil" />
-                                : <User size={60} color="rgba(90,90,120,0.7)" />
-                            }
-                        </div>
-                        <div className="absolute bottom-1 right-1 w-[32px] h-[32px] rounded-full bg-[#71277A] flex items-center justify-center border-2 border-white pointer-events-none">
-                            <Camera size={15} color="#fff" />
-                        </div>
-                    </div>
-
-                    {/* FileInput foto de perfil */}
-                    <div className="flex flex-col items-center gap-1 w-full">
-                        <label className="text-white text-[0.72rem] text-center">
-                            Foto de perfil
-                        </label>
-                        <FileInput
-                            value={userImage}
-                            onChange={handleImageChange}
-                            accept="image/*"
-                            multiple={false}
-                        />
-                    </div>
+                    <AvatarUpload
+                        value={imageFile}
+                        onChange={setImageFile}
+                        size={130}
+                        previewUrl={selectedUser?.image
+                            ? `http://localhost:4000/${selectedUser.image}`
+                            : null
+                        }
+                    />
 
                     {/* Toggle habilitado / deshabilitado */}
                     <button
@@ -93,7 +71,7 @@ export default function EditUserPage() {
                 <div className="flex-1 min-w-0 rounded-2xl bg-[rgba(217,217,217,0.31)] backdrop-blur-[16px] border border-white/20 p-5 sm:p-7">
                     <UserEditForm
                         initialUser={selectedUser}
-                        userImage={userImage}
+                        userImage={imageFile ? [imageFile] : []}
                         isEnabled={isEnabled}
                         onCancel={() => navigate("/dashboard/userpage")}
                     />

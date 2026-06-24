@@ -73,9 +73,12 @@ export default function EditReturnableMaterialPage() {
                 Editar material Devolutivo
             </h1>
 
-            <div className="w-full sm:w-[90%] min-h-[70vh] mx-auto rounded-2xl bg-[rgba(217,217,217,0.31)] backdrop-blur-xl border border-white/20 flex items-center justify-center relative py-8">
-
+            {/* Flecha regresar */}
+            <div className="w-full sm:w-[90%] mx-auto">
                 <BackButton to="/dashboard/returnable-material" />
+            </div>
+
+            <div className="w-full sm:w-[90%] min-h-[70vh] mx-auto rounded-2xl bg-[rgba(217,217,217,0.31)] backdrop-blur-xl border border-white/20 flex items-center justify-center relative py-8">
 
                 <div className={`flex flex-col sm:flex-row gap-4 px-4 sm:px-0 ${currentStep === 0 ? "w-full sm:w-[95%]" : "w-full sm:w-[84%]"}`}>
 

@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Camera, Plus, User } from "lucide-react";
+import { Plus } from "lucide-react";
 import { GroupOverlay, SecondaryPhoneOverlay } from "./UserOverlays";
 import {
-    Input, Button, Select, DatePicker, FileInput,
+    Input, Button, Select, DatePicker, AvatarUpload,
     alertSuccess, alertError, alertWarning,
 } from "@/shared";
 import { getDocumentTypes, getUserTypes } from "@/features/users/services/selectService";
@@ -40,7 +40,6 @@ export default function UserRegisterForm({ onCancel }) {
     const [groups, setGroups]               = useState([]);
     const [formData, setFormData]           = useState({ ...EMPTY_FORM });
     const [errors, setErrors]               = useState({});
-    const [photoPreview, setPhotoPreview]   = useState(null);
     const [showGroupModal, setShowGroupModal] = useState(false);
     const [showPhoneModal, setShowPhoneModal] = useState(false);
 
@@ -56,9 +55,8 @@ export default function UserRegisterForm({ onCancel }) {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleImageChange = (files) => {
-        setFormData((prev) => ({ ...prev, userImage: files }));
-        setPhotoPreview(files.length > 0 ? URL.createObjectURL(files[0]) : null);
+    const handleImageChange = (file) => {
+        setFormData((prev) => ({ ...prev, userImage: file ? [file] : [] }));
     };
 
     const handleGroupConfirm = (groupId) => {
@@ -74,7 +72,6 @@ export default function UserRegisterForm({ onCancel }) {
     const resetForm = () => {
         setFormData({ ...EMPTY_FORM });
         setErrors({});
-        setPhotoPreview(null);
     };
 
     const handleSubmit = async () => {
@@ -156,23 +153,10 @@ export default function UserRegisterForm({ onCancel }) {
             <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center md:items-start w-full mx-auto">
 
                 {/* ── Foto de perfil ── */}
-                <div className="flex flex-col items-center gap-4 min-w-[160px]">
-                    <div className="relative w-[140px] h-[140px]">
-                        <div className="w-[140px] h-[140px] rounded-full bg-[rgba(200,200,220,0.45)] border-2 border-[rgba(255,255,255,0.6)] overflow-hidden flex items-center justify-center">
-                            {photoPreview
-                                ? <img src={photoPreview} className="w-full h-full object-cover" alt="Foto de perfil" />
-                                : <User size={64} color="rgba(90,90,120,0.7)" />
-                            }
-                        </div>
-                        <div className="absolute bottom-1 right-1 w-[34px] h-[34px] rounded-full bg-[#71277A] flex items-center justify-center border-2 border-white pointer-events-none">
-                            <Camera size={16} color="#fff" />
-                        </div>
-                    </div>
-                    <div className="flex flex-col gap-1 items-center">
-                        <label className="text-white text-[0.75rem] text-center">Foto de perfil</label>
-                        <FileInput value={formData.userImage} onChange={handleImageChange} accept="image/*" multiple={false} />
-                    </div>
-                </div>
+                <AvatarUpload
+                    value={formData.userImage?.[0] ?? null}
+                    onChange={handleImageChange}
+                />
 
                 {/* ── Formulario ── */}
                 {/* FIX: onSubmit en el form llama handleSubmit */}
@@ -207,6 +191,8 @@ export default function UserRegisterForm({ onCancel }) {
 
                         <DatePicker label="Fecha finalización" name="endDate" placeholder="Fecha finalización" value={formData.endDate} onChange={handleChange} error={errors.endDate} />
 
+                        <Input label="Correo electrónico" name="userEmail" type="email" placeholder="Ingrese su correo" value={formData.userEmail} onChange={handleChange} error={errors.userEmail} />
+                        
                         <div>
                             {selectedGroup && (
                                 <span className="text-[0.75rem] text-white block mb-1">
@@ -219,7 +205,7 @@ export default function UserRegisterForm({ onCancel }) {
                             </Button>
                         </div>
 
-                        <Input label="Correo electrónico" name="userEmail" type="email" placeholder="Ingrese su correo" value={formData.userEmail} onChange={handleChange} error={errors.userEmail} />
+                        
 
                         {errors.general && (
                             <div className="col-span-2 text-red-400 text-sm bg-red-900/30 border border-red-500/40 rounded-lg p-3">

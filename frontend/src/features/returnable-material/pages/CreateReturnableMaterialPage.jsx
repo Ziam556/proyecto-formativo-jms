@@ -66,11 +66,13 @@ export default function CreateReturnableMaterialPage() {
                 Registro material devolutivo
             </h1>
 
+            {/* Flecha regresar — fuera del glass, fluye normal arriba izquierda */}
+            <div className="w-full max-w-[95%] mx-auto">
+                <BackButton to="/dashboard/returnable-material" />
+            </div>
+
             {/* Contenedor exterior glass */}
             <div className="w-full max-w-[95%] mx-auto rounded-2xl bg-[rgba(217,217,217,0.31)] backdrop-blur-[16px] border border-white/20 flex items-center justify-center relative py-8 sm:py-0 sm:h-[75vh]">
-
-                {/* Flecha arriba izquierda */}
-                <BackButton to="/dashboard/returnable-material" />
 
                 {/* Contenedor interior */}
                 <div className="w-[95%] sm:w-[84%] h-auto sm:h-[89%] rounded-xl bg-[rgba(255,255,255,0.31)] flex flex-col sm:flex-row overflow-hidden">

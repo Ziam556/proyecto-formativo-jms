@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Input, Button, Select, DatePicker, alertSuccess, alertWarning, alertError  } from "@/shared";
+import { Input, Button, Select, DatePicker, Textarea, alertSuccess, alertWarning, alertError  } from "@/shared";
 import { getStateTypes } from "../services/selectService";
+import { consumableStep3Schema } from "../schemas/consumableStep3Schema";
 
 export default function EditConsumableMaterial3({ formData, onSave, onBack }) {
   const [states, setStates] = useState([]);
@@ -24,24 +25,22 @@ export default function EditConsumableMaterial3({ formData, onSave, onBack }) {
       ...prev,
       [name]: value,
     }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleSave = () => {
-    const newErrors = {};
+    const { MaterialPurchaseDate, ...rest } = fields;
+    const result = consumableStep3Schema.safeParse({
+      ...rest,
+      purchaseDate: MaterialPurchaseDate,
+    });
 
-    if (!fields.materialState)
-      newErrors.materialState = "El estado es requerido";
-
-    if (!fields.materialDescription)
-      newErrors.materialDescription = "La descripción es requerida";
-
-    if (!fields.MaterialPurchaseDate)
-      newErrors.MaterialPurchaseDate = "La fecha es requerida";
-
-    if (!fields.materialLocation)
-      newErrors.materialLocation = "La ubicación es requerida";
-
-    if (Object.keys(newErrors).length > 0) {
+    if (!result.success) {
+      const newErrors = {};
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0] === "purchaseDate" ? "MaterialPurchaseDate" : issue.path[0];
+        if (field && !newErrors[field]) newErrors[field] = issue.message;
+      });
       setErrors(newErrors);
       alertWarning("Campos incompletos", "Por favor completa todos los campos requeridos antes de guardar.");
       return;
@@ -68,7 +67,7 @@ export default function EditConsumableMaterial3({ formData, onSave, onBack }) {
         error={errors.materialState}
       />
 
-      <Input
+      <Textarea
         label="Descripción"
         name="materialDescription"
         placeholder="Escribe la descripción aquí"

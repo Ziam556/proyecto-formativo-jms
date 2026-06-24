@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Input, Button } from "@/shared";
+import { buildReturnableStep3Schema } from "../schemas/returnableStep3Schema";
 
 export default function EditReturnableMaterial3({ formData = {}, onNext, onBack }) {
   const hasPlate = !!formData.materialPlate?.trim();
@@ -19,12 +20,18 @@ export default function EditReturnableMaterial3({ formData = {}, onNext, onBack 
   };
 
   const handleNext = () => {
-    const newErrors = {};
-    if (!fields.materialStoryTeller)                        newErrors.materialStoryTeller = "El cuentadante es requerido";
-    if (!hasPlate && !fields.materialAmount)                newErrors.materialAmount      = "La cantidad es requerida cuando no hay placa";
-    if (!fields.materialUnitValue)                          newErrors.materialUnitValue   = "El valor unitario es requerido";
-    if (!fields.materialTotalValue)                         newErrors.materialTotalValue  = "El valor total es requerido";
-    if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return; }
+    const schema = buildReturnableStep3Schema(hasPlate);
+    const result = schema.safeParse(fields);
+
+    if (!result.success) {
+      const newErrors = {};
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0];
+        if (field && !newErrors[field]) newErrors[field] = issue.message;
+      });
+      setErrors(newErrors);
+      return;
+    }
     onNext(fields);
   };
 

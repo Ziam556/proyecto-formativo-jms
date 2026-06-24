@@ -71,9 +71,9 @@ export default function LoginForm() {
                 >
                     {/* Email */}
                     <div className="flex items-center gap-[10px] bg-[rgba(220,225,240,0.55)] rounded-[10px] px-4 py-[14px] border border-white/50">
-                        <User size={18} color="#555" />
+                        <User size={18} color="#222" strokeWidth={2.2} />
                         <input
-                            className="flex-1 bg-transparent border-0 outline-none text-[0.95rem] text-[#2a2a4a]"
+                            className="flex-1 bg-transparent border-0 outline-none text-[0.95rem] font-semibold text-[#2a2a4a] placeholder:font-semibold placeholder:text-[#2a2a4a]"
                             type="email"
                             name="userEmail"
                             placeholder="Correo electrónico"
@@ -84,9 +84,9 @@ export default function LoginForm() {
 
                     {/* Contraseña */}
                     <div className="flex items-center gap-[10px] bg-[rgba(220,225,240,0.55)] rounded-[10px] px-4 py-[14px] border border-white/50">
-                        <Lock size={18} color="#555" />
+                        <Lock size={18} color="#222" strokeWidth={2.2} />
                         <input
-                            className="flex-1 bg-transparent border-0 outline-none text-[0.95rem] text-[#2a2a4a]"
+                            className="flex-1 bg-transparent border-0 outline-none text-[0.95rem] font-semibold text-[#2a2a4a] placeholder:font-semibold placeholder:text-[#2a2a4a]"
                             type={showPassword ? "text" : "password"}
                             name="userPassword"
                             placeholder="Contraseña"
@@ -98,7 +98,7 @@ export default function LoginForm() {
                             onClick={() => setShowPassword((v) => !v)}
                             className="bg-transparent border-0 cursor-pointer flex"
                         >
-                            {showPassword ? <EyeOff size={18} color="#555" /> : <Eye size={18} color="#555" />}
+                            {showPassword ? <EyeOff size={18} color="#222" strokeWidth={2.2} /> : <Eye size={18} color="#222" strokeWidth={2.2} />}
                         </button>
                     </div>
 
@@ -113,7 +113,7 @@ export default function LoginForm() {
                     )}
 
                     {/* Olvidé contraseña */}
-                    <p className="text-center text-[0.85rem] text-[#8b3a8b] cursor-pointer m-0">
+                    <p className="text-center text-[0.85rem] font-semibold text-[#8b3a8b] cursor-pointer m-0">
                         ¡Olvidé mi contraseña!
                     </p>
 
