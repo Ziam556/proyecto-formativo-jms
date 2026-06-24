@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Input, Button, FileInput } from "@/shared";
+import { consumableStep2Schema } from "../schemas/consumableStep2Schema";
 
 export default function CreateConsumable2({
     formData = {},
@@ -31,29 +32,14 @@ export default function CreateConsumable2({
     };
 
     const handleNext = () => {
-        const newErrors = {};
+        const result = consumableStep2Schema.safeParse(fields);
 
-        if (!fields.materialStoryTeller) {
-            newErrors.materialStoryTeller =
-                "El cuentadante es requerido";
-        }
-
-        if (!fields.materialAmount) {
-            newErrors.materialAmount =
-                "La cantidad es requerida";
-        }
-
-        if (!fields.materialUnitValue) {
-            newErrors.materialUnitValue =
-                "El valor unitario es requerido";
-        }
-
-        if (!fields.materialTotalValue) {
-            newErrors.materialTotalValue =
-                "El valor total es requerido";
-        }
-
-        if (Object.keys(newErrors).length > 0) {
+        if (!result.success) {
+            const newErrors = {};
+            result.error.issues.forEach((issue) => {
+                const field = issue.path[0];
+                if (field && !newErrors[field]) newErrors[field] = issue.message;
+            });
             setErrors(newErrors);
             return;
         }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Input, Button, alertSuccess, alertError, alertWarning } from "@/shared";
 import { getCategoriesTypes } from "../services/selectService";
+import { consumableStep1Schema } from "../schemas/consumableStep1Schema";
 
 export default function CreateConsumable1({
     formData = {},
@@ -37,25 +38,14 @@ export default function CreateConsumable1({
     };
 
     const handleNext = () => {
-        const newErrors = {};
+        const result = consumableStep1Schema.safeParse(fields);
 
-        if (!fields.consumableMaterialId) {
-            newErrors.consumableMaterialId = "El ID es requerido";
-        }
-
-        if (!fields.materialPlate) {
-            newErrors.materialPlate = "La placa es requerida";
-        }
-
-        if (!fields.materialElementName) {
-            newErrors.materialElementName = "El nombre es requerido";
-        }
-
-        if (!fields.materialBrand) {
-            newErrors.materialBrand = "La marca es requerida";
-        }
-
-        if (Object.keys(newErrors).length > 0) {
+        if (!result.success) {
+            const newErrors = {};
+            result.error.issues.forEach((issue) => {
+                const field = issue.path[0];
+                if (field && !newErrors[field]) newErrors[field] = issue.message;
+            });
             setErrors(newErrors);
             return;
         }

@@ -1,236 +1,168 @@
-import { Input, Button, Select, DatePicker } from "@/shared";
-import { useState, useEffect } from "react";
-import { materialSchema } from "../schemas/materialSchema";
-import { getDimensionsTypes, getCategoriesTypes, getStateTypes } from "@/features/returnable-material/services/selectService.js";
+import { useState } from "react";
+import { Input, Button, Select, FileInput, Textarea, alertWarning, alertError  } from "@/shared";
 
-export default function UseEditReturnableMaterial() {
+const STATE_OPTIONS = [
+  { value: "Disponible",    label: "Disponible" },
+  { value: "No disponible", label: "No disponible" },
+  { value: "Mantenimiento", label: "Mantenimiento" },
+  { value: "En préstamo",   label: "En préstamo" },
+  { value: "Traslado",      label: "Traslado" },
+  { value: "Baja",          label: "Baja" },
+];
 
-    const [dimensions, setDimensionsTypes] = useState([]);
-    const [categories, setCategories] = useState([]);
-    const [state, setStateTypes] = useState([]);
+const MAX_SHEET_MB = 3;
 
-    useEffect(() => {
-        getDimensionsTypes().then(setDimensionsTypes);
-        getCategoriesTypes().then(setCategories);
-        getStateTypes().then(setStateTypes);
-    }, [])
+export default function EditReturnableMaterial4({ formData = {}, onSave, onBack }) {
+  const isMuebles = formData.materialCategory === "Muebles y enseres";
 
+  const [isEnabled, setIsEnabled] = useState(formData?.isEnabled ?? true);
 
-    const [formData, setFormData] = useState({
-        returnableMaterialBrand: "",
-        returnableMaterialPlate: "",
-        returnableMaterialModel: "",
-        materialState: "",
-        returnableMaterialAccountHolder: "",
-        returnableMaterialState: "",
-        returnableMaterialAmount: "",
-        returnableMaterialTechnicalSheet: "",
-        returnableMaterialElementName: "",
-        returnableMaterialSerial: "",
-        returnableMaterialCategory: "",
-        returnableMaterialUnitValue: "",
-        returnableMaterialTotalValue: "",
-        returnableMaterialDescription: "",
-        returnableMaterialLocation: "",
-        returnableMaterialDimensions: "",
-    });
+  const [fields, setFields] = useState({
+    materialState:          formData.materialState          || "",
+    materialTechnicalSheet: formData.materialTechnicalSheet || [],
+    materialDescription:    formData.materialDescription    || "",
+    materialLocation:       formData.materialLocation       || "",
+    materialWidth:          formData.materialWidth          || "",
+    materialLength:         formData.materialLength         || "",
+    materialDepth:          formData.materialDepth          || "",
+  });
+  const [errors, setErrors] = useState({});
 
-    const [errors, setErrors] = useState({});
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFields((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
+  };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }))
+  const handleSheetChange = (files) => {
+    if (files.length > 0 && files[0].size > MAX_SHEET_MB * 1024 * 1024) {
+      setErrors((prev) => ({ ...prev, materialTechnicalSheet: `El archivo supera los ${MAX_SHEET_MB}MB` }));
+      return;
     }
+    setFields((prev) => ({ ...prev, materialTechnicalSheet: files }));
+    setErrors((prev) => ({ ...prev, materialTechnicalSheet: "" }));
+  };
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        const result = materialSchema.safeParse(formData);
-        if (!result.success) {
-            const fieldErrors = {};
-            result.error.issues.forEach((issue) => {
-                const field = issue.path[0]
-                fieldErrors[field] = issue.message
-            });
-            setErrors(fieldErrors)
-            return;
+  const handleSave = () => {
+    const newErrors = {};
+    if (!fields.materialState)                  newErrors.materialState          = "El estado es requerido";
+    if (!fields.materialTechnicalSheet?.length) newErrors.materialTechnicalSheet = "La ficha técnica es requerida";
+    if (!fields.materialDescription)            newErrors.materialDescription    = "La descripción es requerida";
+    if (isMuebles) {
+      if (!fields.materialWidth)  newErrors.materialWidth  = "El ancho es requerido";
+      if (!fields.materialLength) newErrors.materialLength = "El largo es requerido";
+      if (!fields.materialDepth)  newErrors.materialDepth  = "La profundidad es requerida";
+    }
+    if (Object.keys(newErrors).length > 0) 
+      { setErrors(newErrors); 
+        alertWarning("Campos incompletos", "Por favor completa todos los campos requeridos antes de guardar.");
+        return; }
+    try {
+            onSave(fields);
+        } catch (err) {
+            console.error("Error al guardar material:", err);
+            alertError("Error al guardar", err.message || "Ocurrió un error inesperado. Intenta de nuevo.");
         }
-        setErrors({});
-        console.log("Datos válidos", result.data)
-    }
+  };
 
-    return (
-        <div>
-            <h1 className="text-text-primary text-2xl mb-6">
-                Editar Material Devolutivo
-            </h1>
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
+      <Select
+        label="Estado"
+        name="materialState"
+        value={fields.materialState}
+        options={STATE_OPTIONS}
+        onChange={handleChange}
+        error={errors.materialState}
+        placeholder="Selecciona un estado"
+      />
 
-            <h2 className="text-text-primary text-1xl mb-6">
-                Edite la información correspondiente
-            </h2>
+      <div className="flex flex-col gap-1">
+        <label className="text-sm font-medium text-text-primary">
+          Ficha técnica <span className="text-red-400">*</span>
+          <span className="text-xs text-gray-400 ml-1">(PDF, PNG o Excel · máx 3MB)</span>
+        </label>
+        <FileInput
+          value={fields.materialTechnicalSheet}
+          onChange={handleSheetChange}
+          accept="application/pdf,image/png,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          multiple={false}
+        />
+        {errors.materialTechnicalSheet && (
+          <span className="text-red-500 text-xs">{errors.materialTechnicalSheet}</span>
+        )}
+      </div>
 
-            <form
-                className="grid grid-cols-1 items-center gap-6"
-                onSubmit={handleSubmit}
-            >
-                <div className="grid grid-cols-2 gap-6 my-0 mx-auto">
+      <Textarea
+        label="Descripción"
+        name="materialDescription"
+        placeholder="Escribe la descripción"
+        value={fields.materialDescription}
+        onChange={handleChange}
+        error={errors.materialDescription}
+      />
+      <Input
+        label="Ubicación (opcional)"
+        name="materialLocation"
+        placeholder="Escribe la ubicación"
+        value={fields.materialLocation}
+        onChange={handleChange}
+      />
 
-                    <Input
-                        label="Placa SENA"
-                        name="returnableMaterialPlate"
-                        placeholder="Escribe la placa SENA"
-                        value={formData.returnableMaterialPlate}
-                        onChange={handleChange}
-                        error={errors.returnableMaterialPlate}
-                    />
-                    <Input
-                        label="Nombre Elemento"
-                        name="returnableMaterialElementName"
-                        placeholder="Escribe el nombre del elemento"
-                        value={formData.returnableMaterialElementName}
-                        onChange={handleChange}
-                        error={errors.returnableMaterialElementName}
-                    />
-                    <Select
-                        name="returnableMaterialCategory"
-                        placeholder="Categoría"
-                        value={formData.returnableMaterialCategory}
-                        options={categories}
-                        onChange={handleChange}
-                        error={errors.returnableMaterialCategory}
-                    />
+      {/* BOTÓN HABILITAR / DESHABILITAR */}
+      <div className="flex flex-col gap-1 justify-end">
+        <label className="text-sm font-medium text-text-primary">
+          Estado del material
+        </label>
+        <button
+          type="button"
+          onClick={() => setIsEnabled((prev) => !prev)}
+          className={`w-full py-3 rounded-lg text-sm font-semibold transition-all duration-300 ${
+            isEnabled
+              ? "bg-emerald-400 hover:bg-emerald-500 text-white shadow-md shadow-emerald-400/40"
+              : "bg-gray-400 hover:bg-gray-500 text-white shadow-md shadow-gray-400/40"
+          }`}
+        >
+          {isEnabled ? "✓  Habilitado" : "✕  Deshabilitado"}
+        </button>
+      </div>
 
-                    {/* Pagina 2*/}
-                    <Input
-                        label="Marca"
-                        name="returnableMaterialBrand"
-                        placeholder="Escribe y busca la marca"
-                        value={formData.returnableMaterialBrand}
-                        onChange={handleChange}
-                        error={errors.returnableMaterialBrand}
-                    />
-                    <Input
-                        label="Modelo"
-                        name="returnableMaterialModel"
-                        placeholder="Escribe el modelo"
-                        value={formData.returnableMaterialModel}
-                        onChange={handleChange}
-                        error={errors.returnableMaterialModel}
-                    />
-                    <Input
-                        label="Serial"
-                        name="returnableMaterialSerial"
-                        placeholder="Escribe el serial"
-                        value={formData.returnableMaterialSerial}
-                        onChange={handleChange}
-                        error={errors.returnableMaterialSerial}
-                    />
-                    <Input
-                        label="Imagen"
-                        name="materialImage"
-                        placeholder="Ingrese la imagen"
-                        value={formData.materialImage}
-                        onChange={handleChange}
-                        error={errors.materialImage}
-                    />
-                    <DatePicker
-                        label="Fecha de compra"
-                        name="consumableMaterialPurchaseDate"
-                        placeholder="Fecha de compra"
-                        value={formData.MaterialPurchaseDate}
-                        onChange={handleChange}
-                        error={errors.MaterialPurchaseDate}
-                    />
-                    {/* Pagina 3*/}
-                    <Input
-                        name="returnableMaterialAccountHolder"
-                        placeholder="Cuentadante"
-                        value={formData.returnableMaterialAccountHolder}
-                        onChange={handleChange}
-                        error={errors.returnableMaterialAccountHolder}
-                    />
-                    <Input
-                        name="returnableMaterialAmount"
-                        placeholder="Cantidad"
-                        value={formData.returnableMaterialAmount}
-                        onChange={handleChange}
-                        error={errors.returnableMaterialAmount}
-                    />
-                    <Input
-                        name="returnableMaterialUnitValue"
-                        placeholder="Valor Unitario"
-                        value={formData.returnableMaterialUnitValue}
-                        onChange={handleChange}
-                        error={errors.returnableMaterialUnitValue}
-                    />
-                    <Input
-                        name="returnableMaterialTotalValue"
-                        placeholder="Valor Total"
-                        value={formData.returnableMaterialTotalValue}
-                        onChange={handleChange}
-                        error={errors.returnableMaterialTotalValue}
-                    />
-                    {/* Pagina 4*/}
-                    <Select
-                        label="Estado"
-                        name="consumableMaterialState"
-                        placeholder="Seleccione el estado"
-                        value={formData.materialState}
-                        options={state}
-                        onChange={handleChange}
-                        error={errors.materialState}
-                    />
-                    <Input
-                        name="returnableMaterialTechnicalSheet"
-                        placeholder="Ficha Técnica"
-                        value={formData.returnableMaterialTechnicalSheet}
-                        onChange={handleChange}
-                        error={errors.returnableMaterialTechnicalSheet}
-                    />
-                    <Input
-                        name="returnableMaterialDescription"
-                        placeholder="Descripción"
-                        value={formData.returnableMaterialDescription}
-                        onChange={handleChange}
-                        error={errors.returnableMaterialDescription}
-                    />
-                    <Input
-                        name="returnableMaterialLocation"
-                        placeholder="Ubicación"
-                        value={formData.returnableMaterialLocation}
-                        onChange={handleChange}
-                        error={errors.returnableMaterialLocation}
-                    />
-                    <Select
-                        name="returnableMaterialDimensions"
-                        placeholder="Dimensiones"
-                        options={dimensions}
-                        value={formData.returnableMaterialDimensions}
-                        onChange={handleChange}
-                        error={errors.returnableMaterialDimensions}
-                    />
+      {isMuebles && (
+        <>
+          <Input
+            label="Ancho (cm)"
+            name="materialWidth"
+            type="number"
+            placeholder="Ancho"
+            value={fields.materialWidth}
+            onChange={handleChange}
+            error={errors.materialWidth}
+          />
+          <Input
+            label="Largo (cm)"
+            name="materialLength"
+            type="number"
+            placeholder="Largo"
+            value={fields.materialLength}
+            onChange={handleChange}
+            error={errors.materialLength}
+          />
+          <Input
+            label="Profundidad (cm)"
+            name="materialDepth"
+            type="number"
+            placeholder="Profundidad"
+            value={fields.materialDepth}
+            onChange={handleChange}
+            error={errors.materialDepth}
+          />
+        </>
+      )}
 
-                    {/* Actions */}
-                    <div className="flex items-end justify-end gap-6">
-                        <Button
-                            variant="secondary"
-                            size="sm"
-                        >
-                            Cancelar
-                        </Button>
-
-                        <Button
-                            variant="primary"
-                            size="md"
-                        >
-                            Siguiente
-                        </Button>
-                    </div>
-
-                </div>
-            </form>
-        </div>
-    );
+      <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-4">
+        <Button variant="secondary" size="sm" onClick={onBack}>Atrás</Button>
+        <Button variant="primary"   size="md" onClick={handleSave}>Guardar cambios</Button>
+      </div>
+    </div>
+  );
 }

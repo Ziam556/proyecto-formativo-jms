@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Input, Button, FileInput, DatePicker } from "@/shared";
+import { returnableStep2Schema } from "../schemas/returnableStep2Schema";
 
 export default function EditReturnableMaterial2({ formData = {}, onNext, onBack }) {
   const [fields, setFields] = useState({
@@ -18,11 +19,21 @@ export default function EditReturnableMaterial2({ formData = {}, onNext, onBack 
   };
 
   const handleNext = () => {
-    const newErrors = {};
-    if (!fields.materialBrand)             newErrors.materialBrand        = "La marca es requerida";
-    if (!fields.materialImage?.length)     newErrors.materialImage        = "La imagen es requerida";
-    if (!fields.materialPurchaseDate)      newErrors.materialPurchaseDate = "La fecha es requerida";
-    if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return; }
+    const { materialPurchaseDate, ...rest } = fields;
+    const result = returnableStep2Schema.safeParse({
+      ...rest,
+      purchaseDate: materialPurchaseDate,
+    });
+
+    if (!result.success) {
+      const newErrors = {};
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0] === "purchaseDate" ? "materialPurchaseDate" : issue.path[0];
+        if (field && !newErrors[field]) newErrors[field] = issue.message;
+      });
+      setErrors(newErrors);
+      return;
+    }
     onNext(fields);
   };
 

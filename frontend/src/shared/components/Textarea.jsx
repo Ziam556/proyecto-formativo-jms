@@ -1,7 +1,7 @@
 export default function Textarea({
     label,
     error,
-    rows = 3,
+    rows = 4,
     ...props
 }) {
     return (

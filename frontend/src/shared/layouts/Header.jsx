@@ -3,7 +3,7 @@ import { IconButton, Dropdown, DropdownTrigger, DropdownContent, DropdownItem } 
 import logo from "@/assets/images/logo-1.png";
 import { CircleUserRound } from "lucide-react";
 
-export default function Navbar() {
+export default function Header() {
     const navigate = useNavigate();
 
     return (

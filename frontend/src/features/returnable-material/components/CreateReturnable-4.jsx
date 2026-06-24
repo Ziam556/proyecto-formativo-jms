@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Input, Button, Select, FileInput, alertWarning, alertError } from "@/shared";
+import { Input, Button, Select, FileInput, Textarea, alertWarning, alertError } from "@/shared";
+import { buildReturnableStep4Schema } from "../schemas/returnableStep4Schema";
 
 const STATE_OPTIONS = [
   { value: "Disponible",    label: "Disponible" },
@@ -45,20 +46,19 @@ export default function CreateReturnable4({ formData, onSave, onBack }) {
   };
 
   const handleSave = () => {
-    const newErrors = {};
-    if (!fields.materialState)                   newErrors.materialState          = "El estado es requerido";
-    if (!fields.materialTechnicalSheet?.length)  newErrors.materialTechnicalSheet = "La ficha técnica es requerida";
-    if (!fields.materialDescription)             newErrors.materialDescription    = "La descripción es requerida";
-    if (isMuebles) {
-      if (!fields.materialWidth)  newErrors.materialWidth  = "El ancho es requerido";
-      if (!fields.materialLength) newErrors.materialLength = "El largo es requerido";
-      if (!fields.materialDepth)  newErrors.materialDepth  = "La profundidad es requerida";
+    const schema = buildReturnableStep4Schema(isMuebles);
+    const result = schema.safeParse(fields);
+
+    if (!result.success) {
+      const newErrors = {};
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0];
+        if (field && !newErrors[field]) newErrors[field] = issue.message;
+      });
+      setErrors(newErrors);
+      alertWarning("Campos incompletos", "Por favor completa todos los campos requeridos antes de guardar.");
+      return;
     }
-    if (Object.keys(newErrors).length > 0) 
-      { setErrors(newErrors); 
-        alertWarning("Campos incompletos", "Por favor completa todos los campos requeridos antes de guardar.");
-        return;
-      }
 
         try {
             onSave(fields);
@@ -98,19 +98,20 @@ export default function CreateReturnable4({ formData, onSave, onBack }) {
       </div>
 
       <Input
+        label="Ubicación (opcional)"
+        name="materialLocation"
+        placeholder="Escribe la ubicación"
+        value={fields.materialLocation}
+        onChange={handleChange}
+      />
+
+      <Textarea
         label="Descripción"
         name="materialDescription"
         placeholder="Escribe la descripción"
         value={fields.materialDescription}
         onChange={handleChange}
         error={errors.materialDescription}
-      />
-      <Input
-        label="Ubicación (opcional)"
-        name="materialLocation"
-        placeholder="Escribe la ubicación"
-        value={fields.materialLocation}
-        onChange={handleChange}
       />
 
       {/* Dimensiones — solo visibles si categoría es Muebles y enseres */}

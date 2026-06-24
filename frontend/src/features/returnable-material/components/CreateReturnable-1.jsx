@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { Input, Button, Select } from "@/shared";
+import { returnableStep1Schema } from "../schemas/returnableStep1Schema";
 
 const CATEGORY_OPTIONS = [
   { value: "Herramienta",          label: "Herramienta" },
@@ -24,12 +25,16 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
   };
 
   const handleNext = () => {
-    const newErrors = {};
-    if (!fields.returnableMaterialId)        newErrors.returnableMaterialId        = "El código es requerido";
-    if (!fields.materialPlate)       newErrors.materialPlate       = "La placa es requerida";
-    if (!fields.materialCategory)    newErrors.materialCategory    = "La categoría es requerida";
-    if (!fields.materialElementName) newErrors.materialElementName = "El nombre es requerido";
-    if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return; }
+    const result = returnableStep1Schema.safeParse(fields);
+    if (!result.success) {
+      const newErrors = {};
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0];
+        if (field && !newErrors[field]) newErrors[field] = issue.message;
+      });
+      setErrors(newErrors);
+      return;
+    }
     onNext(fields);
   };
 
