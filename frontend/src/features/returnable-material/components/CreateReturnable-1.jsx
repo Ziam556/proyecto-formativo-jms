@@ -1,7 +1,8 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input, Button, Select } from "@/shared";
 import { returnableStep1Schema } from "../schemas/returnableStep1Schema";
+import { getReturnableMaterials } from "../services/returnableMaterialService";
 
 const CATEGORY_OPTIONS = [
   { value: "Herramienta",          label: "Herramienta" },
@@ -9,14 +10,46 @@ const CATEGORY_OPTIONS = [
   { value: "Muebles y enseres",    label: "Muebles y enseres" },
 ];
 
+const PREFIX_MAP = {
+  "Herramienta":          "HER",
+  "Maquinaria y equipos": "MAQ",
+  "Muebles y enseres":    "MUE",
+};
+
+function generateNextId(existingIds, prefix) {
+  const nums = existingIds
+    .filter((id) => typeof id === "string" && id.startsWith(prefix + "-"))
+    .map((id) => parseInt(id.split("-")[1], 10))
+    .filter((n) => !isNaN(n));
+  const max = nums.length > 0 ? Math.max(...nums) : 0;
+  return `${prefix}-${String(max + 1).padStart(3, "0")}`;
+}
+
 export default function CreateReturnable1({ formData, onNext, onCancel }) {
   const [fields, setFields] = useState({
-    returnableMaterialId:        formData.returnableMaterialId        || "",
-    materialPlate:       formData.materialPlate       || "",
-    materialCategory:    formData.materialCategory    || "",
-    materialElementName: formData.materialElementName || "",
+    returnableMaterialId: formData.returnableMaterialId || "",
+    materialPlate:        formData.materialPlate        || "",
+    materialCategory:     formData.materialCategory     || "",
+    materialElementName:  formData.materialElementName  || "",
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors]       = useState({});
+  const [existingIds, setExistingIds] = useState([]);
+
+  // Cargar IDs existentes al montar
+  useEffect(() => {
+    getReturnableMaterials()
+      .then((rows) => setExistingIds(rows.map((r) => r.returnable_material_id)))
+      .catch(() => {});
+  }, []);
+
+  // Re-generar ID cada vez que cambia la categoría o los IDs existentes
+  useEffect(() => {
+    if (!fields.materialCategory) return;
+    const prefix = PREFIX_MAP[fields.materialCategory];
+    if (!prefix) return;
+    const nextId = generateNextId(existingIds, prefix);
+    setFields((prev) => ({ ...prev, returnableMaterialId: nextId }));
+  }, [fields.materialCategory, existingIds]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -41,12 +74,13 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
   return (
     <div className="grid grid-cols-[320px_320px] gap-6 mx-auto">
       <Input
-        label="ID" 
+        label="ID"
         name="returnableMaterialId"
-        placeholder="Ej: HER-001"
         value={fields.returnableMaterialId}
-        onChange={handleChange}
+        onChange={() => {}}
         error={errors.returnableMaterialId}
+        readOnly
+        style={{ opacity: 0.6, cursor: "not-allowed" }}
       />
       <Input
         label="Placa SENA"
@@ -80,5 +114,3 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
     </div>
   );
 }
-
-

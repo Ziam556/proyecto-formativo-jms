@@ -1,5 +1,7 @@
-import { useState, useMemo } from "react";
-import { returnableMaterials } from "../data/returnableMaterials.js";
+import { useState, useMemo, useEffect } from "react";
+import { getReturnableMaterials } from "../services/returnableMaterialService.js";
+import { normalizeReturnableMaterials } from "../utils/normalizeReturnableMaterial.js";
+import { translateStatesInList } from "@/features/consumable-material/utils/stateLabels.js";
 import { DataTable, StatsPills, ReportDropdown, BackButton, Input, Select, ClearFiltersButton } from "@/shared";
 import { returnableMaterialColumns } from "../table/returnableMaterialColumns";
 import { returnableMaterialReportFields } from "../reports/config/returnableMaterialReportFields.js";
@@ -18,6 +20,33 @@ const STATE_DOT = {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function ListReturnableMaterialPage() {
+
+  // Datos del backend
+  const [returnableMaterials, setReturnableMaterials] = useState([]);
+  const [loading, setLoading]   = useState(true);
+  const [loadError, setLoadError] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    getReturnableMaterials()
+      .then((rows) => normalizeReturnableMaterials(rows))
+      .then((normalized) => translateStatesInList(normalized))
+      .then((translated) => {
+        if (!active) return;
+        setReturnableMaterials(translated);
+        setLoadError(null);
+      })
+      .catch((err) => {
+        if (!active) return;
+        setLoadError(err.message);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => { active = false; };
+  }, []);
+
   // Filtros
   const [filters, setFilters] = useState({
     elementName: "",
@@ -27,6 +56,7 @@ export default function ListReturnableMaterialPage() {
   });
 
   const [rowSelection, setRowSelection] = useState({});
+  const [reportCols, setReportCols]     = useState({});
 
   // Datos filtrados que se pasan a la tabla
   const filtered = useMemo(() => {
@@ -37,7 +67,7 @@ export default function ListReturnableMaterialPage() {
       if (filters.serial        && !String(item.serial).includes(filters.serial))                                  return false;
       return true;
     });
-  }, [filters]);
+  }, [filters, returnableMaterials]);
 
   // Stats pills
   const statsPills = useMemo(() => {
@@ -46,16 +76,22 @@ export default function ListReturnableMaterialPage() {
       pills.push({ label: state, count: returnableMaterials.filter((r) => r.state === state).length, color });
     });
     return pills;
-  }, []);
+  }, [returnableMaterials]);
 
   // Opciones únicas para select de estado
   const uniqueStates = useMemo(
     () => [...new Set(returnableMaterials.map((r) => r.state))],
-    []
+    [returnableMaterials]
   );
 
   const clearFilters = () =>
     setFilters({ elementName: "", accountHolder: "", state: "", serial: "" });
+
+  // Campos activos según toggles de la tabla
+  const activeFields = useMemo(
+    () => returnableMaterialReportFields.filter((f) => reportCols[f.key] !== false),
+    [reportCols]
+  );
 
   // Reporte de materiales seleccionados
   const generateSelectedReport = (format) => {
@@ -71,14 +107,15 @@ export default function ListReturnableMaterialPage() {
 
     generateReturnableMaterialReport({
       format,
-      selectedFields: returnableMaterialReportFields,
+      selectedFields: activeFields,
       scope: "selected",
       selectedIds,
+      materials: returnableMaterials,
     });
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] py-4 px-3 sm:px-6">
+    <div className="min-h-full py-4 px-3 sm:px-6">
 
       {/* Header */}
       <div className="flex items-center gap-3 mb-4">
@@ -87,6 +124,13 @@ export default function ListReturnableMaterialPage() {
           Lista materiales devolutivo
         </h1>
       </div>
+
+      {/* Error */}
+      {loadError && (
+        <div className="mb-4 rounded-lg bg-red-900/40 border border-red-400/30 px-4 py-3 text-red-200 text-sm">
+          No se pudieron cargar los materiales: {loadError}
+        </div>
+      )}
 
       {/* Stats */}
       <div className="mb-[6px] overflow-x-auto">
@@ -152,15 +196,17 @@ export default function ListReturnableMaterialPage() {
               onPDF={() =>
                 generateReturnableMaterialReport({
                   format: "pdf",
-                  selectedFields: returnableMaterialReportFields,
+                  selectedFields: activeFields,
                   scope: "all",
+                  materials: returnableMaterials,
                 })
               }
               onExcel={() =>
                 generateReturnableMaterialReport({
                   format: "excel",
-                  selectedFields: returnableMaterialReportFields,
+                  selectedFields: activeFields,
                   scope: "all",
+                  materials: returnableMaterials,
                 })
               }
             />
@@ -176,12 +222,17 @@ export default function ListReturnableMaterialPage() {
       </div>
 
       {/* Tabla */}
-      <DataTable
-        data={filtered}
-        columns={returnableMaterialColumns}
-        rowSelection={rowSelection}
-        onRowSelectionChange={setRowSelection}
-      />
+      {loading ? (
+        <p className="text-white/70 text-sm px-2 py-4">Cargando materiales...</p>
+      ) : (
+        <DataTable
+          data={filtered}
+          columns={returnableMaterialColumns}
+          rowSelection={rowSelection}
+          onRowSelectionChange={setRowSelection}
+          onReportColsChange={setReportCols}
+        />
+      )}
 
     </div>
   );

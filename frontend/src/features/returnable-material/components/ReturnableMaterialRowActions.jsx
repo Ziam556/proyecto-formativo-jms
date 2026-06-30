@@ -19,7 +19,7 @@ export default function ReturnableMaterialRowActions({ material }) {
             Visualizar
           </DropdownItem>
 
-          <DropdownItem onClick={() => navigate("/dashboard/returnable-material/edit", { state: { material } })}>
+          <DropdownItem onClick={() => navigate("/dashboard/returnable-material/edit")}>
             Editar
           </DropdownItem>
         </DropdownContent>

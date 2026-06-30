@@ -15,7 +15,17 @@ export default function EditReturnableMaterial3({ formData = {}, onNext, onBack 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFields((prev) => ({ ...prev, [name]: value }));
+    setFields((prev) => {
+      const updated = { ...prev, [name]: value };
+      if (name === "materialAmount" || name === "materialUnitValue") {
+        const amount    = parseFloat(name === "materialAmount"    ? value : updated.materialAmount)    || 0;
+        const unitValue = parseFloat(name === "materialUnitValue" ? value : updated.materialUnitValue) || 0;
+        updated.materialTotalValue = amount > 0 && unitValue > 0
+          ? (amount * unitValue).toString()
+          : "";
+      }
+      return updated;
+    });
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
@@ -64,12 +74,14 @@ export default function EditReturnableMaterial3({ formData = {}, onNext, onBack 
         error={errors.materialUnitValue}
       />
       <Input
-        label="Valor total"
+        label="Valor total (calculado)"
         name="materialTotalValue"
         type="number"
-        placeholder="Valor total"
+        placeholder="Se calcula automáticamente"
         value={fields.materialTotalValue}
-        onChange={handleChange}
+        onChange={() => {}}
+        readOnly
+        style={{ opacity: 0.75, cursor: "not-allowed" }}
         error={errors.materialTotalValue}
       />
       <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-4">

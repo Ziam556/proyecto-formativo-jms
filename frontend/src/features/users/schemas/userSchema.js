@@ -1,11 +1,24 @@
 import { z } from "zod";
 
-export const userSchema = z.object({
+// ── Validación de contraseña ───────────────────────────────────────────────
+const passwordSchema = z
+    .string()
+    .min(8, "La contraseña debe tener mínimo 8 caracteres")
+    .regex(/[A-Z]/, "Debe contener al menos una mayúscula")
+    .regex(/[a-z]/, "Debe contener al menos una minúscula")
+    .regex(/[0-9]/, "Debe contener al menos un número")
+    .regex(/[^A-Za-z0-9]/, "Debe contener al menos un carácter especial");
 
+// ── Campos comunes (sin password) ─────────────────────────────────────────
+const commonFields = {
     userName: z
         .string()
-        .min(3, "El nombre debe tener minimo 3 caracteres")
-        .max(60, "El nombre es demasiado largo"),
+        .min(3, "El nombre debe tener mínimo 3 caracteres")
+        .max(60, "El nombre es demasiado largo")
+        .regex(
+            /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s.\-']+$/,
+            "El nombre solo puede contener letras, espacios, puntos y guiones"
+        ),
 
     userEmail: z
         .string()
@@ -15,7 +28,6 @@ export const userSchema = z.object({
         .string()
         .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Debe ingresar el email correctamente"),
 
-    // ── Opcionales ──────────────────────────────────────────────────────────
     userEmailInstitutional: z
         .string()
         .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Debe ingresar un email institucional válido")
@@ -42,16 +54,9 @@ export const userSchema = z.object({
 
     userDocumentNumber: z
         .string()
-        .min(5, "Número de documento inválido")
-        .max(20, "Número de documento demasiado largo"),
-
-    userPassword: z
-        .string()
-        .min(8, "La contraseña debe tener mínimo 8 caracteres")
-        .regex(/[A-Z]/, "Debe contener al menos una mayúscula")
-        .regex(/[a-z]/, "Debe contener al menos una minúscula")
-        .regex(/[0-9]/, "Debe contener al menos un número")
-        .regex(/[^A-Za-z0-9]/, "Debe contener al menos un carácter especial"),
+        .regex(/^[0-9]+$/, "El número de documento solo puede contener dígitos")
+        .min(5, "El número de documento debe tener mínimo 5 dígitos")
+        .max(15, "El número de documento no puede superar 15 dígitos"),
 
     startDate: z
         .string()
@@ -65,22 +70,38 @@ export const userSchema = z.object({
         .string()
         .min(5, "La dirección debe tener mínimo 5 caracteres")
         .max(100, "La dirección es demasiado larga"),
+};
 
-})
-.refine(
-    (data) => {
-        if (!data.startDate || !data.endDate) return true;
-        return new Date(data.endDate) > new Date(data.startDate);
-    },
-    {
-        message: "La fecha de finalización debe ser mayor a la fecha de inicio",
-        path: ["endDate"],
-    }
-)
-.refine(
-    (data) => data.userEmail === data.userEmailVerification,
-    {
-        message: "Los correos electrónicos no coinciden",
-        path: ["userEmailVerification"],
-    }
+// ── Helper: aplica refinements comunes ────────────────────────────────────
+const applyRefinements = (schema) =>
+    schema
+        .refine(
+            (data) => {
+                if (!data.startDate || !data.endDate) return true;
+                return new Date(data.endDate) > new Date(data.startDate);
+            },
+            {
+                message: "La fecha de finalización debe ser mayor a la fecha de inicio",
+                path: ["endDate"],
+            }
+        )
+        .refine(
+            (data) => data.userEmail === data.userEmailVerification,
+            {
+                message: "Los correos electrónicos no coinciden",
+                path: ["userEmailVerification"],
+            }
+        );
+
+// ── Esquema creación: password requerido ──────────────────────────────────
+export const userSchema = applyRefinements(
+    z.object({ ...commonFields, userPassword: passwordSchema })
+);
+
+// ── Esquema edición: password vacío = sin cambio, o validación completa ───
+export const userEditSchema = applyRefinements(
+    z.object({
+        ...commonFields,
+        userPassword: z.union([z.literal(""), passwordSchema]),
+    })
 );

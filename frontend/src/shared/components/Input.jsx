@@ -15,7 +15,7 @@ export default function Input({
                         text-[8px]
                         mb-1
                         place-self-start
-                        ${error ? "text-red-600" : "text-text-primary"}
+                        ${error ? "text-red-600" : "text-white"}
                     `}>
                     {label}
                 </label>

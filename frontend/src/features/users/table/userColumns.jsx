@@ -5,11 +5,6 @@ import UserRowActions from "../components/UserRowActions";
 
 export const userColumns = [
     {
-        id:       "id",
-        label:    "ID",
-        accessor: "id",
-    },
-    {
         id:       "name",
         label:    "Nombre",
         accessor: "name",
@@ -48,11 +43,13 @@ export const userColumns = [
         id:       "startDate",
         label:    "Fecha de inicio",
         accessor: "startDate",
+        format:   "date",
     },
     {
         id:       "endDate",
         label:    "Fecha de finalizacion",
         accessor: "endDate",
+        format:   "date",
     },
     {
         id:         "actions",

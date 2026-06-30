@@ -1,5 +1,4 @@
 export const userReportFields = [
-    { key: "id",          label: "ID"                    },
     { key: "name",        label: "Nombre"                },
     { key: "email",       label: "Correo electrónico"    },
     { key: "documentType",label: "Tipo doc."             },

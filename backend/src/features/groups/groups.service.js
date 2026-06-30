@@ -17,4 +17,28 @@ export const groupsService = {
         }
         return group;
     },
+
+    async addUsersToGroup(groupId, documentNumbers) {
+        const userIds = await groupsRepository.getUserIdsByDocuments(documentNumbers);
+        await groupsRepository.addUsersToGroup(groupId, userIds);
+        return { added: userIds.length };
+    },
+
+    async update(groupId, groupName, permissionCodenames) {
+        const group = await groupsRepository.update(groupId, groupName);
+        if (!group) throw new Error("Grupo no encontrado");
+        const ids = await groupsRepository.getPermissionIdsByCodenames(permissionCodenames);
+        await groupsRepository.replacePermissions(groupId, ids);
+        return group;
+    },
+
+    async getUsersByGroupId(groupId) {
+        return groupsRepository.getUsersByGroupId(groupId);
+    },
+
+    async removeUsersFromGroup(groupId, documentNumbers) {
+        const userIds = await groupsRepository.getUserIdsByDocuments(documentNumbers);
+        await groupsRepository.removeUsersFromGroup(groupId, userIds);
+        return { removed: userIds.length };
+    },
 };

@@ -44,7 +44,9 @@ export default function EditReturnableMaterial1({ formData = {}, onNext, onCance
         name="returnableMaterialId"
         placeholder="Ej: HER-001"
         value={fields.returnableMaterialId}
-        onChange={handleChange}
+        onChange={() => {}}
+        readOnly
+        style={{ opacity: 0.6, cursor: "not-allowed" }}
         error={errors.returnableMaterialId}
       />
       <Input

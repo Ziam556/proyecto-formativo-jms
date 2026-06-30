@@ -18,7 +18,7 @@ export default function DatePicker({
 
             {/* Label opcional, se pone rojo si hay error */}
             {label && (
-                <label className={`block text-[8px] mb-1 place-self-start ${error ? "text-red-600" : "text-text-primary"}`}>
+                <label className={`block text-[8px] mb-1 place-self-start ${error ? "text-red-600" : "text-white"}`}>
                     {label}
                 </label>
             )}

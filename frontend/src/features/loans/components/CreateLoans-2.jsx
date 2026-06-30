@@ -1,123 +1,120 @@
-import { Input, Button, DatePicker } from "@/shared";
+import { Input, Button, DatePicker, Textarea } from "@/shared";
+import { alertWarning } from "@/shared";
 import { useState } from "react";
 import { CalendarDays } from "lucide-react";
 
-const inputClass = `
-  w-full h-[56px]
-  rounded-md border border-black/20
-  px-4 text-sm
-  bg-[rgba(217,217,217,0.54)]
-  outline-none backdrop-blur-sm
-`;
-
-export default function CreateLoans2({ onNext, onBack }) {
+export default function CreateLoans2({ formData, onNext, onBack }) {
 
   const [fields, setFields] = useState({
-    file: "",
-    amount: "",
-    departureDates: "",
-    deliveryDates: "",
-    justificationForUse: "",
+    file:               formData?.file               ?? "",
+    amount:             formData?.amount             ?? "",
+    departureDates:     formData?.departureDates     ?? "",
+    deliveryDates:      formData?.deliveryDates      ?? "",
+    justificationForUse: formData?.justificationForUse ?? "",
   });
 
-  const handleNext = () => onNext(fields);
+  const handleNext = async () => {
+    const missing = [];
+    if (!fields.file.trim())         missing.push("Ficha / Grupo aprendices");
+    if (!fields.departureDates)      missing.push("Fecha de salida");
+
+    if (missing.length > 0) {
+      await alertWarning(
+        "Campos requeridos",
+        `Completa los siguientes campos antes de continuar:\n• ${missing.join("\n• ")}`
+      );
+      return;
+    }
+
+    onNext(fields);
+  };
 
   return (
-    <div className="w-full">
+    <div className="w-full flex flex-col items-center">
 
-      {/* HEADER */}
-      <div className="flex items-center gap-3 mb-7">
-        <div className="p-2 rounded-lg bg-white/20 flex-shrink-0">
-          <CalendarDays size={20} className="text-black" />
+      {/* Contenedor centrado */}
+      <div className="w-full max-w-[560px]">
+
+        {/* HEADER */}
+        <div className="flex items-center gap-3 mb-7">
+          <div className="p-2 rounded-lg bg-white/20 flex-shrink-0">
+            <CalendarDays size={20} className="text-black" />
+          </div>
+          <div>
+            <h2 className="text-black font-bold text-lg leading-tight">
+              Datos del préstamo
+            </h2>
+            <p className="text-black/70 text-sm">
+              Completa la información del préstamo
+            </p>
+          </div>
         </div>
-        <div>
-          <h2 className="text-black font-bold text-lg leading-tight">
-            Datos del préstamo
-          </h2>
-          <p className="text-black/70 text-sm">
-            Completa la información del préstamo
-          </p>
+
+        {/* INPUTS 2 COLUMNAS */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-5">
+
+          <Input
+            label="Ficha/Grupo aprendices *"
+            type="text"
+            value={fields.file}
+            onChange={(e) => setFields((p) => ({ ...p, file: e.target.value }))}
+            placeholder="Escribe la ficha o el grupo"
+          />
+
+          <Input
+            label="Cantidad (Consumo)"
+            type="number"
+            value={fields.amount}
+            onChange={(e) => setFields((p) => ({ ...p, amount: e.target.value }))}
+            placeholder="Escribe la cantidad"
+          />
+
+          <DatePicker
+            label="Fecha de salida *"
+            name="departureDates"
+            value={fields.departureDates}
+            onChange={(e) =>
+              setFields((p) => ({ ...p, departureDates: e.target.value }))
+            }
+            placeholder="Seleccione la fecha de salida"
+          />
+
+          <DatePicker
+            label="Fecha de entrega (Devolutivo)"
+            name="deliveryDates"
+            value={fields.deliveryDates}
+            onChange={(e) =>
+              setFields((p) => ({ ...p, deliveryDates: e.target.value }))
+            }
+            placeholder="Seleccione la fecha de entrega"
+          />
+
         </div>
-      </div>
 
-      {/* INPUTS 2 COLUMNAS */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-5">
+        {/* JUSTIFICACIÓN */}
+        <div className="mt-5">
+          <Textarea
+            label="Justificación de uso"
+            placeholder="Describe el uso que se dará a los materiales"
+            rows={4}
+            value={fields.justificationForUse}
+            onChange={(e) =>
+              setFields((p) => ({ ...p, justificationForUse: e.target.value }))
+            }
+          />
+        </div>
 
-        {/* FICHA */}
-        <Input
-          label="Ficha/Grupo aprendices"
-          type="text"
-          value={fields.file}
-          onChange={(e) => setFields((p) => ({ ...p, file: e.target.value }))}
-          placeholder="Escribe la ficha o el grupo de aprendices"
-        />
-
-        {/* CANTIDAD */}
-        <Input
-          label="Cantidad (Consumo)"
-          type="number"
-          value={fields.amount}
-          onChange={(e) => setFields((p) => ({ ...p, amount: e.target.value }))}
-          placeholder="Escribe la cantidad"
-        />
-
-        {/* FECHA SALIDA */}
-        <DatePicker
-          label="Fecha de salida"
-          name="departureDates"
-          value={fields.departureDates}
-          onChange={(e) => setFields((p) => ({ ...p, departureDates: e.target.value }))}
-          placeholder="Seleccione la fecha de salida"
-        />
-
-        {/* FECHA ENTREGA */}
-        <DatePicker
-          label="Fecha de entrega (Devolutivo)"
-          name="deliveryDates"
-          value={fields.deliveryDates}
-          onChange={(e) => setFields((p) => ({ ...p, deliveryDates: e.target.value }))}
-          placeholder="Seleccione la fecha de entrega"
-        />
+        {/* BOTONES */}
+        <div className="flex justify-end gap-4 mt-8">
+          <Button variant="secondary" size="md" onClick={onBack} className="!min-w-0 px-10">
+            Atrás
+          </Button>
+          <Button variant="primary" size="md" onClick={handleNext} className="!min-w-0 px-10">
+            Siguiente
+          </Button>
+        </div>
 
       </div>
-
-      {/* JUSTIFICACIÓN — label como placeholder dentro del textarea */}
-      <div className="mt-5">
-        <textarea
-          value={fields.justificationForUse}
-          onChange={(e) => setFields((p) => ({ ...p, justificationForUse: e.target.value }))}
-          placeholder="Justificación de uso"
-          className="
-            w-full h-[120px]
-            rounded-md border border-black/20
-            px-4 py-3 text-sm
-            resize-none outline-none
-            bg-[rgba(217,217,217,0.54)]
-            backdrop-blur-sm
-          "
-        />
-      </div>
-
-      {/* BOTONES */}
-      <div className="flex gap-4 mt-8">
-        <Button
-          variant="secondary"
-          size="md"
-          onClick={onBack}
-          className="!min-w-0 flex-1"
-        >
-          Cancelar
-        </Button>
-        <Button
-          variant="primary"
-          size="md"
-          onClick={handleNext}
-          className="!min-w-0 flex-1"
-        >
-          Siguiente
-        </Button>
-      </div>
-
     </div>
   );
 }

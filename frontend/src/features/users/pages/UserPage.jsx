@@ -15,7 +15,7 @@ export default function UserPage() {
 
     return (
         /* Centra la tarjeta verticalmente en el espacio disponible */
-        <div className="min-h-[calc(100vh-64px)] flex items-center justify-center p-4 sm:p-6">
+        <div className="min-h-full flex items-center justify-center p-4 sm:p-6">
 
             {/* Tarjeta del módulo con gradiente */}
             <div className="bg-module-card rounded-[20px] overflow-hidden backdrop-blur-[16px] shadow-[0_8px_40px_rgba(0,0,0,0.3)] max-w-[680px] w-full px-6 sm:px-10 py-8 sm:py-12">

@@ -6,8 +6,8 @@ import {
     alertSuccess, alertError, alertWarning, alertConfirm,
 } from "@/shared";
 import { getDocumentTypes, getUserTypes } from "@/features/users/services/selectService";
-import { userSchema } from "../schemas/userSchema";
-import { initialGroups } from "@/features/groups/data/groups";
+import { userEditSchema } from "../schemas/userSchema";
+import { getGroups } from "@/features/groups/services/groupService";
 import { updateUser } from "../services/userService";
 
 
@@ -45,7 +45,7 @@ function buildForm(u) {
         userPassword:           "",
         startDate:              u.startDate          ?? "",
         endDate:                u.endDate            ?? "",
-        userGroup:              u.groupId            ?? null,
+        userGroup:              u.group              ?? null,
     };
 }
 
@@ -63,8 +63,9 @@ export default function UserEditForm({ initialUser, userImage, isEnabled, onCanc
     useEffect(() => {
         getDocumentTypes().then(setDocumentTypes);
         getUserTypes().then(setUserTypes);
-        const saved = localStorage.getItem("grupos_list");
-        setGroups(saved ? JSON.parse(saved) : initialGroups);
+        getGroups()
+            .then((data) => setGroups(data.map((g) => ({ id: g.group_name, name: g.group_name, enabled: true }))))
+            .catch(() => setGroups([]));
     }, []);
 
     useEffect(() => {
@@ -116,12 +117,9 @@ export default function UserEditForm({ initialUser, userImage, isEnabled, onCanc
             return;
         }
 
-        // ── 2. Validación Zod (omite password si está vacío en edición) ───────
-        const schemaToUse = formData.userPassword
-            ? userSchema
-            : userSchema.omit({ userPassword: true });
-
-        const result = schemaToUse.safeParse(formData);
+        // ── 2. Validación Zod ────────────────────────────────────────────────
+        // userEditSchema acepta password vacío (sin cambio) o la validación completa
+        const result = userEditSchema.safeParse(formData);
         if (!result.success) {
             const fieldErrors = {};
             (result.error?.issues ?? []).forEach((issue) => {
@@ -208,19 +206,21 @@ export default function UserEditForm({ initialUser, userImage, isEnabled, onCanc
 
                     <DatePicker label="Fecha finalización" name="endDate" placeholder="Fecha finalización" value={formData.endDate} onChange={handleChange} error={errors.endDate} />
 
-                    <div>
-                            {selectedGroup && (
-                                <span className="text-[0.75rem] text-white block mb-1">
-                                    Grupo: <strong>{selectedGroup.name}</strong>
-                                </span>
-                            )}
-                            {/* FIX: type="button" explícito para no disparar submit del form */}
-                            <Button type="button" variant="secondary" onClick={() => setShowGroupModal(true)}>
-                                Asignar Grupo
-                            </Button>
-                        </div>
-
                     <Input label="Correo electrónico" name="userEmail" type="email" placeholder="Ingrese su correo" value={formData.userEmail} onChange={handleChange} error={errors.userEmail} />
+
+                    <div>
+                        {selectedGroup && (
+                            <span className="text-[0.75rem] text-white block mb-1">
+                                Grupo: <strong>{selectedGroup.name}</strong>
+                            </span>
+                        )}
+                        {/* FIX: type="button" explícito para no disparar submit del form */}
+                        <Button type="button" variant="secondary" onClick={() => setShowGroupModal(true)}>
+                            Asignar Grupo
+                        </Button>
+                    </div>
+
+
 
                     {errors.general && (
                         <div className="col-span-2 text-red-400 text-sm bg-red-900/30 border border-red-500/40 rounded-lg p-3">

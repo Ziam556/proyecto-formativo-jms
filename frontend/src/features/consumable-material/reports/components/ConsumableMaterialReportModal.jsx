@@ -8,7 +8,7 @@ import { consumableMaterialReportFields } from "../config/consumableMaterialRepo
 import { generateConsumableMaterialReport } from "../services/generateConsumableMaterialReport";
 
 // Componentes UI reutilizables
-import { Button, Input, Select, CheckBox } from "@/shared";
+import { Button, Select, CheckBox } from "@/shared";
 
 // Componente modal para configuración de reportes
 export default function ConsumableMaterialReportModal({
@@ -26,9 +26,6 @@ export default function ConsumableMaterialReportModal({
 
   // Estado alcance del reporte
   const [scope, setScope] = useState("all");
-
-  // Estado filtro serial
-  const [filterSerial, setFilterSerial] = useState("");
 
   // Estado filtro estado
   const [filterState, setFilterState] = useState("");
@@ -88,7 +85,6 @@ export default function ConsumableMaterialReportModal({
       format,
       selectedFields,
       scope,
-      filterSerial,
       filterState,
       selectedIds,
     });
@@ -170,30 +166,12 @@ export default function ConsumableMaterialReportModal({
                 value: "selected",
               },
               {
-                label: "Filtrar por serial",
-                value: "serial",
-              },
-              {
                 label: "Filtrar por estado",
                 value: "state",
               },
             ]}
           />
         </div>
-
-        {/* Filtro serial */}
-        {scope === "serial" && (
-          <div className="mb-4">
-            <Input
-              label="Número serial"
-              value={filterSerial}
-              onChange={(e) =>
-                setFilterSerial(e.target.value)
-              }
-              placeholder="Ingrese serial"
-            />
-          </div>
-        )}
 
         {/* Filtro estado */}
         {scope === "state" && (

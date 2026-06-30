@@ -67,7 +67,7 @@ export default function CreateConsumable3({ formData, onSave, onBack }) {
     };
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
 
             <Select
                 label="Estado"

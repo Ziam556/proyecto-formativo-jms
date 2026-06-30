@@ -1,4 +1,3 @@
-import { consumableMaterials } from "../../data/ConsumableMaterials";
 import { buildConsumableMaterialReportDataset } from "../utils/buildConsumableMaterialReportDataset";
 import { generateConsumableMaterialExcelReport } from "./generateConsumableMaterialExcelReport";
 import { generateConsumableMaterialPdfReport } from "./generateConsumableMaterialPdfReport";
@@ -8,16 +7,15 @@ export function generateConsumableMaterialReport({
   selectedFields,
   scope,
   selectedIds,
-  filterSerial,
   filterState,
+  materials, // antes: import { consumableMaterials } from "../../data/ConsumableMaterials"
 }) {
 
   const { headers, rows } = buildConsumableMaterialReportDataset({
-    materials: consumableMaterials,
+    materials: materials ?? [],
     selectedFields,
     scope,
     selectedIds,
-    filterSerial,
     filterState,
   });
 

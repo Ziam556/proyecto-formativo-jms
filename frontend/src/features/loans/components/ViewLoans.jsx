@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { BackButton , Field } from "@/shared";
-import { ListLoans } from "../data/ListLoans";
+import { BackButton, Button, Field, Input } from "@/shared";
+import { getLoanById } from "../services/loanService";
 
 const TYPE_STYLES = {
   Devolutivo: { background: "#71277A", color: "#fff" },
   Consumo:    { background: "#00C8DC", color: "#fff" },
 };
-
 
 function TypeChip({ value }) {
   const s = TYPE_STYLES[value] || { background: "#6b7280", color: "#fff" };
@@ -22,68 +21,56 @@ function TypeChip({ value }) {
 
 export default function ViewLoans({ loan: initialLoan, onCancel }) {
 
-  const [searchId, setSearchId] = useState("");
+  const [searchId, setSearchId] = useState(
+    initialLoan ? String(initialLoan.id) : ""
+  );
   const [loan, setLoan]         = useState(initialLoan ?? null);
   const [notFound, setNotFound] = useState(false);
+  const [loading, setLoading]   = useState(false);
 
-  const handleSearch = () => {
-    const found = ListLoans.find(
-      (l) => l.id.toLowerCase() === searchId.trim().toLowerCase()
-    );
-    if (found) {
+  const handleSearch = async () => {
+    const id = searchId.trim();
+    if (!id) return;
+    setLoading(true);
+    setNotFound(false);
+    try {
+      const found = await getLoanById(id);
       setLoan(found);
-      setNotFound(false);
-    } else {
+    } catch {
       setLoan(null);
       setNotFound(true);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="
-      w-full max-w-[960px] mx-auto
-      rounded-2xl border border-white/10
-      bg-white/10 backdrop-blur-md
-      shadow-2xl p-6
-    ">
+    <div className="w-full max-w-[960px] mx-auto rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md shadow-2xl p-6">
 
       {/* HEADER */}
       <div className="flex items-center gap-3 mb-6">
         <BackButton to="/dashboard/loans" />
-        <h1 className="text-white text-2xl font-bold">
-          Visualizar Préstamo
-        </h1>
+        <h1 className="text-white text-2xl font-bold">Visualizar Préstamo</h1>
       </div>
 
       {/* BUSCADOR POR ID */}
       <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 mb-6">
-        <div className="flex flex-col gap-1">
-          <label className="text-white text-sm font-medium">
-            ID Préstamo
-          </label>
-          <input
-            type="text"
+        <div className="w-full sm:w-[260px]">
+          <Input
+            label="ID Préstamo"
             value={searchId}
             onChange={(e) => setSearchId(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            placeholder="Ej: PR-2026-00072"
-            className="
-              h-[44px] w-full sm:w-[260px] rounded-md px-4
-              bg-white/70 text-black outline-none
-              border border-white/30
-            "
+            placeholder="Ej: 72"
           />
         </div>
-        <button
+        <Button
+          variant="secondary"
           onClick={handleSearch}
-          className="
-            h-[44px] px-5 rounded-md
-            bg-cyan-700 hover:bg-cyan-800
-            text-white font-semibold transition
-          "
+          disabled={loading}
         >
-          Buscar
-        </button>
+          {loading ? "Buscando…" : "Buscar"}
+        </Button>
       </div>
 
       {/* NO ENCONTRADO */}
@@ -105,7 +92,10 @@ export default function ViewLoans({ loan: initialLoan, onCancel }) {
           </div>
           <div className="flex flex-col gap-2 mb-6">
             {loan.materiales?.map((m, i) => (
-              <div key={i} className="flex items-center gap-3 bg-white/10 rounded-lg px-4 py-2">
+              <div
+                key={i}
+                className="flex items-center gap-3 bg-white/10 rounded-lg px-4 py-2"
+              >
                 <TypeChip value={m.type} />
                 <span className="text-white font-medium">{m.name}</span>
               </div>
@@ -119,10 +109,10 @@ export default function ViewLoans({ loan: initialLoan, onCancel }) {
           </div>
           <div className="flex flex-wrap gap-4 mb-6">
             <Field label="ID Préstamo"   value={loan.id} />
-            <Field label="Serial"        value={loan.serial} />
             <Field label="Ficha / Grupo" value={loan.ficha} />
             <Field label="Fecha salida"  value={loan.departureDate} />
             <Field label="Fecha entrega" value={loan.deliveryDate} />
+            <Field label="Estado"        value={loan.status} />
           </div>
 
           {/* USUARIO */}
@@ -136,12 +126,9 @@ export default function ViewLoans({ loan: initialLoan, onCancel }) {
 
           {/* BOTÓN EDITAR */}
           <div className="flex justify-end">
-            <button
-              onClick={onCancel}
-              className="px-6 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white font-semibold transition"
-            >
+            <Button variant="secondary" onClick={onCancel}>
               Editar
-            </button>
+            </Button>
           </div>
         </>
       )}

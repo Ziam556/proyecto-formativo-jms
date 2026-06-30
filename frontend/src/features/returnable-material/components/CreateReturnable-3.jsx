@@ -15,7 +15,18 @@ export default function CreateReturnable3({ formData, onNext, onBack }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFields((prev) => ({ ...prev, [name]: value }));
+
+    setFields((prev) => {
+      const updated = { ...prev, [name]: value };
+
+      // Recalcular valor total automáticamente
+      const amount    = parseFloat(name === "materialAmount"    ? value : updated.materialAmount)    || 0;
+      const unitValue = parseFloat(name === "materialUnitValue" ? value : updated.materialUnitValue) || 0;
+      updated.materialTotalValue = amount > 0 && unitValue > 0 ? (amount * unitValue).toString() : "";
+
+      return updated;
+    });
+
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
@@ -66,13 +77,15 @@ export default function CreateReturnable3({ formData, onNext, onBack }) {
         onChange={handleChange}
         error={errors.materialUnitValue}
       />
+      {/* VALOR TOTAL — calculado automáticamente, no editable */}
       <Input
-        label="Valor total"
+        label="Valor total (automático)"
         name="materialTotalValue"
         type="number"
-        placeholder="Valor total"
+        placeholder="Se calcula automáticamente"
         value={fields.materialTotalValue}
-        onChange={handleChange}
+        readOnly
+        style={{ opacity: 0.6, cursor: "not-allowed" }}
         error={errors.materialTotalValue}
       />
 

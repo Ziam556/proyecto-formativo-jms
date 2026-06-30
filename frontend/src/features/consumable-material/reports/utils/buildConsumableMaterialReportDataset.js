@@ -2,18 +2,11 @@ export function buildConsumableMaterialReportDataset({
   materials,
   selectedFields,
   scope,
-  filterSerial,
   filterState,
   selectedIds = [],
 }) {
 
   let filteredMaterials = [...materials];
-
-  if (scope === "serial" && filterSerial) {
-    filteredMaterials = filteredMaterials.filter(
-      (material) => material.serial === filterSerial
-    );
-  }
 
   if (scope === "state" && filterState) {
     filteredMaterials = filteredMaterials.filter(

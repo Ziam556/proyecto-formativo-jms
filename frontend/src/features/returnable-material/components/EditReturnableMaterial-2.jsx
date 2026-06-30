@@ -1,6 +1,12 @@
 import { useState } from "react";
-import { Input, Button, FileInput, DatePicker } from "@/shared";
+import { z } from "zod";
+import { Input, Button, FileInput, BrandSearchField } from "@/shared";
 import { returnableStep2Schema } from "../schemas/returnableStep2Schema";
+
+// En edición la imagen es opcional (ya existe en el servidor)
+const editStep2Schema = returnableStep2Schema.extend({
+  materialImage: z.array(z.any()).optional(),
+});
 
 export default function EditReturnableMaterial2({ formData = {}, onNext, onBack }) {
   const [fields, setFields] = useState({
@@ -8,7 +14,6 @@ export default function EditReturnableMaterial2({ formData = {}, onNext, onBack 
     materialModel:        formData.materialModel        || "",
     materialSerial:       formData.materialSerial       || "",
     materialImage:        formData.materialImage        || [],
-    materialPurchaseDate: formData.materialPurchaseDate || "",
   });
   const [errors, setErrors] = useState({});
 
@@ -20,7 +25,7 @@ export default function EditReturnableMaterial2({ formData = {}, onNext, onBack 
 
   const handleNext = () => {
     const { materialPurchaseDate, ...rest } = fields;
-    const result = returnableStep2Schema.safeParse({
+    const result = editStep2Schema.safeParse({
       ...rest,
       purchaseDate: materialPurchaseDate,
     });
@@ -39,12 +44,13 @@ export default function EditReturnableMaterial2({ formData = {}, onNext, onBack 
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
-      <Input
+      <BrandSearchField
         label="Marca"
-        name="materialBrand"
-        placeholder="Escribe la marca"
         value={fields.materialBrand}
-        onChange={handleChange}
+        onChange={(val) => {
+          setFields((prev) => ({ ...prev, materialBrand: val }));
+          setErrors((prev) => ({ ...prev, materialBrand: "" }));
+        }}
         error={errors.materialBrand}
       />
       <Input
@@ -79,14 +85,6 @@ export default function EditReturnableMaterial2({ formData = {}, onNext, onBack 
           <span className="text-red-500 text-xs">{errors.materialImage}</span>
         )}
       </div>
-
-      <DatePicker
-        label="Fecha de compra *"
-        name="materialPurchaseDate"
-        value={fields.materialPurchaseDate}
-        onChange={handleChange}
-        error={errors.materialPurchaseDate}
-      />
 
       <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-4">
         <Button variant="secondary" size="sm" onClick={onBack}>Atrás</Button>

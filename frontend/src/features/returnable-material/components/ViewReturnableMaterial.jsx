@@ -1,6 +1,9 @@
 import { useState } from "react";
-import { BackButton , Field } from "@/shared";
-import { returnableMaterials } from "../data/returnableMaterials";
+import { FileText } from "lucide-react";
+import { BackButton, Field, Input, Button } from "@/shared";
+import { formatDate } from "@/shared/utils/formatDate";
+import { getReturnableMaterialById } from "../services/returnableMaterialService";
+import { normalizeReturnableMaterial } from "../utils/normalizeReturnableMaterial";
 
 const STATE_CLASS = {
   Disponible:      "bg-green-600",
@@ -14,20 +17,24 @@ const STATE_CLASS = {
 
 export default function ViewReturnableMaterial({ material: initialMaterial, onEdit }) {
 
-  const [searchId, setSearchId] = useState("");
-  const [material, setMaterial] = useState(initialMaterial ?? null);
-  const [notFound, setNotFound] = useState(false);
+  const [searchId, setSearchId]   = useState("");
+  const [material, setMaterial]   = useState(initialMaterial ?? null);
+  const [notFound, setNotFound]   = useState(false);
+  const [searching, setSearching] = useState(false);
 
-  const handleSearch = () => {
-    const found = returnableMaterials.find(
-      (m) => String(m.id) === searchId.trim()
-    );
-    if (found) {
-      setMaterial(found);
-      setNotFound(false);
-    } else {
-      setMaterial(null);
+  const handleSearch = async () => {
+    const id = searchId.trim();
+    if (!id) return;
+    setSearching(true);
+    setNotFound(false);
+    setMaterial(null);
+    try {
+      const raw = await getReturnableMaterialById(id);
+      setMaterial(normalizeReturnableMaterial(raw));
+    } catch {
       setNotFound(true);
+    } finally {
+      setSearching(false);
     }
   };
 
@@ -56,33 +63,19 @@ export default function ViewReturnableMaterial({ material: initialMaterial, onEd
 
       {/* BUSCADOR POR ID */}
       <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 mb-6">
-        <div className="flex flex-col gap-1">
-          <label className="text-white text-sm font-medium">
-            ID Material Devolutivo
-          </label>
-          <input
+        <div className="w-full sm:w-[220px]">
+          <Input
+            label="ID Material Devolutivo"
             type="text"
             value={searchId}
             onChange={(e) => setSearchId(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             placeholder="Ingresa el ID"
-            className="
-              h-[44px] w-full sm:w-[220px] rounded-md px-4
-              bg-white/70 text-black outline-none
-              border border-white/30
-            "
           />
         </div>
-        <button
-          onClick={handleSearch}
-          className="
-            h-[44px] px-5 rounded-md
-            bg-cyan-700 hover:bg-cyan-800
-            text-white font-semibold transition
-          "
-        >
-          Buscar
-        </button>
+        <Button variant="secondary" size="sm" onClick={handleSearch} disabled={searching}>
+          {searching ? "Buscando..." : "Buscar"}
+        </Button>
       </div>
 
       {/* NO ENCONTRADO */}
@@ -95,8 +88,26 @@ export default function ViewReturnableMaterial({ material: initialMaterial, onEd
       {/* DATOS DEL MATERIAL */}
       {material && (
         <>
-          {/* NOMBRE + ESTADO */}
-          <div className="flex justify-end mb-4">
+          {/* NOMBRE + IMAGEN + ESTADO */}
+          <div className="flex items-center justify-between mb-4 gap-4">
+            {/* Imagen */}
+            {material.images?.length > 0 ? (
+              <div className="flex flex-wrap gap-2 flex-shrink-0">
+                {material.images.map((img, i) => (
+                  <img
+                    key={i}
+                    src={`http://localhost:4000/${img}`}
+                    alt={`${material.elementName} ${i + 1}`}
+                    className="w-[120px] h-[120px] object-cover rounded-xl border border-white/20 bg-white/10"
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="w-[120px] h-[120px] rounded-xl border border-white/20 bg-white/10 flex items-center justify-center flex-shrink-0">
+                <span className="text-white/30 text-xs text-center px-2">Sin imagen</span>
+              </div>
+            )}
+            {/* Info */}
             <div className="flex flex-col items-end">
               <h2 className="text-white text-xl font-bold">{material.elementName}</h2>
               <p className="text-white/70">{material.brand} {material.model}</p>
@@ -129,7 +140,7 @@ export default function ViewReturnableMaterial({ material: initialMaterial, onEd
             <Field label="Nombre"       value={material.elementName} />
             <Field label="Marca"        value={material.brand} />
             <Field label="Modelo"       value={material.model} />
-            <Field label="Fecha compra" value={material.purchaseDate} />
+            <Field label="Fecha compra" value={formatDate(material.purchaseDate)} />
           </div>
 
           {/* VALORACIÓN */}
@@ -151,25 +162,50 @@ export default function ViewReturnableMaterial({ material: initialMaterial, onEd
           <div className="flex flex-wrap gap-4 mb-6">
             <Field label="Cuentadante" value={material.accountHolder} />
             <Field label="Ubicación"   value={material.location} />
-            <Field label="Dimensiones" value={material.dimensions} />
           </div>
 
-          {/* BOTÓN EDITAR */}
-          <div className="flex justify-end">
-            <button
-              onClick={onEdit}
-              className="px-6 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white font-semibold transition"
-            >
-              Editar
-            </button>
+          {/* DESCRIPCIÓN */}
+          <div className="flex items-center gap-3 mb-4">
+            <span className="text-white font-semibold">DESCRIPCIÓN</span>
+            <div className="flex-1 h-px bg-white/20" />
           </div>
+          <div className="flex flex-wrap gap-4 mb-6">
+            <Field label="Descripción" value={material.description} />
+            {material.dimensions && (
+              <Field label="Dimensiones" value={material.dimensions} />
+            )}
+          </div>
+
+          {/* FICHA TÉCNICA */}
+          {material.technicalSheet && (
+            <div className="mb-6">
+              <a
+                href={`http://localhost:4000/${material.technicalSheet}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-cyan-700 hover:bg-cyan-800 text-white font-semibold transition"
+              >
+                <FileText size={18} />
+                Ver ficha técnica
+              </a>
+            </div>
+          )}
+
+          {/* BOTÓN EDITAR */}
+          {onEdit && (
+            <div className="flex justify-end mt-2">
+              <Button variant="primary" size="sm" onClick={() => onEdit(material)}>
+                Editar
+              </Button>
+            </div>
+          )}
         </>
       )}
 
-      {/* ESTADO INICIAL */}
+      {/* SIN MATERIAL SELECCIONADO */}
       {!material && !notFound && (
-        <p className="text-white/50 text-sm mt-2">
-          Ingresa un ID y presiona Buscar para ver los datos del material.
+        <p className="text-white/60 text-sm text-center mt-8">
+          Busca un material por ID o selecciona uno desde la lista.
         </p>
       )}
 

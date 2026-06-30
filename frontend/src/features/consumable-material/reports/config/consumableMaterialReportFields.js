@@ -13,18 +13,10 @@ export const consumableMaterialReportFields = [
     default: true 
   },
   { key: "brand",
-    label: "Marca", 
-    default: true 
+    label: "Marca",
+    default: true
   },
-   { key: "model", 
-    label: "Modelo", 
-    default: false 
-  },
-  { key: "serial", 
-    label: "Serial", 
-    default: false 
-  },
-  { key: "purchaseDate", 
+  { key: "purchaseDate",
     label: "Fecha de compra", 
     default: false 
   },

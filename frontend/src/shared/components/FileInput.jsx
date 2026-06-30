@@ -41,7 +41,7 @@ export default function FileInput ({
         await new Promise((r) => setTimeout(r, 500));
 
         const data = multiple ? [...value, ...list] : [list[0]];
-        onChange(data.slice(0, 12));
+        onChange(data.slice(0, 5));
 
         setIsLoading(false);
     }

@@ -16,7 +16,7 @@ const DOCUMENT_TYPES = [
 ];
 
 // Crea las carpetas necesarias si no existen
-const dirs = ["profiles", "consumable", "returnable"];
+const dirs = ["profiles", "consumable", "returnable", "tasks"];
 dirs.forEach((d) => {
   fs.mkdirSync(path.join(__dirname, `../../uploads/${d}`), { recursive: true });
 });
@@ -55,4 +55,20 @@ export const upload = multer({
   storage,
   fileFilter,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB general; la ficha técnica se valida a 3 MB en el frontend
+});
+
+// ── Multer para evidencias de tareas (imágenes + cualquier archivo) ──
+const taskEvidenceStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "../../uploads/tasks"));
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`);
+  },
+});
+
+export const uploadTaskEvidence = multer({
+  storage: taskEvidenceStorage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB por archivo de evidencia
 });

@@ -1,7 +1,18 @@
 import { useState, useEffect } from "react";
-import { Input, Button, alertSuccess, alertError, alertWarning } from "@/shared";
+import { Input, Button, BrandSearchField, alertSuccess, alertError, alertWarning } from "@/shared";
 import { getCategoriesTypes } from "../services/selectService";
 import { consumableStep1Schema } from "../schemas/consumableStep1Schema";
+import { getConsumableMaterials } from "../services/consumableMaterialService";
+
+function generateNextConsumableId(existingIds) {
+    const prefix = "CON";
+    const nums = existingIds
+        .filter((id) => typeof id === "string" && id.startsWith(prefix + "-"))
+        .map((id) => parseInt(id.split("-")[1], 10))
+        .filter((n) => !isNaN(n));
+    const max = nums.length > 0 ? Math.max(...nums) : 0;
+    return `${prefix}-${String(max + 1).padStart(3, "0")}`;
+}
 
 export default function CreateConsumable1({
     formData = {},
@@ -21,6 +32,18 @@ export default function CreateConsumable1({
 
     useEffect(() => {
         getCategoriesTypes().then(setCategories);
+    }, []);
+
+    // Generar ID automático al montar (solo si no hay ID previo)
+    useEffect(() => {
+        if (fields.consumableMaterialId) return;
+        getConsumableMaterials()
+            .then((rows) => {
+                const existingIds = rows.map((r) => r.consumable_material_id);
+                const nextId = generateNextConsumableId(existingIds);
+                setFields((prev) => ({ ...prev, consumableMaterialId: nextId }));
+            })
+            .catch(() => {});
     }, []);
 
     const handleChange = (e) => {
@@ -59,10 +82,11 @@ export default function CreateConsumable1({
             <Input
                 label="ID"
                 name="consumableMaterialId"
-                placeholder="Ej:001"
                 value={fields.consumableMaterialId}
-                onChange={handleChange}
+                onChange={() => {}}
                 error={errors.consumableMaterialId}
+                readOnly
+                style={{ opacity: 0.6, cursor: "not-allowed" }}
             />
 
             <Input
@@ -83,12 +107,13 @@ export default function CreateConsumable1({
                 error={errors.materialElementName}
             />
 
-            <Input
+            <BrandSearchField
                 label="Marca"
-                name="materialBrand"
-                placeholder="Escribe la marca"
                 value={fields.materialBrand}
-                onChange={handleChange}
+                onChange={(val) => {
+                    setFields((prev) => ({ ...prev, materialBrand: val }));
+                    setErrors((prev) => ({ ...prev, materialBrand: "" }));
+                }}
                 error={errors.materialBrand}
             />
 

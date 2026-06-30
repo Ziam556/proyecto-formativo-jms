@@ -56,7 +56,7 @@ export default function EditConsumableMaterial3({ formData, onSave, onBack }) {
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-[600px] mx-auto">
 
       <Select
         label="Estado"

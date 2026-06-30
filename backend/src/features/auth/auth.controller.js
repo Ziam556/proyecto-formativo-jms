@@ -17,5 +17,11 @@ export const authController = {
                 error: err.message,
             });
         }
+    },
+
+    async logout(req, res) {
+        // Con JWT stateless el token expira por sí solo.
+        // Este endpoint confirma al cliente que puede limpiar su sesión.
+        res.status(200).json({ message: "Sesión cerrada exitosamente" });
     }
 }

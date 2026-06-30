@@ -1,6 +1,8 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
-import { consumableMaterials } from "../data/ConsumableMaterials.js";
+import { getConsumableMaterials } from "../services/consumableMaterialService.js";
+import { normalizeConsumableMaterials } from "../utils/normalizeConsumableMaterial.js";
+import { translateStatesInList } from "../utils/stateLabels.js";
 
 import {
   DataTable,
@@ -30,14 +32,42 @@ const STATE_DOT = {
 
 export default function ListConsumableMaterialPage() {
 
+  // 📦 DATOS REALES (antes: import { consumableMaterials } from "../data/ConsumableMaterials.js")
+  const [consumableMaterials, setConsumableMaterials] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+
+    setLoading(true);
+    getConsumableMaterials()
+      .then((rows) => normalizeConsumableMaterials(rows))
+      .then((normalized) => translateStatesInList(normalized))
+      .then((translated) => {
+        if (!active) return;
+        setConsumableMaterials(translated);
+        setLoadError(null);
+      })
+      .catch((err) => {
+        if (!active) return;
+        setLoadError(err.message);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => { active = false; };
+  }, []);
+
   const [filters, setFilters] = useState({
     elementName: "",
     accountHolder: "",
     state: "",
-    serial: "",
   });
 
   const [rowSelection, setRowSelection] = useState({});
+  const [reportCols, setReportCols]     = useState({});
 
   // 🔎 FILTROS
   const filtered = useMemo(() => {
@@ -66,17 +96,11 @@ export default function ListConsumableMaterialPage() {
       )
         return false;
 
-      if (
-        filters.serial &&
-        !String(item.serial).includes(filters.serial)
-      )
-        return false;
-
       return true;
 
     });
 
-  }, [filters]);
+  }, [filters, consumableMaterials]);
 
   // 📊 STATS
   const statsPills = useMemo(() => {
@@ -103,12 +127,12 @@ export default function ListConsumableMaterialPage() {
 
     return pills;
 
-  }, []);
+  }, [consumableMaterials]);
 
   // 📋 ESTADOS
   const uniqueStates = useMemo(
     () => [...new Set(consumableMaterials.map((r) => r.state))],
-    []
+    [consumableMaterials]
   );
 
   // 🧹 LIMPIAR FILTROS
@@ -118,10 +142,15 @@ export default function ListConsumableMaterialPage() {
       elementName: "",
       accountHolder: "",
       state: "",
-      serial: "",
     });
 
   };
+
+  // Campos activos según toggles de la tabla
+  const activeFields = useMemo(
+    () => consumableMaterialReportFields.filter((f) => reportCols[f.key] !== false),
+    [reportCols]
+  );
 
   // REPORTE SELECCIONADO
   const generateSelectedReport = (format) => {
@@ -138,16 +167,17 @@ export default function ListConsumableMaterialPage() {
 
     generateConsumableMaterialReport({
       format,
-      selectedFields: consumableMaterialReportFields,
+      selectedFields: activeFields,
       scope: "selected",
       selectedIds,
+      materials: consumableMaterials,
     });
 
   };
 
   return (
 
-    <div className="min-h-[calc(100vh-64px)] px-3 sm:px-6 py-5">
+    <div className="min-h-full px-3 sm:px-6 py-5">
 
       {/* HEADER */}
       <div className="flex items-center gap-3 mb-5">
@@ -162,6 +192,12 @@ export default function ListConsumableMaterialPage() {
 
       {/* CARD GENERAL */}
       <div className="w-full rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md shadow-2xl p-4 sm:p-6">
+
+        {loadError && (
+          <div className="mb-4 rounded-lg bg-red-900/40 border border-red-400/30 px-4 py-3 text-red-200 text-sm">
+            No se pudieron cargar los materiales: {loadError}
+          </div>
+        )}
 
         {/* STATS */}
         <div className="mb-6 overflow-x-auto">
@@ -203,16 +239,6 @@ export default function ListConsumableMaterialPage() {
             />
           </div>
 
-          <div className="flex flex-col gap-1 w-full sm:w-[320px]">
-            <label className="text-white text-[0.75rem] font-medium">Serial</label>
-            <Input
-              name="serial"
-              value={filters.serial}
-              onChange={(e) => setFilters((f) => ({ ...f, serial: e.target.value }))}
-              placeholder="Ingrese serial"
-            />
-          </div>
-
           {/* Limpiar filtros + Reportes */}
           <ClearFiltersButton onClick={clearFilters} />
 
@@ -222,15 +248,17 @@ export default function ListConsumableMaterialPage() {
               onPDF={() =>
                 generateConsumableMaterialReport({
                   format: "pdf",
-                  selectedFields: consumableMaterialReportFields,
+                  selectedFields: activeFields,
                   scope: "all",
+                  materials: consumableMaterials,
                 })
               }
               onExcel={() =>
                 generateConsumableMaterialReport({
                   format: "excel",
-                  selectedFields: consumableMaterialReportFields,
+                  selectedFields: activeFields,
                   scope: "all",
+                  materials: consumableMaterials,
                 })
               }
             />
@@ -246,12 +274,17 @@ export default function ListConsumableMaterialPage() {
         {/* TABLA */}
         <div className="rounded-xl overflow-visible">
 
-          <DataTable
-            data={filtered}
-            columns={consumableMaterialColumns}
-            rowSelection={rowSelection}
-            onRowSelectionChange={setRowSelection}
-          />
+          {loading ? (
+            <p className="text-white/70 text-sm px-2 py-4">Cargando materiales...</p>
+          ) : (
+            <DataTable
+              data={filtered}
+              columns={consumableMaterialColumns}
+              rowSelection={rowSelection}
+              onRowSelectionChange={setRowSelection}
+              onReportColsChange={setReportCols}
+            />
+          )}
 
         </div>
 

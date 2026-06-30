@@ -165,7 +165,7 @@ export default function ListLoansPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] px-6 py-4">
+    <div className="min-h-full px-6 py-4">
 
       {/* TITULO */}
       <div className="flex items-center gap-3 mb-4">

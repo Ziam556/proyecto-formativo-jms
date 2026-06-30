@@ -43,7 +43,22 @@ export const loansRepository = {
 
     async findAll() {
         const result = await pool.query(
-            `SELECT * FROM public.loans ORDER BY created_at DESC`
+            `SELECT
+                l.*,
+                COALESCE(
+                    JSON_AGG(
+                        JSON_BUILD_OBJECT(
+                            'name',   li.material_name,
+                            'type',   CASE WHEN li.material_type = 'M.D' THEN 'Devolutivo' ELSE 'Consumo' END,
+                            'amount', li.amount
+                        )
+                    ) FILTER (WHERE li.loan_item_id IS NOT NULL),
+                    '[]'::json
+                ) AS materiales
+             FROM public.loans l
+             LEFT JOIN public.loan_items li ON li.loan_id = l.loan_id
+             GROUP BY l.loan_id
+             ORDER BY l.created_at DESC`
         );
         return result.rows;
     },

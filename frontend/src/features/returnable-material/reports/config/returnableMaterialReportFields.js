@@ -28,10 +28,6 @@ export const returnableMaterialReportFields = [
     label: "Serial", 
     default: false 
   },
-  { key: "purchaseDate", 
-    label: "Fecha de compra", 
-    default: false 
-  },
   { key: "amount", 
     label: "Cantidad", 
     default: true 

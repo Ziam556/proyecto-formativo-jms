@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BackButton } from "@/shared";
+import { BackButton, alertSuccess, alertError } from "@/shared";
 import { useNavigate } from "react-router-dom";
 import { createReturnableMaterial } from "../services/returnableMaterialService";
 import CreateReturnable1 from "../components/CreateReturnable-1";
@@ -9,7 +9,7 @@ import CreateReturnable4 from "../components/CreateReturnable-4";
 
 const steps = [
     "1. ID - Placa SENA - Categoría - Nombre del elemento",
-    "2. Marca - Modelo - Serial - Imagen - Fecha de compra",
+    "2. Marca - Modelo - Serial - Imagen",
     "3. Cuentadante - Cantidad - Valor unitario - Valor total",
     "4. Estado - Ficha tecnica - Descripcion - Ubicacion - Dimesiones",
 ];
@@ -37,17 +37,18 @@ export default function CreateReturnableMaterialPage() {
 
             const payload = { ...finalData, materialPurchaseDate: purchaseDate };
 
-            const imageFile          = finalData.materialImage?.[0]          ?? null;
+            const imageFiles         = finalData.materialImage          ?? [];
             const technicalSheetFile = finalData.materialTechnicalSheet?.[0] ?? null;
 
-            await createReturnableMaterial(payload, imageFile, technicalSheetFile);
+            await createReturnableMaterial(payload, imageFiles, technicalSheetFile);
 
+            await alertSuccess("¡Material creado!", "El material devolutivo se registró correctamente.");
             setFormData({});
             setCurrentStep(0);
 
         } catch (err) {
             console.error("Error al guardar material devolutivo:", err);
-            alert("Error al guardar: " + err.message);
+            await alertError("Error al guardar", err.message || "Ocurrió un error inesperado. Intenta de nuevo.");
         }
     };
 

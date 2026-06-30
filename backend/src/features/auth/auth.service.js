@@ -17,8 +17,19 @@ export const authService = {
             throw new Error("Credenciales invalidas");
         }
 
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (user.start_date && new Date(user.start_date) > today) {
+            throw new Error("Tu cuenta aún no está activa. Comunícate con un administrador.");
+        }
+
+        if (user.end_date && new Date(user.end_date) < today) {
+            throw new Error("Tu cuenta ha vencido. Comunícate con un administrador.");
+        }
+
         const token = jwt.sign(
-            { email: user.user_email },
+            { email: user.user_email, userType: user.user_type },
             process.env.JWT_SECRET,
             { expiresIn: process.env.JWT_EXPIRES },
         );

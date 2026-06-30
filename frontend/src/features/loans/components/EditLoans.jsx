@@ -1,47 +1,44 @@
 import { useEffect, useState, useMemo } from "react";
 import { Input, Button, BackButton, DataTable, DatePicker, Textarea } from "@/shared";
-import { Loans } from "../data/Loans";
 import { loansColumns } from "../table/loansColumns";
-import prestamo from "@/assets/images/prestamo.png";
-import { getMaterialsTypes } from "../services/selectService";
-
-const STATE_CLASS = {
-  Disponible: "bg-green-600",
-  "No Disponible": "bg-yellow-600",
-  Prestamo: "bg-blue-600",
-  Baja: "bg-red-600",
-  Traslado: "bg-purple-600",
-  Mantenimiento: "bg-gray-500",
-};
+import { getMaterialsForLoan } from "../services/loanService";
 
 export default function EditLoans({ formData = {}, onSave, onCancel }) {
 
-  const [filters] = useState({ elementName: "", materialsTypes: "" });
+  const [materials, setMaterials] = useState([]);
+  const [filters]                 = useState({ elementName: "", materialsTypes: "" });
   const [rowSelection, setRowSelection] = useState({});
 
-  const filtered = useMemo(() => {
-    return Loans.filter((item) => {
-      if (filters.elementName && !item.material.toLowerCase().includes(filters.elementName.toLowerCase())) return false;
-      if (filters.materialsTypes && item.materialtype !== filters.materialsTypes) return false;
-      return true;
-    });
-  }, [filters]);
-
   const [fields, setFields] = useState({
-    loansId:         formData?.loansId        || "",
-    fichaGrupo:      formData?.fichaGrupo     || "Ficha 2850123",
-    cantidadConsumo: formData?.cantidadConsumo || "20",
-    fechaSalida:     formData?.fechaSalida     ? formData.fechaSalida  : "2026-05-26",
-    fechaEntrega:    formData?.fechaEntrega    ? formData.fechaEntrega : "2026-05-30",
-    justificacion:   formData?.justificacion   || "Materiales requeridos para practica del modulo de mantenimiento preventivo en el laboratorio de sistemas",
-    usuarioSolicita: formData?.usuarioSolicita || "@NameUser",
+    loansId:         formData?.loansId         || "",
+    fichaGrupo:      formData?.fichaGrupo      || "",
+    cantidadConsumo: formData?.cantidadConsumo || "",
+    fechaSalida:     formData?.fechaSalida     || "",
+    fechaEntrega:    formData?.fechaEntrega    || "",
+    justificacion:   formData?.justificacion   || "",
+    usuarioSolicita: formData?.usuarioSolicita || "",
   });
 
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    getMaterialsTypes();
+    getMaterialsForLoan()
+      .then(setMaterials)
+      .catch(console.error);
   }, []);
+
+  const filtered = useMemo(() => {
+    return materials.filter((item) => {
+      if (
+        filters.elementName &&
+        !item.material.toLowerCase().includes(filters.elementName.toLowerCase())
+      )
+        return false;
+      if (filters.materialsTypes && item.materialtype !== filters.materialsTypes)
+        return false;
+      return true;
+    });
+  }, [filters, materials]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -51,10 +48,8 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
 
   const handleSave = () => {
     const newErrors = {};
-
     if (!fields.loansId)         newErrors.loansId         = "El ID es requerido";
     if (!fields.fichaGrupo)      newErrors.fichaGrupo      = "La ficha es requerida";
-    if (!fields.cantidadConsumo) newErrors.cantidadConsumo = "La cantidad es requerida";
     if (!fields.fechaSalida)     newErrors.fechaSalida     = "La fecha de salida es requerida";
     if (!fields.usuarioSolicita) newErrors.usuarioSolicita = "El usuario es requerido";
     if (!fields.justificacion)   newErrors.justificacion   = "La justificación es requerida";
@@ -77,39 +72,19 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
           <h1 className="text-white text-2xl font-bold">Editar Préstamo</h1>
         </div>
 
-        {/* ID + CARD MATERIAL */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
-
-          <div className="w-full sm:w-[320px]">
-            <Input
-              label="ID Prestamo"
-              name="loansId"
-              placeholder="ID"
-              value={fields.loansId}
-              onChange={handleChange}
-              error={errors.loansId}
-            />
-          </div>
-
-          <div className="flex items-center gap-4">
-            <div className="relative w-20 h-20">
-              <div className="w-20 h-20 rounded-full overflow-hidden bg-purple-500">
-                <img src={prestamo} alt="Herramienta" className="w-full h-full object-cover" />
-              </div>
-              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-2 border-white rounded-full" />
-            </div>
-            <div className="flex flex-col">
-              <h2 className="text-white text-xl font-bold">Destornillador</h2>
-              <p className="text-white/70">Stanley STHT65</p>
-              <div className={`mt-1 px-2 py-1 text-xs rounded-full text-white w-fit ${STATE_CLASS["Disponible"]}`}>
-                Disponible
-              </div>
-            </div>
-          </div>
-
+        {/* ID */}
+        <div className="w-full sm:w-[320px] mb-6">
+          <Input
+            label="ID Préstamo"
+            name="loansId"
+            placeholder="ID del préstamo"
+            value={fields.loansId}
+            onChange={handleChange}
+            error={errors.loansId}
+          />
         </div>
 
-        <div className="mt-10 w-full h-px bg-white/20" />
+        <div className="mt-4 w-full h-px bg-white/20" />
 
         {/* MATERIALES */}
         <div className="flex items-center gap-3 mt-5">
@@ -118,13 +93,17 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
         </div>
 
         <div className="mt-5">
-          <DataTable
-            data={filtered}
-            columns={loansColumns}
-            rowSelection={rowSelection}
-            onRowSelectionChange={setRowSelection}
-            initialPageSize={5}
-          />
+          {materials.length === 0 ? (
+            <p className="text-white/50 text-sm py-4">Cargando materiales…</p>
+          ) : (
+            <DataTable
+              data={filtered}
+              columns={loansColumns}
+              rowSelection={rowSelection}
+              onRowSelectionChange={setRowSelection}
+              initialPageSize={5}
+            />
+          )}
         </div>
 
         {/* DATOS DEL PRÉSTAMO */}
@@ -136,7 +115,7 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
         <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
 
           <Input
-            label="Ficha / Grupo Aprendices"
+            label="Ficha / Grupo Aprendices *"
             name="fichaGrupo"
             value={fields.fichaGrupo}
             onChange={handleChange}
@@ -153,7 +132,7 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
           />
 
           <DatePicker
-            label="Fecha Salida"
+            label="Fecha Salida *"
             name="fechaSalida"
             value={fields.fechaSalida}
             onChange={handleChange}
@@ -171,7 +150,7 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
 
         <div className="mt-4">
           <Textarea
-            label="Justificación de uso"
+            label="Justificación de uso *"
             name="justificacion"
             value={fields.justificacion}
             onChange={handleChange}
@@ -188,7 +167,7 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
 
         <div className="mt-5">
           <Input
-            label="Usuario solicitante"
+            label="Usuario solicitante *"
             name="usuarioSolicita"
             value={fields.usuarioSolicita}
             onChange={handleChange}

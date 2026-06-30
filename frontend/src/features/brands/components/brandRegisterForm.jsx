@@ -108,8 +108,8 @@ export default function BrandRegisterForm() {
                     <p className="text-red-300 text-sm">{error}</p>
                 )}
 
-                <Button onClick={handleAdd} disabled={saving}>
-                    <strong>{saving ? "Guardando..." : "Guardar"}</strong>
+                <Button variant="secondary" onClick={handleAdd} disabled={saving}>
+                    {saving ? "Guardando..." : "Guardar"}
                 </Button>
             </div>
 

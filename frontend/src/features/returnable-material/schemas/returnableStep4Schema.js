@@ -24,11 +24,13 @@ export const buildReturnableStep4Schema = (isMuebles) =>
         materialDescription: z
             .string()
             .trim()
-            .min(5, "La descripción debe tener mínimo 5 caracteres"),
+            .min(5, "La descripción debe tener mínimo 5 caracteres")
+            .max(500, "La descripción no puede superar 500 caracteres"),
 
         materialLocation: z
             .string()
             .trim()
+            .max(150, "La ubicación no puede superar 150 caracteres")
             .optional()
             .or(z.literal("")),
 

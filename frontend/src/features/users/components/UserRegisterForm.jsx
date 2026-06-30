@@ -7,7 +7,7 @@ import {
 } from "@/shared";
 import { getDocumentTypes, getUserTypes } from "@/features/users/services/selectService";
 import { userSchema } from "../schemas/userSchema";
-import { initialGroups } from "@/features/groups/data/groups";
+import { getGroups } from "@/features/groups/services/groupService";
 import { createUser } from "../services/userService";
 import { useNavigate } from "react-router-dom";
 
@@ -46,8 +46,9 @@ export default function UserRegisterForm({ onCancel }) {
     useEffect(() => {
         getDocumentTypes().then(setDocumentTypes);
         getUserTypes().then(setUserTypes);
-        const saved = localStorage.getItem("grupos_list");
-        setGroups(saved ? JSON.parse(saved) : initialGroups);
+        getGroups()
+            .then((data) => setGroups(data.map((g) => ({ id: g.group_name, name: g.group_name, enabled: true }))))
+            .catch(() => setGroups([]));
     }, []);
 
     const handleChange = (e) => {
@@ -164,10 +165,11 @@ export default function UserRegisterForm({ onCancel }) {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 
                         <Input label="Nombre" name="userName" placeholder="Ingresar su nombre" value={formData.userName} onChange={handleChange} error={errors.userName} />
-                        <Input label="Confirmación de correo electrónico" name="userEmailVerification" type="email" placeholder="Confirme su correo" value={formData.userEmailVerification} onChange={handleChange} error={errors.userEmailVerification} />
+                        
 
                         <Select label="Tipo de documento" name="userDocumentType" value={formData.userDocumentType} options={documentTypes} onChange={handleChange} error={errors.userDocumentType} placeholder="Tipo de documento" />
-
+                        <Input label="Correo electrónico" name="userEmail" type="email" placeholder="Ingrese su correo" value={formData.userEmail} onChange={handleChange} error={errors.userEmail} />
+                        <Input label="Confirmación de correo electrónico" name="userEmailVerification" type="email" placeholder="Confirme su correo" value={formData.userEmailVerification} onChange={handleChange} error={errors.userEmailVerification} />
                         <div className="relative">
                             <Input label="Número telefónico de contacto" name="userPhone" type="tel" placeholder="Ingrese su teléfono" value={formData.userPhone} onChange={handleChange} error={errors.userPhone} />
                             <button
@@ -191,7 +193,7 @@ export default function UserRegisterForm({ onCancel }) {
 
                         <DatePicker label="Fecha finalización" name="endDate" placeholder="Fecha finalización" value={formData.endDate} onChange={handleChange} error={errors.endDate} />
 
-                        <Input label="Correo electrónico" name="userEmail" type="email" placeholder="Ingrese su correo" value={formData.userEmail} onChange={handleChange} error={errors.userEmail} />
+                        
                         
                         <div>
                             {selectedGroup && (
