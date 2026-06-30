@@ -20,10 +20,16 @@ export default function CreateConsumable2({
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        setFields((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+        setFields((prev) => {
+            const updated = { ...prev, [name]: value };
+
+            // Recalcular valor total automáticamente
+            const amount    = parseFloat(name === "materialAmount"    ? value : updated.materialAmount)    || 0;
+            const unitValue = parseFloat(name === "materialUnitValue" ? value : updated.materialUnitValue) || 0;
+            updated.materialTotalValue = amount > 0 && unitValue > 0 ? (amount * unitValue).toString() : "";
+
+            return updated;
+        });
 
         setErrors((prev) => ({
             ...prev,
@@ -48,26 +54,9 @@ export default function CreateConsumable2({
     };
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
 
-            {/* IMAGEN */}
-            <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-text-primary">
-                    Imagen
-                </label>
-
-                <FileInput
-                    value={fields.materialImage}
-                    onChange={(files) =>
-                        setFields((prev) => ({
-                            ...prev,
-                            materialImage: files,
-                        }))
-                    }
-                    accept="image/*"
-                    multiple={false}
-                />
-            </div>
+            
 
             {/* CUENTADANTE */}
             <Input
@@ -101,16 +90,36 @@ export default function CreateConsumable2({
                 error={errors.materialUnitValue}
             />
 
-            {/* VALOR TOTAL */}
+            {/* VALOR TOTAL — calculado automáticamente, no editable */}
             <Input
-                label="Valor total"
+                label="Valor total (automático)"
                 name="materialTotalValue"
                 type="number"
-                placeholder="Escribe el valor total"
+                placeholder="Se calcula automáticamente"
                 value={fields.materialTotalValue}
-                onChange={handleChange}
+                readOnly
+                style={{ opacity: 0.6, cursor: "not-allowed" }}
                 error={errors.materialTotalValue}
             />
+
+            {/* IMAGEN */}
+            <div className="flex flex-col gap-1">
+                <label className="text-sm font-medium text-text-primary">
+                    Imagen
+                </label>
+
+                <FileInput
+                    value={fields.materialImage}
+                    onChange={(files) =>
+                        setFields((prev) => ({
+                            ...prev,
+                            materialImage: files,
+                        }))
+                    }
+                    accept="image/*"
+                    multiple={true}
+                />
+            </div>
 
             {/* BOTONES */}
             <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-4">

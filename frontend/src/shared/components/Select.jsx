@@ -10,7 +10,7 @@ export default function Select({
     return (
         <div className="w-full">
             {label && (
-                <label className={`block text-caption mb-1 place-self-start ${error ? "text-red-600" : "text-text-secondary"}`}>
+                <label className={`block text-caption mb-1 place-self-start ${error ? "text-red-600" : "text-white"}`}>
                     {label}
                 </label>
             )}

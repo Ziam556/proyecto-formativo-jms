@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Input, Button } from "@/shared";
+import { Input, Button, BrandSearchField } from "@/shared";
 import { getCategoriesTypes } from "../services/selectService";
 import { consumableStep1Schema } from "../schemas/consumableStep1Schema";
 
@@ -64,7 +64,9 @@ export default function EditConsumableMaterial1({
                 name="consumableMaterialId"
                 placeholder="ID"
                 value={fields.consumableMaterialId}
-                onChange={handleChange}
+                onChange={() => {}}
+                readOnly
+                style={{ opacity: 0.6, cursor: "not-allowed" }}
                 error={errors.consumableMaterialId}
             />
 
@@ -86,12 +88,13 @@ export default function EditConsumableMaterial1({
                 error={errors.materialElementName}
             />
 
-            <Input
+            <BrandSearchField
                 label="Marca"
-                name="materialBrand"
-                placeholder="Escribe la marca"
                 value={fields.materialBrand}
-                onChange={handleChange}
+                onChange={(val) => {
+                    setFields((prev) => ({ ...prev, materialBrand: val }));
+                    setErrors((prev) => ({ ...prev, materialBrand: "" }));
+                }}
                 error={errors.materialBrand}
             />
 

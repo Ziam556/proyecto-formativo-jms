@@ -4,10 +4,27 @@
 import { Router } from "express";
 import { userController } from "./user.controller.js";
 import { upload } from "../../config/upload.js";
+import { authenticateToken } from "../../middlewares/auth.middlewares.js";
+
 const router = Router();
+
+// GET /api/users/me → datos del usuario autenticado (debe ir antes de /:id)
+router.get("/me", authenticateToken, userController.getMe);
+
+// GET /api/users → listar todos los usuarios
+router.get("/", authenticateToken, userController.getAll);
 
 // upload.single("userImage") intercepta el archivo antes de llegar al controller
 router.post("/", upload.single("userImage"), userController.create);
+
+// GET /api/users/:id/permissions → obtener permisos individuales del usuario
+router.get("/:id/permissions", authenticateToken, userController.getUserPermissions);
+
+// POST /api/users/:id/permissions → asignar permisos individuales
+router.post("/:id/permissions", authenticateToken, userController.assignPermissions);
+
+// PUT /api/users/:id → actualizar usuario por número de documento
+router.put("/:id", authenticateToken, upload.single("userImage"), userController.update);
 
 // Exportamos el router para ser registrado en la aplicación principal
 // (ej: app.use("/users", router))

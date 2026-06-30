@@ -5,7 +5,7 @@
  */
 
 import { useState } from "react";
-import { Input, Button } from "@/shared";
+import { Input, Button, Modal } from "@/shared";
 
 // ─── Overlay: Asignar Grupo ───────────────────────────────────────────────────
 export function GroupOverlay({ groups, selectedId, onConfirm, onClose }) {

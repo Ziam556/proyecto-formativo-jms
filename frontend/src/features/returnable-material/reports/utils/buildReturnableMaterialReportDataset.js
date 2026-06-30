@@ -2,10 +2,17 @@ export function buildReturnableMaterialReportDataset({
   materials,
   selectedFields,
   scope,
+  selectedIds = [],
   filterSerial,
   filterState,
 }) {
   let filtered = [...materials];
+
+  if (scope === "selected" && selectedIds.length > 0) {
+    filtered = filtered.filter((m) =>
+      selectedIds.map(String).includes(String(m.id))
+    );
+  }
 
   if (scope === "serial" && filterSerial) {
     filtered = filtered.filter((m) => m.serial === filterSerial);

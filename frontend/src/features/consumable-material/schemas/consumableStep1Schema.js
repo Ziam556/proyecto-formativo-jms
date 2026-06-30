@@ -19,7 +19,11 @@ export const consumableStep1Schema = z.object({
         .string()
         .trim()
         .min(2, "El nombre del elemento debe tener mínimo 2 caracteres")
-        .regex(/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/, "El nombre del elemento solo puede contener letras y espacios"),
+        .max(100, "El nombre del elemento es demasiado largo")
+        .regex(
+            /^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s.\-()]+$/,
+            "El nombre solo puede contener letras, números, espacios y puntuación básica"
+        ),
 
     materialBrand: z
         .string()

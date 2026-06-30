@@ -15,7 +15,7 @@ export default function ReturnableMaterialPage() {
 
     return (
         
-        <div className="min-h-[calc(100vh-64px)] flex items-center justify-center p-4 sm:p-6">
+        <div className="min-h-full flex items-center justify-center p-4 sm:p-6">
 
             
             <div className="w-full max-w-[680px] rounded-[20px] overflow-hidden bg-gradient-to-r from-[#700D7C] via-[#88A3C7] to-[#50E5F9] shadow-2xl backdrop-blur-md px-6 sm:px-10 py-8 sm:py-12">

@@ -1,0 +1,21 @@
+-- Tabla relacional usuario ↔ grupo.
+-- Un usuario puede pertenecer a uno o varios grupos.
+-- Los permisos del usuario se heredan de los grupos asignados aquí
+-- más los permisos directos de user_permissions.
+
+CREATE TABLE IF NOT EXISTS user_groups (
+    user_id   INTEGER NOT NULL,
+    group_id  INTEGER NOT NULL,
+
+    PRIMARY KEY (user_id, group_id),
+
+    CONSTRAINT fk_user_groups_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_user_groups_group
+        FOREIGN KEY (group_id)
+        REFERENCES groups(group_id)
+        ON DELETE CASCADE
+);

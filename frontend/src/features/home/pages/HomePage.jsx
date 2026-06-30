@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Users, Package, ShoppingCart, Handshake, ArrowLeft } from "lucide-react";
 import { MenuButton } from "@/shared";
+import { handleLogout } from "@/features/auth/services/logoutService";
 
 // Opciones del menú principal — cada item lleva a un módulo del sistema
 const menuItems = [
@@ -15,7 +16,7 @@ export default function HomePage() {
 
   return (
     /* Contenedor principal — ocupa el alto disponible y centra la tarjeta */
-    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center p-4 sm:p-6">
+    <div className="min-h-full flex items-center justify-center p-4 sm:p-6">
 
       {/* Tarjeta principal con gradiente y efecto blur */}
       <div className="bg-module-card flex flex-col sm:flex-row rounded-[20px] overflow-hidden backdrop-blur-[16px] shadow-[0_8px_40px_rgba(0,0,0,0.3)] max-w-[720px] w-full">
@@ -37,8 +38,8 @@ export default function HomePage() {
             <MenuButton key={item.to} {...item} />
           ))}
 
-          {/* Vuelve al login */}
-          <MenuButton label="Regresar" icon={ArrowLeft} onClick={() => navigate("/auth")} />
+          {/* Cerrar sesión con confirmación */}
+          <MenuButton label="Cerrar sesión" icon={ArrowLeft} onClick={() => handleLogout(navigate)} />
         </div>
 
       </div>

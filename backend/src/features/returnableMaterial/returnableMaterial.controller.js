@@ -1,14 +1,11 @@
 import { returnableMaterialService } from "./returnableMaterial.service.js";
 
-export const  returnableMaterialController = {
+export const returnableMaterialController = {
 
   async create(req, res) {
-    console.log("BODY RECIBIDO:", req.body);
-    console.log("ARCHIVO RECIBIDO:", req.file);
-
     try {
-      const imagePath = req.files?.materialImage?.[0]
-        ? `uploads/returnable/${req.files.materialImage[0].filename}`
+      const imagePaths = req.files?.materialImage?.length
+        ? JSON.stringify(req.files.materialImage.map((f) => `uploads/returnable/${f.filename}`))
         : null;
 
       const technicalSheetPath = req.files?.materialTechnicalSheet?.[0]
@@ -17,7 +14,7 @@ export const  returnableMaterialController = {
 
       const material = await returnableMaterialService.createReturnableMaterial({
         ...req.body,
-        materialImage: imagePath,
+        materialImage: imagePaths,
         materialTechnicalSheet: technicalSheetPath,
       });
 
@@ -29,6 +26,50 @@ export const  returnableMaterialController = {
     } catch (err) {
       console.error("ERROR BACKEND:", err);
       res.status(500).json({ error: err.message });
+    }
+  },
+
+  async getAll(req, res) {
+    try {
+      const materials = await returnableMaterialService.getAll();
+      res.status(200).json(materials);
+    } catch (err) {
+      console.error("ERROR getAll returnableMaterial:", err);
+      res.status(500).json({ error: err.message });
+    }
+  },
+
+  async getById(req, res) {
+    try {
+      const material = await returnableMaterialService.getById(req.params.id);
+      res.status(200).json(material);
+    } catch (err) {
+      console.error("ERROR getById returnableMaterial:", err);
+      res.status(404).json({ error: err.message });
+    }
+  },
+
+  async update(req, res) {
+    try {
+      const imagePaths = req.files?.materialImage?.length
+        ? JSON.stringify(req.files.materialImage.map((f) => `uploads/returnable/${f.filename}`))
+        : null;
+
+      const technicalSheetPath = req.files?.materialTechnicalSheet?.[0]
+        ? `uploads/returnable/${req.files.materialTechnicalSheet[0].filename}`
+        : null;
+
+      const material = await returnableMaterialService.updateReturnableMaterial(req.params.id, {
+        ...req.body,
+        materialImage: imagePaths,
+        materialTechnicalSheet: technicalSheetPath,
+        isEnabled: req.body.isEnabled === "true" || req.body.isEnabled === true,
+      });
+
+      res.status(200).json({ message: "Material devolutivo actualizado correctamente", material });
+    } catch (err) {
+      console.error("ERROR update returnableMaterial:", err);
+      res.status(400).json({ error: err.message });
     }
   },
 

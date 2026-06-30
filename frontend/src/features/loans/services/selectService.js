@@ -1,4 +1,1 @@
-export async function getMaterialsTypes() {
-    const response = await fetch("/../../data/selects/materialsTypes.json")
-    return response.json();
-}
+export { getMaterialTypes as getMaterialsTypes } from "@/shared/services/catalogService.js";

@@ -1,13 +1,13 @@
-import { returnableMaterials } from "../../data/returnableMaterials.js";
 import { buildReturnableMaterialReportDataset } from "../utils/buildReturnableMaterialReportDataset";
 import { generateReturnableMaterialExcelReport } from "./generateReturnableMaterialExcelReport";
 import { generateReturnableMaterialPdfReport } from "./generateReturnableMaterialPdfReport";
 
-export function generateReturnableMaterialReport({ format, selectedFields, scope, filterSerial, filterState }) {
+export function generateReturnableMaterialReport({ format, selectedFields, scope, materials = [], selectedIds, filterSerial, filterState }) {
   const { headers, rows } = buildReturnableMaterialReportDataset({
-    materials: returnableMaterials,
+    materials,
     selectedFields,
     scope,
+    selectedIds,
     filterSerial,
     filterState,
   });

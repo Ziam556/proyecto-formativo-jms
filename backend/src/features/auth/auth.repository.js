@@ -4,7 +4,8 @@ import { pool } from "../../config/db.js";
 export const authRepository = {
     async findByEmail(userEmail) {
         const query = `
-            SELECT user_email, user_password AS password
+            SELECT user_email, user_password AS password,
+                   user_type, start_date, end_date
             FROM public.users
             WHERE user_email = $1
             LIMIT 1;

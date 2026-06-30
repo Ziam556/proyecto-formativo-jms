@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Search, User } from "lucide-react";
-import { AvatarUpload, BackButton } from "@/shared";
+import { User } from "lucide-react";
+import { AvatarUpload, BackButton, SearchField, Switch } from "@/shared";
 import UserEditForm from "../components/UserEditForm";
-import { users } from "../data/users";
+import { getUsers } from "../services/userService";
+import { normalizeUsers } from "../utils/normalizeUser";
 
 export default function EditUserPage() {
     const navigate  = useNavigate();
@@ -14,6 +15,24 @@ export default function EditUserPage() {
     const [isEnabled, setIsEnabled]       = useState(preloaded?.enabled ?? true);
     const [imageFile, setImageFile]       = useState(null);
     const [query, setQuery]               = useState("");
+    const [users, setUsers]               = useState([]);
+    const [loadError, setLoadError]       = useState(null);
+    const [loading, setLoading]           = useState(true);
+
+    const loadUsers = () => {
+        setLoading(true);
+        setLoadError(null);
+        getUsers()
+            .then((rows) => normalizeUsers(rows))
+            .then((normalized) => { setUsers(normalized); setLoading(false); })
+            .catch((err) => {
+                console.error("Error al cargar usuarios:", err);
+                setLoadError(err.message);
+                setLoading(false);
+            });
+    };
+
+    useEffect(() => { loadUsers(); }, []);
 
     const handleSelectUser = (u) => {
         setSelectedUser(u);
@@ -30,7 +49,7 @@ export default function EditUserPage() {
                 u.email?.toLowerCase().includes(query.toLowerCase())
             )
             .slice(0, 10)
-        : [];
+        : users.slice(0, 10);
 
     return (
         <div className="min-h-[calc(100vh-72px)] flex flex-col box-border py-5 px-3 sm:px-6 items-center justify-center">
@@ -53,18 +72,13 @@ export default function EditUserPage() {
                         }
                     />
 
-                    {/* Toggle habilitado / deshabilitado */}
-                    <button
-                        type="button"
-                        onClick={() => setIsEnabled((prev) => !prev)}
-                        className={`w-full py-3 rounded-lg text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
-                            isEnabled
-                                ? "bg-emerald-400 hover:bg-emerald-500 text-white shadow-md shadow-emerald-400/40"
-                                : "bg-gray-400 hover:bg-gray-500 text-white shadow-md shadow-gray-400/40"
-                        }`}
-                    >
-                        {isEnabled ? "✓  Habilitado" : "✕  Deshabilitado"}
-                    </button>
+                    {/* Switch habilitado / deshabilitado */}
+                    <div className="flex items-center gap-3">
+                        <Switch checked={isEnabled} onChange={setIsEnabled} />
+                        <span className="text-sm font-semibold text-white">
+                            {isEnabled ? "Habilitado" : "Deshabilitado"}
+                        </span>
+                    </div>
                 </div>
 
                 {/* ═══════════ PANEL CENTRAL: Formulario ═══════════ */}
@@ -73,38 +87,44 @@ export default function EditUserPage() {
                         initialUser={selectedUser}
                         userImage={imageFile ? [imageFile] : []}
                         isEnabled={isEnabled}
-                        onCancel={() => navigate("/dashboard/userpage")}
+                        onCancel={() => { setSelectedUser(null); setImageFile(null); loadUsers(); }}
                     />
                 </div>
 
                 {/* ═══════════ PANEL DERECHO: Buscador ═══════════ */}
                 <div className="w-full lg:w-[280px] flex-shrink-0 rounded-2xl bg-[rgba(217,217,217,0.15)] backdrop-blur-[16px] border border-white/20 p-4 flex flex-col gap-3">
 
-                    <div className="relative">
-                        <Search
-                            size={14}
-                            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"
-                        />
-                        <input
-                            type="text"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            placeholder="Buscar por nombre, documento o correo"
-                            className="w-full bg-white/80 rounded-lg pl-8 pr-3 py-[10px] text-[0.78rem] text-gray-700 outline-none border border-white/30 placeholder:text-gray-400"
-                        />
-                    </div>
+                    <SearchField
+                        value={query}
+                        onChange={setQuery}
+                        onClear={() => setQuery("")}
+                        placeholder="Buscar por nombre, documento o correo"
+                        fullWidth
+                        size="sm"
+                    />
+
+                    {loadError && (
+                        <p className="text-red-300 text-[0.72rem] bg-red-900/30 border border-red-400/30 rounded-lg px-3 py-2">
+                            Error al cargar usuarios: {loadError}
+                        </p>
+                    )}
 
                     <div className="bg-white/10 rounded-xl border border-white/20 flex flex-col overflow-hidden">
                         <p className="text-white text-xs px-3 py-2 border-b border-white/10 shrink-0 m-0 font-medium">
                             Resultados
                         </p>
                         <div className="flex flex-col overflow-y-auto max-h-[340px]">
-                            {!query.trim() && (
+                            {loading && (
                                 <p className="text-white/40 text-[0.73rem] text-center py-6 px-3">
-                                    Busca un usuario para editar
+                                    Cargando usuarios...
                                 </p>
                             )}
-                            {query.trim() && results.length === 0 && (
+                            {!loading && !loadError && users.length === 0 && (
+                                <p className="text-white/40 text-[0.73rem] text-center py-6 px-3">
+                                    No hay usuarios registrados
+                                </p>
+                            )}
+                            {!loading && query.trim() && results.length === 0 && (
                                 <p className="text-white/50 text-[0.73rem] text-center py-6">
                                     Sin resultados
                                 </p>
@@ -118,21 +138,20 @@ export default function EditUserPage() {
                                         selectedUser?.id === u.id ? "bg-white/25" : ""
                                     }`}
                                 >
-                                    <div className="w-8 h-8 rounded-full bg-[rgba(200,200,220,0.45)] flex items-center justify-center flex-shrink-0 border border-white/30">
-                                        <User size={15} color="rgba(90,90,120,0.9)" />
-                                    </div>
+                                    <User size={14} className="text-white/60 shrink-0" />
                                     <div className="flex flex-col min-w-0">
-                                        <span className="text-white text-[0.75rem] font-semibold truncate leading-tight">
-                                            {u.name}
+                                        <span className="text-white text-[0.76rem] font-medium truncate">
+                                            {u.name || u.email}
                                         </span>
-                                        <span className="text-white/55 text-[0.68rem] truncate leading-tight">
-                                            {u.documentType} · {u.document}
+                                        <span className="text-white/50 text-[0.68rem] truncate">
+                                            {u.document} · {u.userType}
                                         </span>
                                     </div>
                                 </button>
                             ))}
                         </div>
                     </div>
+
                 </div>
 
             </div>

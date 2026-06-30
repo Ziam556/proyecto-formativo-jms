@@ -7,4 +7,20 @@ export const returnableMaterialService = {
     return await returnableMaterialRepository.create(data);
   },
 
+  async getAll() {
+    return await returnableMaterialRepository.findAll();
+  },
+
+  async getById(id) {
+    const material = await returnableMaterialRepository.findById(id);
+    if (!material) throw new Error(`Material devolutivo con id ${id} no encontrado`);
+    return material;
+  },
+
+  async updateReturnableMaterial(id, data) {
+    const updated = await returnableMaterialRepository.update(id, data);
+    if (!updated) throw new Error(`Material devolutivo con id ${id} no encontrado`);
+    return updated;
+  },
+
 };

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Input, Button, FileInput, DatePicker } from "@/shared";
+import { Input, Button, FileInput, BrandSearchField } from "@/shared";
 import { returnableStep2Schema } from "../schemas/returnableStep2Schema";
 
 export default function CreateReturnable2({ formData, onNext, onBack }) {
@@ -8,7 +8,6 @@ export default function CreateReturnable2({ formData, onNext, onBack }) {
     materialModel:        formData.materialModel        || "",
     materialSerial:       formData.materialSerial       || "",
     materialImage:        formData.materialImage        || [],
-    MaterialPurchaseDate: formData.MaterialPurchaseDate || "",
   });
   const [errors, setErrors] = useState({});
 
@@ -40,12 +39,13 @@ export default function CreateReturnable2({ formData, onNext, onBack }) {
 
   return (
     <div className="grid grid-cols-[320px_320px] gap-6">
-      <Input
+      <BrandSearchField
         label="Marca"
-        name="materialBrand"
-        placeholder="Escribe la marca"
         value={fields.materialBrand}
-        onChange={handleChange}
+        onChange={(val) => {
+          setFields((prev) => ({ ...prev, materialBrand: val }));
+          setErrors((prev) => ({ ...prev, materialBrand: "" }));
+        }}
         error={errors.materialBrand}
       />
       <Input
@@ -75,21 +75,13 @@ export default function CreateReturnable2({ formData, onNext, onBack }) {
             setErrors((prev) => ({ ...prev, materialImage: "" }));
           }}
           accept="image/png,image/jpeg,image/svg+xml"
-          multiple={false}
+          multiple={true}
         />
         {errors.materialImage && (
           <span className="text-red-500 text-xs">{errors.materialImage}</span>
         )}
       </div>
 
-      {/* Fecha de compra */}
-      <DatePicker
-        label="Fecha de compra *"
-        name="MaterialPurchaseDate"
-        value={fields.MaterialPurchaseDate}
-        onChange={handleChange}
-        error={errors.MaterialPurchaseDate}
-      />
 
       <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-2">
         <Button variant="secondary" size="sm" onClick={onBack}>Atrás</Button>

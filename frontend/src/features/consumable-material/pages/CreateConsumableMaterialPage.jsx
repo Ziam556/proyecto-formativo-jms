@@ -43,10 +43,9 @@ export default function CreateConsumableMaterialPage() {
 
             const payload = { ...finalData, materialPurchaseDate: purchaseDate };
 
-            // La imagen es un array de File, tomamos el primero
-            const imageFile = finalData.materialImage?.[0] ?? null;
+            const imageFiles = finalData.materialImage ?? [];
 
-            await createConsumableMaterial(payload, imageFile);
+            await createConsumableMaterial(payload, imageFiles);
 
             setFormData({});
             setCurrentStep(0);

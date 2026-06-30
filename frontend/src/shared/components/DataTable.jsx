@@ -8,6 +8,7 @@ import {
 import Checkbox from "./Checkbox";
 import ColumnToggle from "./ColumnToggle";
 import StateChip from "./StateChip";
+import { formatDate } from "../utils/formatDate";
 
 const formatCurrency = (v) =>
     Number(v).toLocaleString("es-CO", { minimumFractionDigits: 0 });
@@ -77,6 +78,7 @@ export default function DataTable({
                 const value = col.accessor ? row.original[col.accessor] : null;
                 if (col.format === "currency") return formatCurrency(value);
                 if (col.format === "state")    return <StateChip value={value} />;
+                if (col.format === "date")     return formatDate(value);
                 if (col.format === "link")     return (
                     <a href="#" className="text-[#93c5fd] underline text-[0.82rem]">
                         Ver ficha

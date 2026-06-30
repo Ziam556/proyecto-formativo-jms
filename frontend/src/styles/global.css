@@ -2,14 +2,21 @@
 @import url(semantic.css);
 
 /* Estilos del DatePicker para que coincida con los demás inputs */
+.react-datepicker-wrapper,
+.react-datepicker__input-container {
+    width: 100% !important;
+    display: block !important;
+}
+
 .react-datepicker__input-container input {
     background: rgba(217, 217, 217, 0.54) !important;
     border: 1px solid #000000 !important;
     border-radius: 8px !important;
-    width: 320px !important;
+    width: 100% !important;
     height: 48px !important;
     padding: 0 16px !important;
     font-size: 1rem !important;
+    box-sizing: border-box !important;
 }
 
 @import "tailwindcss"; /* Esta linea debe quedar al final para que funcione */

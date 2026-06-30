@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Input, Button, FileInput } from "@/shared";
+import { Input, Button, FileInput, Switch } from "@/shared";
 import { consumableStep2Schema } from "../schemas/consumableStep2Schema";
 
 export default function EditConsumableMaterial2({
@@ -21,7 +21,17 @@ export default function EditConsumableMaterial2({
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFields((prev) => ({ ...prev, [name]: value }));
+        setFields((prev) => {
+            const updated = { ...prev, [name]: value };
+            if (name === "materialAmount" || name === "materialUnitValue") {
+                const amount    = parseFloat(name === "materialAmount"    ? value : updated.materialAmount)    || 0;
+                const unitValue = parseFloat(name === "materialUnitValue" ? value : updated.materialUnitValue) || 0;
+                updated.materialTotalValue = amount > 0 && unitValue > 0
+                    ? (amount * unitValue).toString()
+                    : "";
+            }
+            return updated;
+        });
         setErrors((prev) => ({ ...prev, [name]: "" }));
     };
 
@@ -42,7 +52,7 @@ export default function EditConsumableMaterial2({
     };
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-[600px] mx-auto">
 
             {/* IMAGEN */}
             <div className="flex flex-col gap-1">
@@ -91,33 +101,30 @@ export default function EditConsumableMaterial2({
                 error={errors.materialUnitValue}
             />
 
-            {/* VALOR TOTAL */}
+            {/* VALOR TOTAL (auto-calculado) */}
             <Input
-                label="Valor total"
+                label="Valor total (calculado)"
                 name="materialTotalValue"
                 type="number"
-                placeholder="Escribe el valor total"
+                placeholder="Se calcula automáticamente"
                 value={fields.materialTotalValue}
-                onChange={handleChange}
+                onChange={() => {}}
+                readOnly
+                style={{ opacity: 0.75, cursor: "not-allowed" }}
                 error={errors.materialTotalValue}
             />
 
-            {/* BOTÓN HABILITAR / DESHABILITAR */}
+            {/* SWITCH HABILITAR / DESHABILITAR */}
             <div className="flex flex-col gap-1 justify-end">
-                <label className="text-sm font-medium text-text-primary">
+                <label className="text-sm font-medium text-white">
                     Estado del material
                 </label>
-                <button
-                    type="button"
-                    onClick={() => setIsEnabled((prev) => !prev)}
-                    className={`w-full py-3 rounded-lg text-sm font-semibold transition-all duration-300 ${
-                        isEnabled
-                            ? "bg-emerald-400 hover:bg-emerald-500 text-white shadow-md shadow-emerald-400/40"
-                            : "bg-gray-400 hover:bg-gray-500 text-white shadow-md shadow-gray-400/40"
-                    }`}
-                >
-                    {isEnabled ? "✓  Habilitado" : "✕  Deshabilitado"}
-                </button>
+                <div className="flex items-center gap-3 h-12">
+                    <Switch checked={isEnabled} onChange={setIsEnabled} />
+                    <span className="text-sm font-semibold text-white">
+                        {isEnabled ? "Habilitado" : "Deshabilitado"}
+                    </span>
+                </div>
             </div>
 
             {/* BOTONES */}

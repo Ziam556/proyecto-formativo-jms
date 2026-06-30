@@ -9,6 +9,7 @@ export default function Button({
     const variants = {
         primary:   "text-white",
         secondary: "text-black",
+        outline:   "text-[#00C8DC]",
     }
 
     const sizes = {
@@ -19,6 +20,7 @@ export default function Button({
     const bgClasses = {
         primary:   "bg-[#71277A] rounded-full w-full lg:w-auto",
         secondary: "bg-[#00C8DC] rounded-full w-full lg:w-auto",
+        outline:   "bg-transparent border-2 border-[#00C8DC] rounded-full w-full lg:w-auto hover:bg-[rgba(0,200,220,0.08)]",
     }
 
     return(

@@ -1,4 +1,3 @@
-import { users } from "../../data/users.js";
 import { generateUserPdfReport } from "./generateUserPdfReport.js";
 import { generateUserExcelReport } from "./generateUserExcelReport.js";
 
@@ -9,7 +8,7 @@ function buildDataset({ data, activeFields }) {
     return { headers, rows };
 }
 
-export function generateUserReport({ format, activeFields, scope, selectedIds }) {
+export function generateUserReport({ format, activeFields, scope, selectedIds, users = [] }) {
     // Determinar qué datos usar
     let data;
     if (scope === "selected") {

@@ -10,6 +10,10 @@ import brandsRoutes from "./features/brands/brands.routes.js";
 import groupsRoutes from "./features/groups/groups.routes.js";
 import accessRoutes from "./features/access/access.routes.js";
 import loansRoutes from "./features/loans/loans.routes.js";
+import catalogsRoutes from "./features/catalogs/catalogs.routes.js";
+import permissionRoutes from "./features/permissions/permission.routes.js";
+import tasksRoutes from "./features/tasks/tasks.routes.js";
+import notificationsRoutes from "./features/notifications/notifications.routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
@@ -35,6 +39,10 @@ app.use("/api/brands", brandsRoutes);
 app.use("/api/groups", groupsRoutes);
 app.use("/api/access", accessRoutes);
 app.use("/api/loans", loansRoutes);
+app.use("/api/catalogs", catalogsRoutes);
+app.use("/api/permissions", permissionRoutes);
+app.use("/api/tasks", tasksRoutes);
+app.use("/api/notifications", notificationsRoutes);
 
 // Manejador de errores global — siempre devuelve JSON
 app.use((err, req, res, next) => {

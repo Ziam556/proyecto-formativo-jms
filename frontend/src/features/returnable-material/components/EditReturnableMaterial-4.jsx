@@ -1,6 +1,13 @@
 import { useState } from "react";
-import { Input, Button, Select, FileInput, alertWarning, alertError  } from "@/shared";
+import { z } from "zod";
+import { Input, Button, Select, FileInput, Switch, alertWarning, alertError  } from "@/shared";
 import { buildReturnableStep4Schema } from "../schemas/returnableStep4Schema";
+
+// En edición la ficha técnica es opcional (ya existe en el servidor)
+const buildEditStep4Schema = (isMuebles) =>
+  buildReturnableStep4Schema(isMuebles).extend({
+    materialTechnicalSheet: z.array(z.any()).optional(),
+  });
 
 const STATE_OPTIONS = [
   { value: "Disponible",    label: "Disponible" },
@@ -45,7 +52,7 @@ export default function EditReturnableMaterial4({ formData = {}, onSave, onBack 
   };
 
   const handleSave = () => {
-    const schema = buildReturnableStep4Schema(isMuebles);
+    const schema = buildEditStep4Schema(isMuebles);
     const result = schema.safeParse(fields);
 
     if (!result.success) {
@@ -110,22 +117,17 @@ export default function EditReturnableMaterial4({ formData = {}, onSave, onBack 
         onChange={handleChange}
       />
 
-      {/* BOTÓN HABILITAR / DESHABILITAR */}
+      {/* SWITCH HABILITAR / DESHABILITAR */}
       <div className="flex flex-col gap-1 justify-end">
-        <label className="text-sm font-medium text-text-primary">
+        <label className="text-sm font-medium text-white">
           Estado del material
         </label>
-        <button
-          type="button"
-          onClick={() => setIsEnabled((prev) => !prev)}
-          className={`w-full py-3 rounded-lg text-sm font-semibold transition-all duration-300 ${
-            isEnabled
-              ? "bg-emerald-400 hover:bg-emerald-500 text-white shadow-md shadow-emerald-400/40"
-              : "bg-gray-400 hover:bg-gray-500 text-white shadow-md shadow-gray-400/40"
-          }`}
-        >
-          {isEnabled ? "✓  Habilitado" : "✕  Deshabilitado"}
-        </button>
+        <div className="flex items-center gap-3 h-12">
+          <Switch checked={isEnabled} onChange={setIsEnabled} />
+          <span className="text-sm font-semibold text-white">
+            {isEnabled ? "Habilitado" : "Deshabilitado"}
+          </span>
+        </div>
       </div>
 
       {isMuebles && (
