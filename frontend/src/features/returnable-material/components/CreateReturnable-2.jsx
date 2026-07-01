@@ -48,14 +48,14 @@ export default function CreateReturnable2({ formData, onNext, onBack }) {
         }}
         error={errors.materialBrand}
       />
-      <Input
+      <Input labelVariant="dark"
         label="Modelo (opcional)"
         name="materialModel"
         placeholder="Escribe el modelo"
         value={fields.materialModel}
         onChange={handleChange}
       />
-      <Input
+      <Input labelVariant="dark"
         label="Serial (opcional)"
         name="materialSerial"
         placeholder="Escribe el serial"

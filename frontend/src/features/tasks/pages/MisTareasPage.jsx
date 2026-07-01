@@ -60,6 +60,7 @@ function EvidenceModal({ task, onClose, onCompleted }) {
         {/* Comentario del usuario */}
         <Textarea
           variant="light"
+          labelVariant="dark"
           label="Comentario (opcional)"
           rows={3}
           value={userComment}
@@ -68,8 +69,8 @@ function EvidenceModal({ task, onClose, onCompleted }) {
         />
 
         <div className="flex flex-col gap-2">
-          <label className="text-[0.85rem] font-semibold text-gray-700">
-            Adjunta evidencia <span className="text-gray-400 font-normal">(imágenes o archivos — opcional)</span>
+          <label className="text-[12px] font-semibold text-black">
+            Adjunta evidencia <span className="text-gray-500 font-normal">(imágenes o archivos — opcional)</span>
           </label>
           <FileInput
             value={files}

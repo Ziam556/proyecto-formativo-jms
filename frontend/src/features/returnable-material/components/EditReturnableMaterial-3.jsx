@@ -47,7 +47,7 @@ export default function EditReturnableMaterial3({ formData = {}, onNext, onBack 
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
-      <Input
+      <Input labelVariant="dark"
         label="Cuentadante"
         name="materialStoryTeller"
         placeholder="Nombre del cuentadante"
@@ -55,7 +55,7 @@ export default function EditReturnableMaterial3({ formData = {}, onNext, onBack 
         onChange={handleChange}
         error={errors.materialStoryTeller}
       />
-      <Input
+      <Input labelVariant="dark"
         label={`Cantidad${hasPlate ? " (opcional)" : " *"}`}
         name="materialAmount"
         type="number"
@@ -64,7 +64,7 @@ export default function EditReturnableMaterial3({ formData = {}, onNext, onBack 
         onChange={handleChange}
         error={errors.materialAmount}
       />
-      <Input
+      <Input labelVariant="dark"
         label="Valor unitario"
         name="materialUnitValue"
         type="number"
@@ -73,7 +73,7 @@ export default function EditReturnableMaterial3({ formData = {}, onNext, onBack 
         onChange={handleChange}
         error={errors.materialUnitValue}
       />
-      <Input
+      <Input labelVariant="dark"
         label="Valor total (calculado)"
         name="materialTotalValue"
         type="number"

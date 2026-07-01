@@ -48,7 +48,7 @@ export default function CreateReturnable3({ formData, onNext, onBack }) {
 
   return (
     <div className="grid grid-cols-[320px_320px] gap-6">
-      <Input
+      <Input labelVariant="dark"
         label="Cuentadante"
         name="materialStoryTeller"
         placeholder="Nombre del cuentadante"
@@ -58,7 +58,7 @@ export default function CreateReturnable3({ formData, onNext, onBack }) {
       />
 
       {/* Cantidad: solo obligatoria si no tiene placa */}
-      <Input
+      <Input labelVariant="dark"
         label={`Cantidad${hasPlate ? " (opcional)" : " *"}`}
         name="materialAmount"
         type="number"
@@ -68,7 +68,7 @@ export default function CreateReturnable3({ formData, onNext, onBack }) {
         error={errors.materialAmount}
       />
 
-      <Input
+      <Input labelVariant="dark"
         label="Valor unitario"
         name="materialUnitValue"
         type="number"
@@ -78,7 +78,7 @@ export default function CreateReturnable3({ formData, onNext, onBack }) {
         error={errors.materialUnitValue}
       />
       {/* VALOR TOTAL — calculado automáticamente, no editable */}
-      <Input
+      <Input labelVariant="dark"
         label="Valor total (automático)"
         name="materialTotalValue"
         type="number"

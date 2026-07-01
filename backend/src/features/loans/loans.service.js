@@ -16,6 +16,13 @@ export const loansService = {
         return loansRepository.findById(loanId);
     },
 
+    async update(loanId, fields) {
+        const loan = await loansRepository.findById(loanId);
+        if (!loan) throw new Error("Préstamo no encontrado");
+        const updated = await loansRepository.update(loanId, fields);
+        return updated;
+    },
+
     async updateStatus(loanId, status) {
         return loansRepository.updateStatus(loanId, status);
     },

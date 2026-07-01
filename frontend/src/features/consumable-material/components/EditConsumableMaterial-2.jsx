@@ -70,7 +70,7 @@ export default function EditConsumableMaterial2({
             </div>
 
             {/* CUENTADANTE */}
-            <Input
+            <Input labelVariant="dark"
                 label="Cuentadante"
                 name="materialStoryTeller"
                 placeholder="Escribe el nombre del cuentadante"
@@ -80,7 +80,7 @@ export default function EditConsumableMaterial2({
             />
 
             {/* CANTIDAD */}
-            <Input
+            <Input labelVariant="dark"
                 label="Cantidad"
                 name="materialAmount"
                 type="number"
@@ -91,7 +91,7 @@ export default function EditConsumableMaterial2({
             />
 
             {/* VALOR UNITARIO */}
-            <Input
+            <Input labelVariant="dark"
                 label="Valor unitario"
                 name="materialUnitValue"
                 type="number"
@@ -102,7 +102,7 @@ export default function EditConsumableMaterial2({
             />
 
             {/* VALOR TOTAL (auto-calculado) */}
-            <Input
+            <Input labelVariant="dark"
                 label="Valor total (calculado)"
                 name="materialTotalValue"
                 type="number"

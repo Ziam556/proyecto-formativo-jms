@@ -67,12 +67,12 @@ export default function CreateLoans1({ materials = [], formData, onNext }) {
     <>
       {/* HEADER */}
       <div className="flex items-center gap-2 mb-1">
-        <ScanSearch size={24} className="text-black" />
-        <h2 className="text-black font-bold text-lg">
+        <ScanSearch size={24} className="text-white" />
+        <h2 className="text-white font-bold text-lg">
           Búsqueda y selección de materiales
         </h2>
       </div>
-      <p className="text-black/70 text-sm mb-6">
+      <p className="text-white/80 text-sm mb-6">
         Filtre los materiales y seleccione los que serán prestados
       </p>
 

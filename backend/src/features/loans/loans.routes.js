@@ -9,6 +9,7 @@ router.use(authenticateToken);
 router.post("/", loansController.create);
 router.get("/", loansController.getAll);
 router.get("/:id", loansController.getById);
+router.put("/:id", loansController.update);
 router.patch("/:id/status", loansController.updateStatus);
 router.post("/:id/return", loansController.registerReturn);
 

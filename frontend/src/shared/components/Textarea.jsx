@@ -1,20 +1,28 @@
-// variant="dark"  → fondo semitransparente, label blanca  (fondos degradado)
-// variant="light" → fondo blanco, label gris               (cards blancas)
+// variant="dark"       → fondo semitransparente  (fondos degradado / oscuros)  [default]
+// variant="light"      → fondo blanco            (cards blancas)
+// labelVariant="light" → label blanco            [default]
+// labelVariant="dark"  → label negro
 export default function Textarea({
     label,
     error,
     rows = 4,
     variant = "dark",
+    labelVariant = "light",
     ...props
 }) {
     const isLight = variant === "light";
+
+    const labelColor = error
+        ? "text-red-600"
+        : labelVariant === "dark"
+        ? "text-black"
+        : "text-white";
 
     return (
         <div className="w-full">
 
             {label && (
-                <label className={`block text-[0.82rem] mb-1 place-self-start font-semibold
-                    ${error ? "text-red-600" : isLight ? "text-gray-700" : "text-white"}`}>
+                <label className={`block text-[12px] mb-1 place-self-start font-semibold ${labelColor}`}>
                     {label}
                 </label>
             )}

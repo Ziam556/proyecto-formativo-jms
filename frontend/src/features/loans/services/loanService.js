@@ -76,6 +76,19 @@ export async function getLoanById(id) {
     };
 }
 
+export async function updateLoan(id, fields) {
+    const response = await fetch(`${API_URL}/${id}`, {
+        method: "PUT",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(fields),
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Error al actualizar el préstamo");
+    }
+    return response.json();
+}
+
 // ── Devoluciones ──────────────────────────────────────────────────────────────
 
 export async function registerLoanReturn(loanId, items) {

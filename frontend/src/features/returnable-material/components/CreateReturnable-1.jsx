@@ -73,7 +73,7 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
 
   return (
     <div className="grid grid-cols-[320px_320px] gap-6 mx-auto">
-      <Input
+      <Input labelVariant="dark"
         label="ID"
         name="returnableMaterialId"
         value={fields.returnableMaterialId}
@@ -82,7 +82,7 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
         readOnly
         style={{ opacity: 0.6, cursor: "not-allowed" }}
       />
-      <Input
+      <Input labelVariant="dark"
         label="Placa SENA"
         name="materialPlate"
         placeholder="Escribe la placa SENA"
@@ -90,7 +90,7 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
         onChange={handleChange}
         error={errors.materialPlate}
       />
-      <Select
+      <Select labelVariant="dark"
         label="Categoría"
         name="materialCategory"
         value={fields.materialCategory}
@@ -99,7 +99,7 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
         error={errors.materialCategory}
         placeholder="Selecciona una categoría"
       />
-      <Input
+      <Input labelVariant="dark"
         label="Nombre del elemento"
         name="materialElementName"
         placeholder="Escribe el nombre del elemento"

@@ -113,7 +113,10 @@ export default function LoginForm() {
                     )}
 
                     {/* Olvidé contraseña */}
-                    <p className="text-center text-[0.85rem] font-semibold text-[#8b3a8b] cursor-pointer m-0">
+                    <p
+                        onClick={() => navigate("/auth/forgot-password")}
+                        className="text-center text-[0.85rem] font-semibold text-[#8b3a8b] cursor-pointer m-0 hover:underline"
+                    >
                         ¡Olvidé mi contraseña!
                     </p>
 

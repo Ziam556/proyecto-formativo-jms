@@ -178,13 +178,13 @@ export default function UserEditForm({ initialUser, userImage, isEnabled, onCanc
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="w-full">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 
-                    <Input label="Nombre" name="userName" placeholder="Ingresar nombre" value={formData.userName} onChange={handleChange} error={errors.userName} />
-                    <Input label="Confirmación de correo electrónico" name="userEmailVerification" type="email" placeholder="Confirme su correo" value={formData.userEmailVerification} onChange={handleChange} error={errors.userEmailVerification} />
+                    <Input labelVariant="light" label="Nombre" name="userName" placeholder="Ingresar nombre" value={formData.userName} onChange={handleChange} error={errors.userName} />
+                    <Input labelVariant="light" label="Confirmación de correo electrónico" name="userEmailVerification" type="email" placeholder="Confirme su correo" value={formData.userEmailVerification} onChange={handleChange} error={errors.userEmailVerification} />
 
-                    <Select label="Tipo de documento" name="userDocumentType" value={formData.userDocumentType} options={documentTypes} onChange={handleChange} error={errors.userDocumentType} placeholder="Tipo de documento" />
+                    <Select labelVariant="light" label="Tipo de documento" name="userDocumentType" value={formData.userDocumentType} options={documentTypes} onChange={handleChange} error={errors.userDocumentType} placeholder="Tipo de documento" />
 
                     <div className="relative">
-                        <Input label="Número telefónico de contacto" name="userPhone" type="tel" placeholder="Ingrese su teléfono" value={formData.userPhone} onChange={handleChange} error={errors.userPhone} />
+                        <Input labelVariant="light" label="Número telefónico de contacto" name="userPhone" type="tel" placeholder="Ingrese su teléfono" value={formData.userPhone} onChange={handleChange} error={errors.userPhone} />
                         <button
                             type="button"
                             title={formData.userSecondaryPhone ? `Secundario: ${formData.userSecondaryPhone}` : "Agregar número secundario"}
@@ -195,18 +195,18 @@ export default function UserEditForm({ initialUser, userImage, isEnabled, onCanc
                         </button>
                     </div>
 
-                    <Input label="Número de documento" name="userDocumentNumber" placeholder="Ingrese su número de documento" value={formData.userDocumentNumber} onChange={handleChange} error={errors.userDocumentNumber} />
-                    <Input label="Dirección" name="userAddress" placeholder="Ingrese su dirección" value={formData.userAddress} onChange={handleChange} error={errors.userAddress} />
+                    <Input labelVariant="light" label="Número de documento" name="userDocumentNumber" placeholder="Ingrese su número de documento" value={formData.userDocumentNumber} onChange={handleChange} error={errors.userDocumentNumber} />
+                    <Input labelVariant="light" label="Dirección" name="userAddress" placeholder="Ingrese su dirección" value={formData.userAddress} onChange={handleChange} error={errors.userAddress} />
 
-                    <Select label="Tipo de usuario" name="userType" value={formData.userType} options={userTypes} onChange={handleChange} error={errors.userType} placeholder="Tipo de usuario" />
-                    <Input label="Correo institucional (opcional)" name="userEmailInstitutional" type="email" placeholder="Ingrese su correo institucional" value={formData.userEmailInstitutional} onChange={handleChange} error={errors.userEmailInstitutional} />
+                    <Select labelVariant="light" label="Tipo de usuario" name="userType" value={formData.userType} options={userTypes} onChange={handleChange} error={errors.userType} placeholder="Tipo de usuario" />
+                    <Input labelVariant="light" label="Correo institucional (opcional)" name="userEmailInstitutional" type="email" placeholder="Ingrese su correo institucional" value={formData.userEmailInstitutional} onChange={handleChange} error={errors.userEmailInstitutional} />
 
-                    <DatePicker label="Fecha inicio" name="startDate" placeholder="Fecha inicio" value={formData.startDate} onChange={handleChange} error={errors.startDate} />
-                    <Input label="Contraseña (dejar vacío para no cambiar)" name="userPassword" type="password" placeholder="••••••••••••" value={formData.userPassword} onChange={handleChange} error={errors.userPassword} />
+                    <DatePicker labelVariant="light" label="Fecha inicio" name="startDate" placeholder="Fecha inicio" value={formData.startDate} onChange={handleChange} error={errors.startDate} />
+                    <Input labelVariant="light" label="Contraseña (dejar vacío para no cambiar)" name="userPassword" type="password" placeholder="••••••••••••" value={formData.userPassword} onChange={handleChange} error={errors.userPassword} />
 
-                    <DatePicker label="Fecha finalización" name="endDate" placeholder="Fecha finalización" value={formData.endDate} onChange={handleChange} error={errors.endDate} />
+                    <DatePicker labelVariant="light" label="Fecha finalización" name="endDate" placeholder="Fecha finalización" value={formData.endDate} onChange={handleChange} error={errors.endDate} />
 
-                    <Input label="Correo electrónico" name="userEmail" type="email" placeholder="Ingrese su correo" value={formData.userEmail} onChange={handleChange} error={errors.userEmail} />
+                    <Input labelVariant="light" label="Correo electrónico" name="userEmail" type="email" placeholder="Ingrese su correo" value={formData.userEmail} onChange={handleChange} error={errors.userEmail} />
 
                     <div>
                         {selectedGroup && (

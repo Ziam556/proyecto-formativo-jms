@@ -38,13 +38,13 @@ export default function CreateLoans2({ formData, onNext, onBack }) {
         {/* HEADER */}
         <div className="flex items-center gap-3 mb-7">
           <div className="p-2 rounded-lg bg-white/20 flex-shrink-0">
-            <CalendarDays size={20} className="text-black" />
+            <CalendarDays size={20} className="text-white" />
           </div>
           <div>
-            <h2 className="text-black font-bold text-lg leading-tight">
+            <h2 className="text-white font-bold text-lg leading-tight">
               Datos del préstamo
             </h2>
-            <p className="text-black/70 text-sm">
+            <p className="text-white/80 text-sm">
               Completa la información del préstamo
             </p>
           </div>

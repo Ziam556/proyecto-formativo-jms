@@ -1,3 +1,5 @@
+// labelVariant="light" → label blanco  (fondos degradado / oscuros)   [default]
+// labelVariant="dark"  → label negro   (fondos claros / cards blancas)
 export default function Select({
     label,
     name,
@@ -5,12 +7,19 @@ export default function Select({
     options = [],
     value,
     onChange,
-    placeholder = "Seleccione una opción"
+    placeholder = "Seleccione una opción",
+    labelVariant = "light",
 }) {
+    const labelColor = error
+        ? "text-red-600"
+        : labelVariant === "dark"
+        ? "text-black"
+        : "text-white";
+
     return (
         <div className="w-full">
             {label && (
-                <label className={`block text-caption mb-1 place-self-start ${error ? "text-red-600" : "text-white"}`}>
+                <label className={`block text-[12px] mb-1 place-self-start font-semibold ${labelColor}`}>
                     {label}
                 </label>
             )}
@@ -23,6 +32,7 @@ export default function Select({
                     w-full
                     h-12
                     px-4
+                    text-[12px]
                     rounded-[8px]
                     border
                     bg-[rgba(217,217,217,0.54)]

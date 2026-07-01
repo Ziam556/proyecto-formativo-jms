@@ -83,6 +83,24 @@ export const loansRepository = {
         return { ...loan.rows[0], items: items.rows };
     },
 
+    async update(loanId, { fileGroup, amount, departureDate, deliveryDate, justification, requestingUser }) {
+        const result = await pool.query(
+            `UPDATE public.loans
+             SET file_group      = COALESCE($1, file_group),
+                 amount          = COALESCE($2, amount),
+                 departure_date  = COALESCE($3, departure_date),
+                 delivery_date   = COALESCE($4, delivery_date),
+                 justification   = COALESCE($5, justification),
+                 requesting_user = COALESCE($6, requesting_user),
+                 updated_at      = NOW()
+             WHERE loan_id = $7
+             RETURNING *`,
+            [fileGroup ?? null, amount ?? null, departureDate ?? null, deliveryDate ?? null,
+             justification ?? null, requestingUser ?? null, loanId]
+        );
+        return result.rows[0] ?? null;
+    },
+
     async updateStatus(loanId, status) {
         const result = await pool.query(
             `UPDATE public.loans SET loan_status = $1, updated_at = NOW()
