@@ -64,11 +64,31 @@ export async function getLoanById(id) {
     return {
         ...mapLoan(data),
         materiales: (data.items || []).map((i) => ({
-            name:   i.material_name,
-            type:   i.material_type === "M.D" ? "Devolutivo" : "Consumo",
-            amount: i.amount,
+            id:               i.loan_item_id,
+            name:             i.material_name,
+            type:             i.material_type === "M.D" ? "Devolutivo" : "Consumo",
+            amount:           i.amount,
+            returned:         Boolean(i.returned_at),
+            returnedState:    i.item_state,
+            returnedLeftover: i.leftover_amount,
+            returnedNotes:    i.observations,
         })),
     };
+}
+
+// ── Devoluciones ──────────────────────────────────────────────────────────────
+
+export async function registerLoanReturn(loanId, items) {
+    const response = await fetch(`${API_URL}/${loanId}/return`, {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ items }),
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Error al registrar la devolución");
+    }
+    return response.json();
 }
 
 // ── Materiales disponibles para préstamo (consumo + devolutivo) ───────────────

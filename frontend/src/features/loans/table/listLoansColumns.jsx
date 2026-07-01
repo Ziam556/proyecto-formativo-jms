@@ -74,9 +74,35 @@ function MaterialesCell({ materiales = [] }) {
   );
 }
 
+// ── Chip de estado del préstamo ───────────────────────────────────────────────
+const STATUS_LABELS = {
+  activo:    "Activo",
+  devuelto:  "Devuelto",
+  cancelado: "Cancelado",
+};
+
+const STATUS_STYLES = {
+  activo:    { background: "#2563eb", color: "#fff" },
+  devuelto:  { background: "#16a34a", color: "#fff" },
+  cancelado: { background: "#6b7280", color: "#fff" },
+};
+
+function StatusChip({ value }) {
+  const s = STATUS_STYLES[value] || { background: "#6b7280", color: "#fff" };
+  return (
+    <span
+      className="rounded-full py-[2px] px-[10px] text-[0.75rem] font-semibold whitespace-nowrap inline-block"
+      style={{ background: s.background, color: s.color }}
+    >
+      {STATUS_LABELS[value] || value || "—"}
+    </span>
+  );
+}
+
 // ── Celda de acciones ────────────────────────────────────────────────────────
 function AccionesCell({ row }) {
   const navigate = useNavigate();
+  const yaDevuelto = row.status === "devuelto";
 
   return (
     <div className="flex items-center gap-2">
@@ -88,12 +114,14 @@ function AccionesCell({ row }) {
         </DropdownTrigger>
 
         <DropdownContent className="right-0 w-40 bg-[#1e1230]">
-          <DropdownItem onClick={() => navigate("/dashboard/loans/return", { state: { loan: row } })}>
-            <span className="inline-flex items-center gap-[5px]">
-              <Undo2 size={13} />
-              Devolver
-            </span>
-          </DropdownItem>
+          {!yaDevuelto && (
+            <DropdownItem onClick={() => navigate("/dashboard/loans/return", { state: { loan: row } })}>
+              <span className="inline-flex items-center gap-[5px]">
+                <Undo2 size={13} />
+                Devolver
+              </span>
+            </DropdownItem>
+          )}
 
           <DropdownItem onClick={() => navigate("/dashboard/loans/visualize", { state: { loan: row } })}>
             Visualizar
@@ -114,38 +142,45 @@ export const listLoansColumns = [
     id: "id",
     label: "ID Préstamo",
     accessor: "id",
-    width: "16%",
+    width: "13%",
   },
   {
     id: "user",
     label: "Usuario",
     accessor: "user",
-    width: "16%",
+    width: "14%",
   },
   {
     id: "materiales",
     label: "Materiales",
     accessor: "materiales",
-    width: "28%",
+    width: "24%",
     renderCell: (row) => <MaterialesCell materiales={row.materiales} />,
   },
   {
     id: "departureDate",
     label: "Fecha Salida",
     accessor: "departureDate",
-    width: "13%",
+    width: "11%",
   },
   {
     id: "deliveryDate",
     label: "Fecha Entrega",
     accessor: "deliveryDate",
-    width: "13%",
+    width: "11%",
+  },
+  {
+    id: "status",
+    label: "Estado",
+    accessor: "status",
+    width: "11%",
+    renderCell: (row) => <StatusChip value={row.status} />,
   },
   {
     id: "accion",
     label: "Acción",
     accessor: null,
-    width: "14%",
+    width: "16%",
     renderCell: (row) => <AccionesCell row={row} />,
   },
 ];

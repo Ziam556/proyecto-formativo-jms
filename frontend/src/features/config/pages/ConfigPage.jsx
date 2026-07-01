@@ -1,11 +1,10 @@
 import { useNavigate } from "react-router-dom"
-import { Cylinder, Users, FileSliders, ArrowLeft, UserRoundKey } from "lucide-react"
+import { Cylinder, Users, FileSliders, ArrowLeft } from "lucide-react"
 import { MenuButton } from "@/shared";
 
 const menuItems = [
     { label: "Marcas", icon: Cylinder, to: "/dashboard/config/brands" },
     { label: "Grupos", icon: Users, to: "/dashboard/config/groups" },
-    { label: "Permisos", icon: UserRoundKey, to: "/dashboard/config/permissions" },
     { label: "Gestión de tareas", icon: FileSliders, to: "/dashboard/config/tasks" },
 ];
 

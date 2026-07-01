@@ -8,6 +8,15 @@ export const groupsRepository = {
         return result.rows;
     },
 
+    async getAllPermissions() {
+        const result = await pool.query(
+            `SELECT permission_id, permission_name, permission_codename, permission_module
+             FROM permissions
+             ORDER BY permission_module ASC, permission_name ASC`
+        );
+        return result.rows;
+    },
+
     async getPermissionsByGroupId(groupId) {
         const query = `
             SELECT p.permission_id, p.permission_name, p.permission_codename

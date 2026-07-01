@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { BackButton, Button, Input } from "@/shared";
-import { getLoanById } from "../services/loanService";
+import { useState, useEffect } from "react";
+import { BackButton, Button, Input, IconButton, alertWarning, alertError, alertConfirm, alertSuccess } from "@/shared";
+import { getLoanById, registerLoanReturn } from "../services/loanService";
 
 const TAG_STYLES = {
   Devolutivo: { bg: "rgba(139,0,139,0.3)",  color: "#e9b8ff", border: "rgba(200,100,255,0.25)" },
@@ -42,15 +42,35 @@ export default function ReturnLoans({ loan: initialLoan }) {
   const [searchId, setSearchId] = useState(
     initialLoan ? String(initialLoan.id) : ""
   );
-  const [loan, setLoan]         = useState(initialLoan ?? null);
+  const [loan, setLoan]         = useState(null);
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading]   = useState(false);
   const [toReturn, setToReturn] = useState([]);
   const [success, setSuccess]   = useState(false);
+  const [saving, setSaving]     = useState(false);
+
+  // Si llegamos con un préstamo desde otra pantalla (ej. "Devolver" en la lista),
+  // ese objeto puede no traer el id interno de cada material (loan_item_id).
+  // Por eso siempre se vuelve a pedir el préstamo completo al backend.
+  useEffect(() => {
+    if (!initialLoan?.id) return;
+    setLoading(true);
+    setNotFound(false);
+    getLoanById(initialLoan.id)
+      .then(setLoan)
+      .catch(() => {
+        setLoan(null);
+        setNotFound(true);
+      })
+      .finally(() => setLoading(false));
+  }, [initialLoan]);
 
   const handleSearch = async () => {
     const id = searchId.trim();
-    if (!id) return;
+    if (!id) {
+      await alertWarning("Campo requerido", "Ingresa un ID de préstamo para buscar.");
+      return;
+    }
     setLoading(true);
     setNotFound(false);
     setToReturn([]);
@@ -61,12 +81,14 @@ export default function ReturnLoans({ loan: initialLoan }) {
     } catch {
       setLoan(null);
       setNotFound(true);
+      await alertError("No encontrado", `No se encontró ningún préstamo con ID "${id}".`);
     } finally {
       setLoading(false);
     }
   };
 
   const addItem = (mat) => {
+    if (mat.returned) return;
     if (toReturn.find((i) => i.name === mat.name)) return;
     const base = { ...mat, observations: "" };
     if (mat.type === "Devolutivo") {
@@ -86,11 +108,49 @@ export default function ReturnLoans({ loan: initialLoan }) {
 
   const isAdded = (name) => toReturn.some((i) => i.name === name);
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (toReturn.length === 0) return;
-    console.log("Devolución registrada:", { loanId: loan.id, items: toReturn });
-    setSuccess(true);
-    setToReturn([]);
+
+    const missingState = toReturn.find((i) => i.type === "Devolutivo" && !i.state);
+    if (missingState) {
+      await alertWarning(
+        "Falta información",
+        `Selecciona el estado (Bueno / Dañado / Pérdida) de "${missingState.name}" antes de continuar.`
+      );
+      return;
+    }
+
+    const confirmResult = await alertConfirm(
+      "¿Confirmar devolución?",
+      `Vas a registrar la devolución de ${toReturn.length} material(es) del préstamo ${loan.id}.`
+    );
+    if (!confirmResult.isConfirmed) return;
+
+    try {
+      setSaving(true);
+      await registerLoanReturn(
+        loan.id,
+        toReturn.map((item) => ({
+          loanItemId:     item.id,
+          state:          item.type === "Devolutivo" ? item.state : null,
+          leftoverAmount: item.type === "Consumo" ? item.leftover : null,
+          observations:   item.observations || null,
+        }))
+      );
+
+      await alertSuccess("¡Devolución registrada!", "Los materiales se marcaron como devueltos correctamente.");
+
+      setSuccess(true);
+      setToReturn([]);
+
+      // Refrescar el préstamo para reflejar qué materiales ya quedaron devueltos
+      const refreshed = await getLoanById(loan.id);
+      setLoan(refreshed);
+    } catch (err) {
+      await alertError("Error al guardar", err.message || "Ocurrió un error inesperado.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -177,22 +237,29 @@ export default function ReturnLoans({ loan: initialLoan }) {
                     <TypeTag type={mat.type} />
                     <span
                       className={`text-[12px] flex-1 ${
-                        isAdded(mat.name) ? "text-white/35 line-through" : "text-white"
+                        mat.returned || isAdded(mat.name) ? "text-white/35 line-through" : "text-white"
                       }`}
                     >
                       {mat.name}
                     </span>
-                    {isAdded(mat.name) ? (
+                    {mat.returned ? (
+                      <span className="text-[9px] font-medium px-2 py-[2px] rounded-full bg-white/10 text-white/50 whitespace-nowrap">
+                        Devuelto
+                      </span>
+                    ) : isAdded(mat.name) ? (
                       <span className="w-[22px] h-[22px] rounded-md flex items-center justify-center bg-green-500/15 border border-green-400/30 text-green-400 text-[12px]">
                         ✓
                       </span>
                     ) : (
-                      <button
+                      <IconButton
+                        ariaLabel={`Agregar ${mat.name} a la devolución`}
                         onClick={() => addItem(mat)}
-                        className="w-[22px] h-[22px] rounded-md flex items-center justify-center bg-purple-500/25 border border-purple-400/40 text-purple-300 text-[15px] hover:bg-purple-500/40 transition"
+                        hitSize={22}
+                        iconSize={15}
+                        className="rounded-md bg-purple-500/25 border border-purple-400/40 text-purple-300 hover:bg-purple-500/40"
                       >
                         +
-                      </button>
+                      </IconButton>
                     )}
                   </div>
                 ))}
@@ -230,12 +297,15 @@ export default function ReturnLoans({ loan: initialLoan }) {
                       <span className="text-white text-[12px] font-medium flex-1">
                         {item.name}
                       </span>
-                      <button
+                      <IconButton
+                        ariaLabel={`Quitar ${item.name} de la devolución`}
                         onClick={() => removeItem(item.name)}
-                        className="w-[22px] h-[22px] rounded-md flex items-center justify-center bg-red-500/15 border border-red-400/30 text-red-300 text-[14px] hover:bg-red-500/30 transition"
+                        hitSize={22}
+                        iconSize={14}
+                        className="rounded-md bg-red-500/15 border border-red-400/30 text-red-300 hover:bg-red-500/30"
                       >
                         ×
-                      </button>
+                      </IconButton>
                     </div>
 
                     {/* DEVOLUTIVO */}
@@ -270,29 +340,35 @@ export default function ReturnLoans({ loan: initialLoan }) {
                         <div className="flex-1" />
                         <span className="text-white text-[10px]">Sobrante:</span>
                         <div className="flex items-center bg-white/7 border border-white/15 rounded-lg overflow-hidden">
-                          <button
+                          <IconButton
+                            ariaLabel="Disminuir cantidad sobrante"
                             onClick={() =>
                               updateItem(item.name, {
                                 leftover: Math.max(0, item.leftover - 1),
                               })
                             }
-                            className="w-[24px] h-[26px] flex items-center justify-center text-white text-[14px] hover:bg-white/10 transition"
+                            hitSize={24}
+                            iconSize={14}
+                            className="rounded-none text-white hover:bg-white/10"
                           >
                             −
-                          </button>
+                          </IconButton>
                           <span className="text-white text-[12px] font-medium min-w-[24px] text-center border-x border-white/10 leading-[26px]">
                             {item.leftover}
                           </span>
-                          <button
+                          <IconButton
+                            ariaLabel="Aumentar cantidad sobrante"
                             onClick={() =>
                               updateItem(item.name, {
                                 leftover: Math.min(item.lent, item.leftover + 1),
                               })
                             }
-                            className="w-[24px] h-[26px] flex items-center justify-center text-white text-[14px] hover:bg-white/10 transition"
+                            hitSize={24}
+                            iconSize={14}
+                            className="rounded-none text-white hover:bg-white/10"
                           >
                             +
-                          </button>
+                          </IconButton>
                         </div>
                       </div>
                     )}
@@ -322,6 +398,7 @@ export default function ReturnLoans({ loan: initialLoan }) {
                 variant="secondary"
                 size="sm"
                 onClick={() => { setToReturn([]); setSuccess(false); }}
+                disabled={saving}
               >
                 Cancelar
               </Button>
@@ -329,9 +406,9 @@ export default function ReturnLoans({ loan: initialLoan }) {
                 variant="primary"
                 size="md"
                 onClick={handleConfirm}
-                disabled={toReturn.length === 0}
+                disabled={toReturn.length === 0 || saving}
               >
-                Confirmar Devolución
+                {saving ? "Guardando..." : "Confirmar Devolución"}
               </Button>
             </div>
           </>

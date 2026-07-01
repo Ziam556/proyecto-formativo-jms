@@ -9,6 +9,10 @@ export const groupsService = {
         return groupsRepository.getPermissionsByGroupId(groupId);
     },
 
+    async getAllPermissions() {
+        return groupsRepository.getAllPermissions();
+    },
+
     async create(groupName, permissionCodenames) {
         const group = await groupsRepository.create(groupName);
         if (permissionCodenames.length) {

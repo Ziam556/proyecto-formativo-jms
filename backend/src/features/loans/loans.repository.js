@@ -69,7 +69,15 @@ export const loansRepository = {
             [loanId]
         );
         const items = await pool.query(
-            `SELECT * FROM public.loan_items WHERE loan_id = $1`,
+            `SELECT
+                li.*,
+                lr.item_state,
+                lr.leftover_amount,
+                lr.observations,
+                lr.returned_at
+             FROM public.loan_items li
+             LEFT JOIN public.loan_returns lr ON lr.loan_item_id = li.loan_item_id
+             WHERE li.loan_id = $1`,
             [loanId]
         );
         return { ...loan.rows[0], items: items.rows };
@@ -82,5 +90,47 @@ export const loansRepository = {
             [status, loanId]
         );
         return result.rows[0];
+    },
+
+    // ── Devoluciones ──────────────────────────────────────────────────────────
+    async createReturns(returns) {
+        if (!returns.length) return [];
+
+        const values = returns
+            .map((_, i) => `($${i * 4 + 1}, $${i * 4 + 2}, $${i * 4 + 3}, $${i * 4 + 4})`)
+            .join(", ");
+
+        const params = [];
+        returns.forEach((r) => {
+            params.push(r.loanItemId, r.state ?? null, r.leftoverAmount ?? null, r.observations ?? null);
+        });
+
+        const result = await pool.query(
+            `INSERT INTO public.loan_returns (loan_item_id, item_state, leftover_amount, observations)
+             VALUES ${values}
+             ON CONFLICT (loan_item_id) DO UPDATE SET
+                item_state      = EXCLUDED.item_state,
+                leftover_amount = EXCLUDED.leftover_amount,
+                observations    = EXCLUDED.observations,
+                returned_at     = NOW()
+             RETURNING *`,
+            params
+        );
+        return result.rows;
+    },
+
+    async countItemsAndReturns(loanId) {
+        const total = await pool.query(
+            `SELECT COUNT(*)::int AS total FROM public.loan_items WHERE loan_id = $1`,
+            [loanId]
+        );
+        const returned = await pool.query(
+            `SELECT COUNT(*)::int AS returned
+             FROM public.loan_returns lr
+             INNER JOIN public.loan_items li ON li.loan_item_id = lr.loan_item_id
+             WHERE li.loan_id = $1`,
+            [loanId]
+        );
+        return { total: total.rows[0].total, returned: returned.rows[0].returned };
     },
 };

@@ -37,4 +37,14 @@ export const loansController = {
             res.status(500).json({ error: error.message });
         }
     },
+
+    async registerReturn(req, res) {
+        try {
+            const { items = [] } = req.body;
+            const result = await loansService.registerReturn(req.params.id, items);
+            res.status(200).json(result);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    },
 };

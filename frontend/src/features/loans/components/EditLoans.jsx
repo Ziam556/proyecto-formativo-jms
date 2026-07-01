@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { Input, Button, BackButton, DataTable, DatePicker, Textarea } from "@/shared";
+import { Input, Button, BackButton, DataTable, DatePicker, Textarea, alertWarning, alertConfirm } from "@/shared";
 import { loansColumns } from "../table/loansColumns";
 import { getMaterialsForLoan } from "../services/loanService";
 
@@ -46,7 +46,7 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const newErrors = {};
     if (!fields.loansId)         newErrors.loansId         = "El ID es requerido";
     if (!fields.fichaGrupo)      newErrors.fichaGrupo      = "La ficha es requerida";
@@ -56,8 +56,19 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      const missing = Object.values(newErrors);
+      await alertWarning(
+        "Campos requeridos",
+        `Completa los siguientes campos antes de continuar:\n• ${missing.join("\n• ")}`
+      );
       return;
     }
+
+    const result = await alertConfirm(
+      "¿Guardar cambios?",
+      "¿Confirmas que deseas guardar los cambios en este préstamo?"
+    );
+    if (!result.isConfirmed) return;
 
     onSave(fields);
   };
@@ -112,51 +123,53 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
           <div className="flex-1 h-px bg-white/20" />
         </div>
 
-        <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="mt-5 max-w-[560px] mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-          <Input
-            label="Ficha / Grupo Aprendices *"
-            name="fichaGrupo"
-            value={fields.fichaGrupo}
-            onChange={handleChange}
-            error={errors.fichaGrupo}
-          />
+            <Input
+              label="Ficha / Grupo Aprendices *"
+              name="fichaGrupo"
+              value={fields.fichaGrupo}
+              onChange={handleChange}
+              error={errors.fichaGrupo}
+            />
 
-          <Input
-            label="Cantidad (Consumo)"
-            name="cantidadConsumo"
-            type="number"
-            value={fields.cantidadConsumo}
-            onChange={handleChange}
-            error={errors.cantidadConsumo}
-          />
+            <Input
+              label="Cantidad (Consumo)"
+              name="cantidadConsumo"
+              type="number"
+              value={fields.cantidadConsumo}
+              onChange={handleChange}
+              error={errors.cantidadConsumo}
+            />
 
-          <DatePicker
-            label="Fecha Salida *"
-            name="fechaSalida"
-            value={fields.fechaSalida}
-            onChange={handleChange}
-            error={errors.fechaSalida}
-          />
+            <DatePicker
+              label="Fecha Salida *"
+              name="fechaSalida"
+              value={fields.fechaSalida}
+              onChange={handleChange}
+              error={errors.fechaSalida}
+            />
 
-          <DatePicker
-            label="Fecha Entrega (Devolutivo)"
-            name="fechaEntrega"
-            value={fields.fechaEntrega}
-            onChange={handleChange}
-          />
+            <DatePicker
+              label="Fecha Entrega (Devolutivo)"
+              name="fechaEntrega"
+              value={fields.fechaEntrega}
+              onChange={handleChange}
+            />
 
-        </div>
+          </div>
 
-        <div className="mt-4">
-          <Textarea
-            label="Justificación de uso *"
-            name="justificacion"
-            value={fields.justificacion}
-            onChange={handleChange}
-            rows={3}
-            error={errors.justificacion}
-          />
+          <div className="mt-4">
+            <Textarea
+              label="Justificación de uso *"
+              name="justificacion"
+              value={fields.justificacion}
+              onChange={handleChange}
+              rows={3}
+              error={errors.justificacion}
+            />
+          </div>
         </div>
 
         {/* USUARIO */}
@@ -165,7 +178,7 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
           <div className="flex-1 h-px bg-white/20" />
         </div>
 
-        <div className="mt-5">
+        <div className="mt-5 max-w-[560px] mx-auto">
           <Input
             label="Usuario solicitante *"
             name="usuarioSolicita"
