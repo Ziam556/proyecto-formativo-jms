@@ -39,7 +39,7 @@ export default function EditReturnableMaterial1({ formData = {}, onNext, onCance
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
-      <Input
+      <Input labelVariant="dark"
         label="ID"
         name="returnableMaterialId"
         placeholder="Ej: HER-001"
@@ -49,7 +49,7 @@ export default function EditReturnableMaterial1({ formData = {}, onNext, onCance
         style={{ opacity: 0.6, cursor: "not-allowed" }}
         error={errors.returnableMaterialId}
       />
-      <Input
+      <Input labelVariant="dark"
         label="Placa SENA"
         name="materialPlate"
         placeholder="Escribe la placa SENA"
@@ -57,7 +57,7 @@ export default function EditReturnableMaterial1({ formData = {}, onNext, onCance
         onChange={handleChange}
         error={errors.materialPlate}
       />
-      <Select
+      <Select labelVariant="dark"
         label="Categoría"
         name="materialCategory"
         value={fields.materialCategory}
@@ -66,7 +66,7 @@ export default function EditReturnableMaterial1({ formData = {}, onNext, onCance
         error={errors.materialCategory}
         placeholder="Selecciona una categoría"
       />
-      <Input
+      <Input labelVariant="dark"
         label="Nombre del elemento"
         name="materialElementName"
         placeholder="Escribe el nombre del elemento"

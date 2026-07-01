@@ -43,13 +43,13 @@ export default function CreateLoans3({ onSave, onBack }) {
         {/* HEADER */}
         <div className="flex items-center gap-3 mb-7">
           <div className="p-2 rounded-lg bg-white/20 flex-shrink-0">
-            <User size={20} className="text-black" />
+            <User size={20} className="text-white" />
           </div>
           <div>
-            <h2 className="text-black font-bold text-lg leading-tight">
+            <h2 className="text-white font-bold text-lg leading-tight">
               Usuario y confirmación
             </h2>
-            <p className="text-black/70 text-sm">
+            <p className="text-white/80 text-sm">
               Seleccione el usuario y confirme la operación
             </p>
           </div>

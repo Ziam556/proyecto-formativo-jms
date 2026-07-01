@@ -32,3 +32,4 @@ export { alertSuccess, alertError, alertWarning, alertConfirm, alertDeleteConfir
 export { default as AvatarUpload } from "./components/AvatarUpload"
 export { default as UserSearchSelect } from "./components/UserSearchSelect"
 export { default as UserSearchField } from "./components/UserSearchField"
+export { default as StepRing } from "./components/StepRing"

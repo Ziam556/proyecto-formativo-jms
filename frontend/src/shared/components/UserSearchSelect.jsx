@@ -1,16 +1,20 @@
 import { useState, useRef, useEffect } from "react";
 
+// labelVariant="light" → label blanco  (fondos degradado / oscuros)   [default]
+// labelVariant="dark"  → label negro   (fondos claros / cards blancas)
+
 /**
  * Selector de usuario con buscador integrado.
  * Reemplaza un <Select> nativo cuando los nombres son largos.
  *
  * Props:
- *  - label       {string}   — etiqueta sobre el campo
- *  - users       {Array}    — [{ user_document_number, user_name }]
- *  - value       {string}   — documento del usuario seleccionado
- *  - onChange    {Function} — (documentNumber: string) => void
- *  - error       {string}   — mensaje de error
- *  - placeholder {string}   — texto cuando no hay selección
+ *  - label        {string}   — etiqueta sobre el campo
+ *  - users        {Array}    — [{ user_document_number, user_name }]
+ *  - value        {string}   — documento del usuario seleccionado
+ *  - onChange     {Function} — (documentNumber: string) => void
+ *  - error        {string}   — mensaje de error
+ *  - placeholder  {string}   — texto cuando no hay selección
+ *  - labelVariant {"light"|"dark"} — color del label (default: "light")
  */
 export default function UserSearchSelect({
     label,
@@ -19,7 +23,13 @@ export default function UserSearchSelect({
     onChange,
     error,
     placeholder = "Buscar usuario...",
+    labelVariant = "light",
 }) {
+    const labelColor = error
+        ? "text-red-600"
+        : labelVariant === "dark"
+        ? "text-black"
+        : "text-white";
     const [query, setQuery]     = useState("");
     const [open, setOpen]       = useState(false);
     const containerRef          = useRef(null);
@@ -66,7 +76,7 @@ export default function UserSearchSelect({
     return (
         <div className="w-full relative" ref={containerRef}>
             {label && (
-                <label className={`block text-caption mb-1 place-self-start ${error ? "text-red-600" : "text-white"}`}>
+                <label className={`block text-[12px] mb-1 place-self-start font-semibold ${labelColor}`}>
                     {label}
                 </label>
             )}

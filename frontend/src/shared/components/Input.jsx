@@ -1,22 +1,24 @@
+// labelVariant="light" → label blanco  (fondos degradado / oscuros)   [default]
+// labelVariant="dark"  → label negro   (fondos claros / cards blancas)
 export default function Input({
     label,
     type = "text",
     error,
+    labelVariant = "light",
     ...props
 }){
+    const labelColor = error
+        ? "text-red-600"
+        : labelVariant === "dark"
+        ? "text-black"
+        : "text-white";
+
     return (
         <div className="w-full">
 
             {/* Label opcional, se pone rojo si hay error */}
             {label && (
-                <label
-                    className={`
-                        block
-                        text-[8px]
-                        mb-1
-                        place-self-start
-                        ${error ? "text-red-600" : "text-white"}
-                    `}>
+                <label className={`block text-[12px] mb-1 place-self-start font-semibold ${labelColor}`}>
                     {label}
                 </label>
             )}
@@ -46,7 +48,7 @@ export default function Input({
                         rounded-[8px]
                         border
                         px-4
-                        text-base
+                        text-[12px]
                         bg-[rgba(217,217,217,0.54)]
                         hover:border-2
                         focus:outline-none

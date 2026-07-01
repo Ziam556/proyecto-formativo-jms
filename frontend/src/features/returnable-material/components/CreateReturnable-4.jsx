@@ -70,7 +70,7 @@ export default function CreateReturnable4({ formData, onSave, onBack }) {
 
   return (
     <div className="grid grid-cols-[320px_320px] gap-6">
-      <Select
+      <Select labelVariant="dark"
         label="Estado"
         name="materialState"
         value={fields.materialState}
@@ -97,7 +97,7 @@ export default function CreateReturnable4({ formData, onSave, onBack }) {
         )}
       </div>
 
-      <Input
+      <Input labelVariant="dark"
         label="Ubicación (opcional)"
         name="materialLocation"
         placeholder="Escribe la ubicación"
@@ -117,7 +117,7 @@ export default function CreateReturnable4({ formData, onSave, onBack }) {
       {/* Dimensiones — solo visibles si categoría es Muebles y enseres */}
       {isMuebles && (
         <>
-          <Input
+          <Input labelVariant="dark"
             label="Ancho (cm)"
             name="materialWidth"
             type="number"
@@ -126,7 +126,7 @@ export default function CreateReturnable4({ formData, onSave, onBack }) {
             onChange={handleChange}
             error={errors.materialWidth}
           />
-          <Input
+          <Input labelVariant="dark"
             label="Largo (cm)"
             name="materialLength"
             type="number"
@@ -135,7 +135,7 @@ export default function CreateReturnable4({ formData, onSave, onBack }) {
             onChange={handleChange}
             error={errors.materialLength}
           />
-          <Input
+          <Input labelVariant="dark"
             label="Profundidad (cm)"
             name="materialDepth"
             type="number"

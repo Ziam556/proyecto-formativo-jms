@@ -29,6 +29,16 @@ export const loansController = {
         }
     },
 
+    async update(req, res) {
+        try {
+            const loan = await loansService.update(req.params.id, req.body);
+            if (!loan) return res.status(404).json({ error: "Préstamo no encontrado" });
+            res.json(loan);
+        } catch (error) {
+            res.status(error.message === "Préstamo no encontrado" ? 404 : 500).json({ error: error.message });
+        }
+    },
+
     async updateStatus(req, res) {
         try {
             const loan = await loansService.updateStatus(req.params.id, req.body.status);

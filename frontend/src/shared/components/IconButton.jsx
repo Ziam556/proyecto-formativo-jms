@@ -39,12 +39,12 @@ export const IconButton = React.forwardRef(function IconButton(
 
     const variants = {
         default: `
-        text-neutral-700 
+        text-neutral-700
         hover:bg-neutral-200
         focus-visible:ring-neutral-400
         `,
         ghost: `
-        text-neutral-600 
+        text-neutral-600
         hover:bg-neutral-100
         focus-visible:ring-neutral-300
         `,
@@ -52,6 +52,10 @@ export const IconButton = React.forwardRef(function IconButton(
         text-white bg-blue-600
         hover:bg-blue-700
         focus-visible:ring-blue-500
+        `,
+        // Sin hover propio — el caller controla todo vía className
+        icon: `
+        focus-visible:ring-neutral-400
         `,
     };
 

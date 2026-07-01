@@ -16,18 +16,20 @@ export default function BackButton({ to, onClick, dark = false }) {
         navigate(-1);
     };
 
-    const color = dark ? "#000" : "#fff";
-
     return (
         <IconButton
             onClick={handleClick}
             ariaLabel="Regresar"
-            variant="ghost"
-            hitSize={36}
+            variant="icon"
+            hitSize={48}
             iconSize={22}
-            className={dark ? "text-black shrink-0" : "text-white shrink-0"}
+            className={
+                dark
+                    ? "text-black hover:bg-neutral-200 hover:text-black shrink-0"
+                    : "text-white hover:bg-white hover:text-black shrink-0"
+            }
         >
-            <ArrowLeft size={22} color={color} />
+            <ArrowLeft size={22} />
         </IconButton>
     );
 }

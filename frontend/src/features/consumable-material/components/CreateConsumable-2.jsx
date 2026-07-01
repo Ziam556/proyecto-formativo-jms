@@ -59,7 +59,7 @@ export default function CreateConsumable2({
             
 
             {/* CUENTADANTE */}
-            <Input
+            <Input labelVariant="dark"
                 label="Cuentadante"
                 name="materialStoryTeller"
                 placeholder="Escribe el nombre del cuentadante"
@@ -69,7 +69,7 @@ export default function CreateConsumable2({
             />
 
             {/* CANTIDAD */}
-            <Input
+            <Input labelVariant="dark"
                 label="Cantidad"
                 name="materialAmount"
                 type="number"
@@ -80,7 +80,7 @@ export default function CreateConsumable2({
             />
 
             {/* VALOR UNITARIO */}
-            <Input
+            <Input labelVariant="dark"
                 label="Valor unitario"
                 name="materialUnitValue"
                 type="number"
@@ -91,7 +91,7 @@ export default function CreateConsumable2({
             />
 
             {/* VALOR TOTAL — calculado automáticamente, no editable */}
-            <Input
+            <Input labelVariant="dark"
                 label="Valor total (automático)"
                 name="materialTotalValue"
                 type="number"

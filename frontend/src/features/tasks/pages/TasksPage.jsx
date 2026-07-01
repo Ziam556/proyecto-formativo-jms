@@ -6,7 +6,7 @@ import { getTasks, createTask, verifyTask, getTaskById } from "../services/taskS
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 const STATUS_COLORS = {
-  pendiente:     { bg: "bg-orange-100",  text: "text-orange-700",  label: "Pendiente"     },
+  pendiente:     { bg: "bg-[#71277A]/15", text: "text-[#71277A]",   label: "Pendiente"     },
   por_verificar: { bg: "bg-yellow-100",  text: "text-yellow-700",  label: "Por verificar" },
   completada:    { bg: "bg-green-100",   text: "text-green-700",   label: "Completada"    },
   rechazada:     { bg: "bg-red-100",     text: "text-red-700",     label: "Rechazada"     },
@@ -182,7 +182,7 @@ export default function TasksPage() {
         {/* ── Resumen de estados ── */}
         {!loadingTasks && (
           <StatsPills stats={[
-            { label: "Pendientes",  count: tasks.filter(t => t.status === "pendiente").length,     color: "#f97316" },
+            { label: "Pendientes",  count: tasks.filter(t => t.status === "pendiente").length,     color: "#71277A" },
             { label: "Verificando", count: tasks.filter(t => t.status === "por_verificar").length, color: "#eab308" },
             { label: "Completadas", count: tasks.filter(t => t.status === "completada").length,    color: "#16a34a" },
             { label: "Rechazadas",  count: tasks.filter(t => t.status === "rechazada").length,     color: "#ef4444" },
@@ -446,6 +446,7 @@ export default function TasksPage() {
                   {/* Comentario admin */}
                   <Textarea
                     variant="light"
+                    labelVariant="dark"
                     label="Comentario (opcional)"
                     rows={2}
                     value={adminComment}

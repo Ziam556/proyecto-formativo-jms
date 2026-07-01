@@ -27,6 +27,9 @@ export const alertSuccess = (title, text) =>
         title,
         text,
         confirmButtonText: "Aceptar",
+        showCloseButton:   true,
+        timer:             4000,
+        timerProgressBar:  true,
         ...THEME,
     });
 

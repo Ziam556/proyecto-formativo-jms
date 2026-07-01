@@ -75,7 +75,7 @@ export default function EditReturnableMaterial4({ formData = {}, onSave, onBack 
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
-      <Select
+      <Select labelVariant="dark"
         label="Estado"
         name="materialState"
         value={fields.materialState}
@@ -101,7 +101,7 @@ export default function EditReturnableMaterial4({ formData = {}, onSave, onBack 
         )}
       </div>
 
-      <Input
+      <Input labelVariant="dark"
         label="Descripción"
         name="materialDescription"
         placeholder="Escribe la descripción"
@@ -109,7 +109,7 @@ export default function EditReturnableMaterial4({ formData = {}, onSave, onBack 
         onChange={handleChange}
         error={errors.materialDescription}
       />
-      <Input
+      <Input labelVariant="dark"
         label="Ubicación (opcional)"
         name="materialLocation"
         placeholder="Escribe la ubicación"
@@ -132,7 +132,7 @@ export default function EditReturnableMaterial4({ formData = {}, onSave, onBack 
 
       {isMuebles && (
         <>
-          <Input
+          <Input labelVariant="dark"
             label="Ancho (cm)"
             name="materialWidth"
             type="number"
@@ -141,7 +141,7 @@ export default function EditReturnableMaterial4({ formData = {}, onSave, onBack 
             onChange={handleChange}
             error={errors.materialWidth}
           />
-          <Input
+          <Input labelVariant="dark"
             label="Largo (cm)"
             name="materialLength"
             type="number"
@@ -150,7 +150,7 @@ export default function EditReturnableMaterial4({ formData = {}, onSave, onBack 
             onChange={handleChange}
             error={errors.materialLength}
           />
-          <Input
+          <Input labelVariant="dark"
             label="Profundidad (cm)"
             name="materialDepth"
             type="number"

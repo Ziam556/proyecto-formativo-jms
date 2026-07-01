@@ -58,7 +58,7 @@ export default function EditConsumableMaterial3({ formData, onSave, onBack }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-[600px] mx-auto">
 
-      <Select
+      <Select labelVariant="dark"
         label="Estado"
         name="materialState"
         value={fields.materialState}
@@ -76,7 +76,7 @@ export default function EditConsumableMaterial3({ formData, onSave, onBack }) {
         error={errors.materialDescription}
       />
 
-      <DatePicker
+      <DatePicker labelVariant="dark"
         label="Fecha de compra"
         name="MaterialPurchaseDate"
         value={fields.MaterialPurchaseDate}
@@ -84,7 +84,7 @@ export default function EditConsumableMaterial3({ formData, onSave, onBack }) {
         error={errors.MaterialPurchaseDate}
       />
 
-      <Input
+      <Input labelVariant="dark"
         label="Ubicación"
         name="materialLocation"
         placeholder="Escribe la ubicación del material"

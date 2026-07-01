@@ -178,7 +178,7 @@ export default function Header() {
             >
               <Bell size={24} color="#fff" />
               {unreadCount > 0 && (
-                <span className="absolute top-[6px] right-[6px] min-w-[16px] h-[16px] bg-red-500 text-white text-[0.62rem] font-bold rounded-full flex items-center justify-center px-[3px] leading-none">
+                <span className="absolute top-[6px] right-[6px] min-w-[16px] h-[16px] bg-[#FDC300] text-black text-[0.62rem] font-bold rounded-full flex items-center justify-center px-[3px] leading-none">
                   {unreadCount > 99 ? "99+" : unreadCount}
                 </span>
               )}
