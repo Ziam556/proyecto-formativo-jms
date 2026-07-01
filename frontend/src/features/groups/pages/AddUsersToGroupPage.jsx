@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { Input, Button, Checkbox, BackButton, alertSuccess, alertError } from "@/shared";
 import { getUsers, assignUserPermissions, getUserPermissions } from "@/features/users/services/userService";
-import { getPermissions } from "@/features/permissions/services/permissionService";
+import { getPermissions } from "../services/permissionService";
 import { addUsersToGroup, getGroupPermissions } from "../services/groupService";
 
 function getInitials(name) {

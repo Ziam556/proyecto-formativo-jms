@@ -20,6 +20,15 @@ export const groupsController = {
         }
     },
 
+    async getAllPermissions(req, res) {
+        try {
+            const permissions = await groupsService.getAllPermissions();
+            res.json(permissions);
+        } catch (error) {
+            res.status(500).json({ error: "Error obteniendo permisos" });
+        }
+    },
+
     async create(req, res) {
         try {
             const { groupName, permissionCodenames = [] } = req.body;

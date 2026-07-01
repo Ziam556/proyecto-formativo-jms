@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BackButton, Button, Field, Input } from "@/shared";
+import { BackButton, Button, Field, Input, alertWarning, alertError } from "@/shared";
 import { getLoanById } from "../services/loanService";
 
 const TYPE_STYLES = {
@@ -30,7 +30,10 @@ export default function ViewLoans({ loan: initialLoan, onCancel }) {
 
   const handleSearch = async () => {
     const id = searchId.trim();
-    if (!id) return;
+    if (!id) {
+      await alertWarning("Campo requerido", "Ingresa un ID de préstamo para buscar.");
+      return;
+    }
     setLoading(true);
     setNotFound(false);
     try {
@@ -39,6 +42,7 @@ export default function ViewLoans({ loan: initialLoan, onCancel }) {
     } catch {
       setLoan(null);
       setNotFound(true);
+      await alertError("No encontrado", `No se encontró ningún préstamo con ID "${id}".`);
     } finally {
       setLoading(false);
     }
@@ -121,7 +125,9 @@ export default function ViewLoans({ loan: initialLoan, onCancel }) {
             <div className="flex-1 h-px bg-white/20" />
           </div>
           <div className="flex flex-wrap gap-4 mb-8">
-            <Field label="Usuario solicitante" value={loan.user} />
+            <div className="w-full sm:w-[280px]">
+              <Field label="Usuario solicitante" value={loan.user} />
+            </div>
           </div>
 
           {/* BOTÓN EDITAR */}

@@ -1,12 +1,13 @@
-import { ListLoans } from "../../data/ListLoans";
-
 import { buildLoansReportDataset } from "../utils/buildLoansReportDataset";
 
 import { generateLoansExcelReport } from "./generateLoansExcelReport";
 
 import { generateLoansPdfReport } from "./generateLoansPdfReport";
 
+import { alertWarning } from "@/shared";
+
 export function generateLoansReport({
+  loans,
   format,
   selectedFields,
   scope,
@@ -19,7 +20,7 @@ export function generateLoansReport({
   const { headers, rows } =
     buildLoansReportDataset({
 
-      loans: ListLoans,
+      loans,
 
       selectedFields,
 
@@ -36,7 +37,8 @@ export function generateLoansReport({
   // Validación
   if (!rows.length) {
 
-    alert(
+    alertWarning(
+      "Sin datos",
       "No hay datos para generar el reporte."
     );
 

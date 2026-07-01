@@ -7,13 +7,21 @@ import {
   ReportDropdown,
   BackButton,
   Input,
+  Select,
   ClearFiltersButton,
+  alertWarning,
 } from "@/shared";
 
 import { listLoansColumns } from "../table/listLoansColumns.jsx";
 import { loansReportFields } from "../reports/config/loansReportFields.js";
 import { generateLoansReport } from "../reports/services/generateLoansReport.js";
 import { getLoans } from "../services/loanService.js";
+
+const STATUS_OPTIONS = [
+  { value: "activo",    label: "Activo" },
+  { value: "devuelto",  label: "Devuelto" },
+  { value: "cancelado", label: "Cancelado" },
+];
 
 export default function ListWeLendAssetsPage() {
 
@@ -24,6 +32,7 @@ export default function ListWeLendAssetsPage() {
     user:       "",
     materiales: "",
     id:         "",
+    status:     "",
   });
 
   const [rowSelection, setRowSelection] = useState({});
@@ -58,6 +67,9 @@ export default function ListWeLendAssetsPage() {
       )
         return false;
 
+      if (filters.status && item.status !== filters.status)
+        return false;
+
       return true;
     });
   }, [filters, loans]);
@@ -71,21 +83,22 @@ export default function ListWeLendAssetsPage() {
   ], [loans]);
 
   // 🧹 LIMPIAR FILTROS
-  const clearFilters = () => setFilters({ user: "", materiales: "", id: "" });
+  const clearFilters = () => setFilters({ user: "", materiales: "", id: "", status: "" });
 
   // 📄 REPORTE SELECCIONADO
-  const generateSelectedReport = (format) => {
+  const generateSelectedReport = async (format) => {
     const selectedIds = Object.keys(rowSelection)
       .filter((idx) => rowSelection[idx])
       .map((idx) => filtered[Number(idx)]?.id)
       .filter(Boolean);
 
     if (selectedIds.length === 0) {
-      alert("Seleccione al menos un préstamo.");
+      await alertWarning("Sin selección", "Selecciona al menos un préstamo para generar el reporte.");
       return;
     }
 
     generateLoansReport({
+      loans: filtered,
       format,
       selectedFields: loansReportFields,
       scope: "selected",
@@ -125,9 +138,9 @@ export default function ListWeLendAssetsPage() {
         <div className="flex flex-wrap items-end gap-4 mb-6">
 
           {/* ID */}
-          <div className="flex flex-col gap-1 w-full sm:w-[200px]">
-            <label className="text-white text-[0.75rem] font-medium">ID préstamo</label>
+          <div className="w-full sm:w-[200px]">
             <Input
+              label="ID préstamo"
               name="id"
               value={filters.id}
               onChange={(e) => setFilters((f) => ({ ...f, id: e.target.value }))}
@@ -136,13 +149,25 @@ export default function ListWeLendAssetsPage() {
           </div>
 
           {/* Usuario */}
-          <div className="flex flex-col gap-1 w-full sm:w-[240px]">
-            <label className="text-white text-[0.75rem] font-medium">Usuario</label>
+          <div className="w-full sm:w-[240px]">
             <Input
+              label="Usuario"
               name="user"
               value={filters.user}
               onChange={(e) => setFilters((f) => ({ ...f, user: e.target.value }))}
               placeholder="Buscar usuario"
+            />
+          </div>
+
+          {/* Estado */}
+          <div className="w-full sm:w-[200px]">
+            <Select
+              label="Estado"
+              name="status"
+              value={filters.status}
+              options={STATUS_OPTIONS}
+              onChange={(e) => setFilters((f) => ({ ...f, status: e.target.value }))}
+              placeholder="Todos los estados"
             />
           </div>
 
@@ -154,6 +179,7 @@ export default function ListWeLendAssetsPage() {
               label="Generar reporte de todos los préstamos"
               onPDF={() =>
                 generateLoansReport({
+                  loans: filtered,
                   format: "pdf",
                   selectedFields: loansReportFields,
                   scope: "all",
@@ -161,6 +187,7 @@ export default function ListWeLendAssetsPage() {
               }
               onExcel={() =>
                 generateLoansReport({
+                  loans: filtered,
                   format: "excel",
                   selectedFields: loansReportFields,
                   scope: "all",

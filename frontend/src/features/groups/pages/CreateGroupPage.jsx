@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { createGroup } from "../services/groupService";
-import { getPermissions } from "@/features/permissions/services/permissionService";
+import { getPermissions } from "../services/permissionService";
 import { Input, Button, BackButton, alertSuccess, alertError, alertConfirm } from "@/shared";
 
 export default function CreateGroupPage() {

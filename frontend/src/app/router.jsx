@@ -1,5 +1,5 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import { AuthLayout, DashboardLayout, ProtectedRoute, AdminRoute } from "@/shared";
+import { AuthLayout, DashboardLayout, ProtectedRoute } from "@/shared";
 import { Login } from "@/features/auth";
 import { UserPage, CreateUserPage, ListUserPage, ViewUserPage, EditUserPage, UserProfilePage } from "@/features/users";
 import { HomePage } from "@/features/home";
@@ -8,7 +8,6 @@ import { GroupsListPage, CreateGroupPage, EditGroupPage, AddUsersToGroupPage } f
 import { ReturnableMaterialPage, ListReturnableMaterialPage, CreateReturnableMaterialPage, EditReturnableMaterialPage, ViewReturnableMaterialPage } from "@/features/returnable-material";
 import { ConsumableMaterialPage, ListConsumableMaterialPage, CreateConsumableMaterialPage, ViewConsumableMaterialPage, EditConsumableMaterialPage } from "@/features/consumable-material";
 import { BrandsPage, CreateBrandPage } from "@/features/brands";
-import { ListPermissionsPage, CreatePermissionPage, EditPermissionPage } from "@/features/permissions";
 import { LoansPage, CreateLoansPage, ListWeLendAssetsPage, ViewLoansPage, EditLoansPage, ReturnLoansPage } from "@/features/loans";
 import { TasksPage, MisTareasPage } from "@/features/tasks";
 
@@ -65,15 +64,6 @@ const router = createBrowserRouter([
             { path: "config/groups/:id/add-users", element: <AddUsersToGroupPage /> },
             { path: "config/tasks", element: <TasksPage /> },
             { path: "mis-tareas", element: <MisTareasPage /> },
-            {
-                path: "config/permissions",
-                element: <AdminRoute />,
-                children: [
-                    { index: true, element: <ListPermissionsPage /> },
-                    { path: "create", element: <CreatePermissionPage /> },
-                    { path: "edit/:id", element: <EditPermissionPage /> },
-                ],
-            },
         ],
     },
 ]);

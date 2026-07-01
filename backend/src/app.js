@@ -11,7 +11,6 @@ import groupsRoutes from "./features/groups/groups.routes.js";
 import accessRoutes from "./features/access/access.routes.js";
 import loansRoutes from "./features/loans/loans.routes.js";
 import catalogsRoutes from "./features/catalogs/catalogs.routes.js";
-import permissionRoutes from "./features/permissions/permission.routes.js";
 import tasksRoutes from "./features/tasks/tasks.routes.js";
 import notificationsRoutes from "./features/notifications/notifications.routes.js";
 
@@ -40,7 +39,6 @@ app.use("/api/groups", groupsRoutes);
 app.use("/api/access", accessRoutes);
 app.use("/api/loans", loansRoutes);
 app.use("/api/catalogs", catalogsRoutes);
-app.use("/api/permissions", permissionRoutes);
 app.use("/api/tasks", tasksRoutes);
 app.use("/api/notifications", notificationsRoutes);
 

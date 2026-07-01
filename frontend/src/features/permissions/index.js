@@ -1,3 +1,1 @@
-export { default as ListPermissionsPage } from "./pages/ListPermissionsPage";
-export { default as CreatePermissionPage } from "./pages/CreatePermissionPage";
-export { default as EditPermissionPage } from "./pages/EditPermissionPage";
+// Módulo "Permisos" eliminado (CRUD de permisos en Configuración). No exporta nada.
