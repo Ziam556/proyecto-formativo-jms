@@ -144,7 +144,7 @@ export default function EditUserPage() {
                                             {u.name || u.email}
                                         </span>
                                         <span className="text-white/50 text-[0.68rem] truncate">
-                                            {u.document} · {u.userType}
+                                            {u.document}{u.group ? ` · ${u.group}` : ""}
                                         </span>
                                     </div>
                                 </button>

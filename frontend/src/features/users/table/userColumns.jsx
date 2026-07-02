@@ -35,9 +35,9 @@ export const userColumns = [
         accessor: "address",
     },
     {
-        id:       "userType",
-        label:    "Tipo de usuario",
-        accessor: "userType",
+        id:       "group",
+        label:    "Grupo",
+        accessor: "group",
     },
     {
         id:       "startDate",

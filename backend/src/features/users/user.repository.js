@@ -13,7 +13,6 @@ export const userRepository = {
       userSecondaryPhone,
       userDocumentType,
       userDocumentNumber,
-      userType,
       userAddress,
       userPassword,
       startDate,
@@ -32,7 +31,6 @@ export const userRepository = {
         user_secondary_phone,
         user_document_type,
         user_document_number,
-        user_type,
         user_address,
         user_password,
         start_date,
@@ -40,7 +38,7 @@ export const userRepository = {
         user_group,
         user_image
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
       RETURNING user_id, user_email;
     `;
 
@@ -53,13 +51,12 @@ export const userRepository = {
       userSecondaryPhone,     // $6
       userDocumentType,       // $7
       userDocumentNumber,     // $8
-      userType,               // $9
-      userAddress,            // $10
-      userPassword,           // $11
-      startDate,              // $12
-      endDate,                // $13
-      userGroup,              // $14
-      userImage,              // $15
+      userAddress,            // $9
+      userPassword,           // $10
+      startDate,              // $11
+      endDate,                // $12
+      userGroup,              // $13
+      userImage,              // $14
     ];
 
     const result = await pool.query(query, values);
@@ -78,7 +75,6 @@ export const userRepository = {
          user_secondary_phone,
          user_document_type,
          user_document_number,
-         user_type,
          user_address,
          user_group,
          user_image,
@@ -101,7 +97,6 @@ export const userRepository = {
          user_secondary_phone,
          user_document_type,
          user_document_number,
-         user_type,
          user_address,
          user_group,
          user_image,
@@ -209,7 +204,6 @@ export const userRepository = {
       userSecondaryPhone,
       userDocumentType,
       userDocumentNumber,
-      userType,
       userAddress,
       userPassword,   // ya hasheada o null si no cambió
       startDate,
@@ -229,12 +223,11 @@ export const userRepository = {
       "user_secondary_phone    = $7",
       "user_document_type      = $8",
       "user_document_number    = $9",
-      "user_type               = $10",
-      "user_address            = $11",
-      "start_date              = $12",
-      "end_date                = $13",
-      "user_group              = $14",
-      "enabled                 = $15",
+      "user_address            = $10",
+      "start_date              = $11",
+      "end_date                = $12",
+      "user_group              = $13",
+      "enabled                 = $14",
     ];
 
     const values = [
@@ -247,12 +240,11 @@ export const userRepository = {
       userSecondaryPhone || null,     // $7
       userDocumentType,      // $8
       userDocumentNumber,    // $9
-      userType,              // $10
-      userAddress,           // $11
-      startDate,             // $12
-      endDate,               // $13
-      userGroup || null,     // $14
-      isEnabled ?? true,     // $15
+      userAddress,           // $10
+      startDate,             // $11
+      endDate,               // $12
+      userGroup || null,     // $13
+      isEnabled ?? true,     // $14
     ];
 
     // Password y imagen solo se actualizan si vienen

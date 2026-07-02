@@ -5,7 +5,7 @@ import {
     Input, Button, Select, DatePicker,
     alertSuccess, alertError, alertWarning, alertConfirm,
 } from "@/shared";
-import { getDocumentTypes, getUserTypes } from "@/features/users/services/selectService";
+import { getDocumentTypes } from "@/features/users/services/selectService";
 import { userEditSchema } from "../schemas/userSchema";
 import { getGroups } from "@/features/groups/services/groupService";
 import { updateUser } from "../services/userService";
@@ -21,7 +21,6 @@ const EMPTY_FORM = {
     userSecondaryPhone:     "",
     userDocumentType:       "",
     userDocumentNumber:     "",
-    userType:               "",
     userAddress:            "",
     userPassword:           "",
     startDate:              "",
@@ -40,7 +39,6 @@ function buildForm(u) {
         userSecondaryPhone:     u.secondaryPhone     ?? "",
         userDocumentType:       u.documentType       ?? "",
         userDocumentNumber:     String(u.document    ?? ""),
-        userType:               u.userType           ?? "",
         userAddress:            u.address            ?? "",
         userPassword:           "",
         startDate:              u.startDate          ?? "",
@@ -53,7 +51,6 @@ function buildForm(u) {
 export default function UserEditForm({ initialUser, userImage, isEnabled, onCancel }) {
     const [isSubmitting, setIsSubmitting]     = useState(false);
     const [documentTypes, setDocumentTypes]   = useState([]);
-    const [userTypes, setUserTypes]           = useState([]);
     const [groups, setGroups]                 = useState([]);
     const [formData, setFormData]             = useState(buildForm(initialUser));
     const [errors, setErrors]                 = useState({});
@@ -62,7 +59,6 @@ export default function UserEditForm({ initialUser, userImage, isEnabled, onCanc
 
     useEffect(() => {
         getDocumentTypes().then(setDocumentTypes);
-        getUserTypes().then(setUserTypes);
         getGroups()
             .then((data) => setGroups(data.map((g) => ({ id: g.group_name, name: g.group_name, enabled: true }))))
             .catch(() => setGroups([]));
@@ -97,7 +93,6 @@ export default function UserEditForm({ initialUser, userImage, isEnabled, onCanc
             userPhone:             "El teléfono es requerido",
             userDocumentType:      "Debe seleccionar un tipo de documento",
             userDocumentNumber:    "El número de documento es requerido",
-            userType:              "Debe seleccionar un tipo de usuario",
             userAddress:           "La dirección es requerida",
             startDate:             "La fecha de inicio es requerida",
             endDate:               "La fecha de finalización es requerida",
@@ -198,7 +193,6 @@ export default function UserEditForm({ initialUser, userImage, isEnabled, onCanc
                     <Input labelVariant="light" label="Número de documento" name="userDocumentNumber" placeholder="Ingrese su número de documento" value={formData.userDocumentNumber} onChange={handleChange} error={errors.userDocumentNumber} />
                     <Input labelVariant="light" label="Dirección" name="userAddress" placeholder="Ingrese su dirección" value={formData.userAddress} onChange={handleChange} error={errors.userAddress} />
 
-                    <Select labelVariant="light" label="Tipo de usuario" name="userType" value={formData.userType} options={userTypes} onChange={handleChange} error={errors.userType} placeholder="Tipo de usuario" />
                     <Input labelVariant="light" label="Correo institucional (opcional)" name="userEmailInstitutional" type="email" placeholder="Ingrese su correo institucional" value={formData.userEmailInstitutional} onChange={handleChange} error={errors.userEmailInstitutional} />
 
                     <DatePicker labelVariant="light" label="Fecha inicio" name="startDate" placeholder="Fecha inicio" value={formData.startDate} onChange={handleChange} error={errors.startDate} />
@@ -208,27 +202,20 @@ export default function UserEditForm({ initialUser, userImage, isEnabled, onCanc
 
                     <Input labelVariant="light" label="Correo electrónico" name="userEmail" type="email" placeholder="Ingrese su correo" value={formData.userEmail} onChange={handleChange} error={errors.userEmail} />
 
-                    <div>
-                        {selectedGroup && (
-                            <span className="text-[0.75rem] text-white block mb-1">
-                                Grupo: <strong>{selectedGroup.name}</strong>
-                            </span>
-                        )}
-                        {/* FIX: type="button" explícito para no disparar submit del form */}
-                        <Button type="button" variant="secondary" onClick={() => setShowGroupModal(true)}>
-                            Asignar Grupo
-                        </Button>
-                    </div>
-
-
-
-                    {errors.general && (
-                        <div className="col-span-2 text-red-400 text-sm bg-red-900/30 border border-red-500/40 rounded-lg p-3">
-                            {errors.general}
+                    {/* FIX: celda propia (misma fila/columna que un input) con ambos botones lado a lado */}
+                    <div className="flex items-end justify-between gap-3">
+                        <div>
+                            {selectedGroup && (
+                                <span className="text-[0.75rem] text-white block mb-1">
+                                    Grupo: <strong>{selectedGroup.name}</strong>
+                                </span>
+                            )}
+                            {/* FIX: type="button" explícito para no disparar submit del form */}
+                            <Button type="button" variant="secondary" onClick={() => setShowGroupModal(true)}>
+                                Asignar Grupo
+                            </Button>
                         </div>
-                    )}
 
-                    <div>
                         {/* FIX: type="submit" para disparar el onSubmit del form */}
                         <Button type="submit" variant="primary" disabled={isSubmitting}>
                             {isSubmitting ? "Guardando..." : "Confirmar"}
@@ -236,6 +223,12 @@ export default function UserEditForm({ initialUser, userImage, isEnabled, onCanc
                     </div>
 
                 </div>
+
+                {errors.general && (
+                    <div className="mt-4 text-red-400 text-sm bg-red-900/30 border border-red-500/40 rounded-lg p-3">
+                        {errors.general}
+                    </div>
+                )}
             </form>
 
             {showGroupModal && (

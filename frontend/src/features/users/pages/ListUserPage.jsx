@@ -6,13 +6,6 @@ import { userColumns } from "../table/userColumns.jsx";
 import { userReportFields } from "../reports/config/userReportFields.js";
 import { generateUserReport } from "../reports/services/generateUserReport.js";
 
-// ─── Colores por tipo de usuario para pills ────────────────────────────────
-const TYPE_DOT = {
-    Admin:      "#16a34a",
-    Instructor: "#2563eb",
-    Invitado:   "#9333ea",
-};
-
 // ─── Page ──────────────────────────────────────────────────────────────────
 export default function ListUserPage() {
 
@@ -40,7 +33,7 @@ export default function ListUserPage() {
     const [filters, setFilters] = useState({
         name:         "",
         email:        "",
-        userType:     "",
+        group:        "",
         phone:        "",
     });
 
@@ -55,34 +48,35 @@ export default function ListUserPage() {
     // Datos filtrados
     const filtered = useMemo(() => {
         return users.filter((user) => {
-            if (filters.name     && !user.name?.toLowerCase().includes(filters.name.toLowerCase()))   return false;
-            if (filters.email    && !user.email?.toLowerCase().includes(filters.email.toLowerCase())) return false;
-            if (filters.userType && user.userType !== filters.userType)                                return false;
-            if (filters.phone    && !String(user.phone).includes(filters.phone))                      return false;
+            if (filters.name  && !user.name?.toLowerCase().includes(filters.name.toLowerCase()))   return false;
+            if (filters.email && !user.email?.toLowerCase().includes(filters.email.toLowerCase())) return false;
+            if (filters.group && user.group !== filters.group)                                      return false;
+            if (filters.phone && !String(user.phone).includes(filters.phone))                       return false;
             return true;
         });
     }, [filters, users]);
 
-    // Stats pills
+    // Stats pills: total + conteo por grupo asignado
     const statsPills = useMemo(() => {
         const pills = [{ label: "Total", count: users.length, color: "#e2e8f0" }];
-        Object.entries(TYPE_DOT).forEach(([type, color]) => {
-            pills.push({
-                label: type,
-                count: users.filter((u) => u.userType === type).length,
-                color,
-            });
+        const groupCounts = {};
+        users.forEach((u) => {
+            if (!u.group) return;
+            groupCounts[u.group] = (groupCounts[u.group] ?? 0) + 1;
+        });
+        Object.entries(groupCounts).forEach(([group, count]) => {
+            pills.push({ label: group, count, color: "#2563eb" });
         });
         return pills;
     }, [users]);
 
-    const uniqueUserTypes = useMemo(
-        () => [...new Set(users.map((u) => u.userType).filter(Boolean))],
+    const uniqueGroups = useMemo(
+        () => [...new Set(users.map((u) => u.group).filter(Boolean))],
         [users]
     );
 
     const clearFilters = () =>
-        setFilters({ name: "", email: "", userType: "", phone: "" });
+        setFilters({ name: "", email: "", group: "", phone: "" });
 
     // Campos activos según los toggles de la tabla
     const activeFields = useMemo(() =>
@@ -155,13 +149,13 @@ export default function ListUserPage() {
                 </div>
 
                 <div className="flex flex-col gap-1 w-full sm:w-[320px]">
-                    <label className="text-white text-[0.75rem] font-medium">Tipo de usuario</label>
+                    <label className="text-white text-[0.75rem] font-medium">Grupo</label>
                     <Select
-                        name="userType"
-                        value={filters.userType}
-                        options={uniqueUserTypes.map((t) => ({ id: t, label: t }))}
-                        onChange={(e) => setFilters((f) => ({ ...f, userType: e.target.value }))}
-                        placeholder="Selecciona el tipo"
+                        name="group"
+                        value={filters.group}
+                        options={uniqueGroups.map((g) => ({ id: g, label: g }))}
+                        onChange={(e) => setFilters((f) => ({ ...f, group: e.target.value }))}
+                        placeholder="Selecciona el grupo"
                     />
                 </div>
 
