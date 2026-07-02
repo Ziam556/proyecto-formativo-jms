@@ -24,7 +24,7 @@ export async function createUser(userData, imageFile) {
   const fields = [
     "userName", "userEmail", "userEmailVerification", "userEmailInstitutional",
     "userPhone", "userSecondaryPhone", "userDocumentType", "userDocumentNumber",
-    "userType", "userAddress", "userPassword", "startDate", "endDate", "userGroup",
+    "userAddress", "userPassword", "startDate", "endDate", "userGroup",
   ];
 
   fields.forEach((key) => {
@@ -81,7 +81,7 @@ export async function updateUser(id, userData, imageFile) {
   const fields = [
     "userName", "userEmail", "userEmailVerification", "userEmailInstitutional",
     "userPhone", "userSecondaryPhone", "userDocumentType", "userDocumentNumber",
-    "userType", "userAddress", "userPassword", "startDate", "endDate",
+    "userAddress", "userPassword", "startDate", "endDate",
     "userGroup", "isEnabled",
   ];
 

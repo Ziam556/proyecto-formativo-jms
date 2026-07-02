@@ -108,7 +108,7 @@ export default function UserProfilePage() {
 
                 <InfoRow icon={Phone}       value={user.user_phone} />
                 <InfoRow icon={Mail}        value={user.user_email} />
-                <InfoRow icon={ShieldCheck} value={user.user_type ? `@${user.user_type}` : "—"} />
+                <InfoRow icon={ShieldCheck} value={user.user_group ? `@${user.user_group}` : "—"} />
 
                 <InfoRow icon={MapPin}      value={user.user_address} />
               </div>

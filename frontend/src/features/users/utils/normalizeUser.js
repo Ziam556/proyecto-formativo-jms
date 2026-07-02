@@ -8,7 +8,6 @@ export function normalizeUser(row) {
     secondaryPhone:    row.user_secondary_phone   || "",
     documentType:      row.user_document_type     || "",
     document:          row.user_document_number   || "",
-    userType:          row.user_type              || "",
     address:           row.user_address           || "",
     group:             row.user_group             || "",
     image:             row.user_image             || null,

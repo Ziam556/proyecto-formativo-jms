@@ -71,9 +71,11 @@ export default function ViewUserPage() {
                         <span className="text-[#1a1a3e] font-extrabold text-[1rem]">@{user.name}</span>
                         <span className="text-[#2a2a50] text-[0.82rem] font-bold">{user.documentType} {user.document}</span>
                         <span className="text-[#2a2a50] text-[0.82rem] font-bold">{user.email}</span>
-                        <span className="bg-[rgba(120,100,220,0.2)] text-[#3b2090] text-[0.72rem] font-extrabold px-3 py-0.5 rounded-full w-fit">
-                            {user.userType || "Administrador"}
-                        </span>
+                        {user.group && (
+                            <span className="bg-[rgba(120,100,220,0.2)] text-[#3b2090] text-[0.72rem] font-extrabold px-3 py-0.5 rounded-full w-fit">
+                                {user.group}
+                            </span>
+                        )}
                     </div>
                 </div>
 
@@ -82,11 +84,10 @@ export default function ViewUserPage() {
                 {/* Sección 1 — Identidad */}
                 <div>
                     <SectionHeader number={1} title="Identidad" color="#7c3aed" />
-                    <div className="grid grid-cols-4 gap-3">
+                    <div className="grid grid-cols-3 gap-3">
                         <Field label="Nombre"             value={user.name}         />
                         <Field label="Tipo de documento"  value={user.documentType} />
                         <Field label="Número de documento" value={user.document}    />
-                        <Field label="Tipo de usuario"    value={user.userType}     />
                     </div>
                 </div>
 
