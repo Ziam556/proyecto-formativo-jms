@@ -47,7 +47,6 @@ export const authRepository = {
     // ── Forgot password ──────────────────────────────────────────────────────
 
     async saveOtp(userEmail, otpCode, expiresAt) {
-        // Invalida cualquier OTP anterior del mismo correo
         await pool.query(
             `UPDATE public.password_reset_tokens SET used = TRUE WHERE user_email = $1`,
             [userEmail]

@@ -5,7 +5,7 @@ export const userReportFields = [
     { key: "document",    label: "Documento"             },
     { key: "phone",       label: "Teléfono"              },
     { key: "address",     label: "Dirección"             },
-    { key: "userType",    label: "Tipo de usuario"       },
+    { key: "group",       label: "Grupo"                 },
     { key: "startDate",   label: "Fecha de inicio"       },
     { key: "endDate",     label: "Fecha de finalización" },
 ];

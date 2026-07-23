@@ -48,10 +48,6 @@ const commonFields = {
         .string()
         .min(1, "Debe seleccionar un tipo de documento"),
 
-    userType: z
-        .string()
-        .min(1, "Debe seleccionar un tipo de usuario"),
-
     userDocumentNumber: z
         .string()
         .regex(/^[0-9]+$/, "El número de documento solo puede contener dígitos")
