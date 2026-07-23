@@ -17,6 +17,12 @@ export const returnableMaterialService = {
     return material;
   },
 
+  async toggleEnabled(id) {
+    const updated = await returnableMaterialRepository.toggleEnabled(id);
+    if (!updated) throw new Error(`Material devolutivo con id ${id} no encontrado`);
+    return updated;
+  },
+
   async updateReturnableMaterial(id, data) {
     const updated = await returnableMaterialRepository.update(id, data);
     if (!updated) throw new Error(`Material devolutivo con id ${id} no encontrado`);

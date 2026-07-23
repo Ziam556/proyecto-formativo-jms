@@ -25,4 +25,7 @@ router.put("/:id", upload.fields([
   { name: "materialTechnicalSheet", maxCount: 1 },
 ]), returnableMaterialController.update);
 
+// PATCH /api/returnableMaterial/:id/toggle → habilitar/deshabilitar
+router.patch("/:id/toggle", returnableMaterialController.toggleEnabled);
+
 export default router;

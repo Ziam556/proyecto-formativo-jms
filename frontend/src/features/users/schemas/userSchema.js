@@ -3,7 +3,7 @@ import { z } from "zod";
 // ── Validación de contraseña ───────────────────────────────────────────────
 const passwordSchema = z
     .string()
-    .min(8, "La contraseña debe tener mínimo 8 caracteres")
+    .min(10, "La contraseña debe tener mínimo 10 caracteres")
     .regex(/[A-Z]/, "Debe contener al menos una mayúscula")
     .regex(/[a-z]/, "Debe contener al menos una minúscula")
     .regex(/[0-9]/, "Debe contener al menos un número")
@@ -58,13 +58,8 @@ const commonFields = {
         .min(5, "El número de documento debe tener mínimo 5 dígitos")
         .max(15, "El número de documento no puede superar 15 dígitos"),
 
-    startDate: z
-        .string()
-        .min(1, "Debe seleccionar una fecha de inicio"),
-
-    endDate: z
-        .string()
-        .min(1, "Debe seleccionar una fecha de finalización"),
+    startDate: z.string().optional().or(z.literal("")),
+    endDate:   z.string().optional().or(z.literal("")),
 
     userAddress: z
         .string()
@@ -72,19 +67,26 @@ const commonFields = {
         .max(100, "La dirección es demasiado larga"),
 };
 
+// Tipos que NO requieren fechas
+const TIPOS_SIN_FECHAS = ["Admin", "Inst"];
+
 // ── Helper: aplica refinements comunes ────────────────────────────────────
 const applyRefinements = (schema) =>
     schema
-        .refine(
-            (data) => {
-                if (!data.startDate || !data.endDate) return true;
-                return new Date(data.endDate) > new Date(data.startDate);
-            },
-            {
-                message: "La fecha de finalización debe ser mayor a la fecha de inicio",
-                path: ["endDate"],
+        .superRefine((data, ctx) => {
+            const requiereFechas = !TIPOS_SIN_FECHAS.includes(data.userType);
+            if (requiereFechas) {
+                if (!data.startDate) {
+                    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Debe seleccionar una fecha de inicio", path: ["startDate"] });
+                }
+                if (!data.endDate) {
+                    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Debe seleccionar una fecha de finalización", path: ["endDate"] });
+                }
             }
-        )
+            if (data.startDate && data.endDate && new Date(data.endDate) <= new Date(data.startDate)) {
+                ctx.addIssue({ code: z.ZodIssueCode.custom, message: "La fecha de finalización debe ser mayor a la fecha de inicio", path: ["endDate"] });
+            }
+        })
         .refine(
             (data) => data.userEmail === data.userEmailVerification,
             {

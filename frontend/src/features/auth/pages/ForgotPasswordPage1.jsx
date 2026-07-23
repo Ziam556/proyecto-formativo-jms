@@ -3,17 +3,28 @@ import { useNavigate } from "react-router-dom";
 import { Lock, Send, ArrowLeft, Info } from "lucide-react";
 import { Button, Input, BackButton } from "@/shared";
 import { StepRing } from "@/shared";
+import { sendOtp } from "../services/forgotPasswordService";
 
 export default function ForgotPasswordPage1({ onNext }) {
-    const navigate        = useNavigate();
+    const navigate          = useNavigate();
     const [email, setEmail] = useState("");
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!email.trim()) { setError("El correo es requerido"); return; }
         const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRe.test(email)) { setError("Correo no válido"); return; }
-        onNext(email);
+
+        try {
+            setLoading(true);
+            await sendOtp(email);
+            onNext(email);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -60,8 +71,8 @@ export default function ForgotPasswordPage1({ onNext }) {
 
             {/* Botones */}
             <div className="flex flex-col gap-3 mt-6">
-                <Button variant="primary" size="md" onClick={handleSubmit}>
-                    <Send size={16} className="mr-2" /> Enviar código
+                <Button variant="primary" size="md" onClick={handleSubmit} disabled={loading}>
+                    <Send size={16} className="mr-2" /> {loading ? "Enviando..." : "Enviar código"}
                 </Button>
 
                 <div className="flex items-center gap-3 my-1">

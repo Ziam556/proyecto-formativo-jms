@@ -81,6 +81,17 @@ export const returnableMaterialRepository = {
     return result.rows[0] ?? null;
   },
 
+  async toggleEnabled(id) {
+    const result = await pool.query(
+      `UPDATE public.returnable_material
+       SET enabled = NOT enabled
+       WHERE returnable_material_id = $1
+       RETURNING returnable_material_id, material_element_name, enabled`,
+      [id]
+    );
+    return result.rows[0] ?? null;
+  },
+
   async update(id, data) {
     const {
       materialPlate, materialCategory, materialElementName,

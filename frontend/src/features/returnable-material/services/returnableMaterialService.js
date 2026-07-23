@@ -49,6 +49,16 @@ export async function updateReturnableMaterial(id, data, imageFiles, technicalSh
   return result;
 }
 
+export async function toggleReturnableMaterial(id) {
+  const response = await fetch(`${API_URL}/${id}/toggle`, {
+    method: "PATCH",
+    headers: getAuthHeaders(),
+  });
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error || "Error al cambiar estado del material");
+  return result;
+}
+
 export async function createReturnableMaterial(data, imageFiles, technicalSheetFile) {
   const formData = new FormData();
 
