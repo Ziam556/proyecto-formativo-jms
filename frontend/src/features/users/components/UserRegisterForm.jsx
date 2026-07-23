@@ -74,6 +74,7 @@ export default function UserRegisterForm({ onCancel }) {
 
     const handleSubmit = async () => {
         // ── 1. Campos requeridos vacíos ───────────────────────────────────────
+        const requieresFechas = !["Admin", "Inst"].includes(formData.userType);
         const requiredFields = {
             userName:              "El nombre es requerido",
             userEmail:             "El correo es requerido",
@@ -83,8 +84,10 @@ export default function UserRegisterForm({ onCancel }) {
             userDocumentNumber:    "El número de documento es requerido",
             userAddress:           "La dirección es requerida",
             userPassword:          "La contraseña es requerida",
-            startDate:             "La fecha de inicio es requerida",
-            endDate:               "La fecha de finalización es requerida",
+            ...(requieresFechas && {
+                startDate: "La fecha de inicio es requerida",
+                endDate:   "La fecha de finalización es requerida",
+            }),
         };
 
         const emptyErrors = {};
@@ -182,10 +185,14 @@ export default function UserRegisterForm({ onCancel }) {
 
                         <Input labelVariant="dark" label="Correo institucional (opcional)" name="userEmailInstitutional" type="email" placeholder="Ingrese su correo institucional" value={formData.userEmailInstitutional} onChange={handleChange} error={errors.userEmailInstitutional} />
 
-                        <DatePicker labelVariant="dark" label="Fecha inicio" name="startDate" placeholder="Fecha inicio" value={formData.startDate} onChange={handleChange} error={errors.startDate} />
+                        {!["Admin", "Inst"].includes(formData.userType) && (
+                            <DatePicker labelVariant="dark" label="Fecha inicio" name="startDate" placeholder="Fecha inicio" value={formData.startDate} onChange={handleChange} error={errors.startDate} />
+                        )}
                         <Input labelVariant="dark" label="Contraseña" name="userPassword" type="password" placeholder="Ingrese su contraseña" value={formData.userPassword} onChange={handleChange} error={errors.userPassword} />
 
-                        <DatePicker labelVariant="dark" label="Fecha finalización" name="endDate" placeholder="Fecha finalización" value={formData.endDate} onChange={handleChange} error={errors.endDate} />
+                        {!["Admin", "Inst"].includes(formData.userType) && (
+                            <DatePicker labelVariant="dark" label="Fecha finalización" name="endDate" placeholder="Fecha finalización" value={formData.endDate} onChange={handleChange} error={errors.endDate} />
+                        )}
 
                         {/* FIX: celda propia (misma fila/columna que un input) con ambos botones lado a lado */}
                         <div className="flex items-end justify-between gap-3">

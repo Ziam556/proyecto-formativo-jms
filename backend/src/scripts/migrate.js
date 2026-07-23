@@ -118,6 +118,31 @@ CREATE TABLE IF NOT EXISTS public.task (
 );
 
 CREATE INDEX IF NOT EXISTS idx_task_user_id ON public.task (user_id);
+
+-- =============================================
+-- Columnas de bloqueo de cuenta (intentos fallidos)
+-- =============================================
+ALTER TABLE public.users
+    ADD COLUMN IF NOT EXISTS login_attempts INT DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS locked_until   TIMESTAMP NULL;
+
+-- =============================================
+-- Columna de habilitado/deshabilitado
+-- =============================================
+ALTER TABLE public.users
+    ADD COLUMN IF NOT EXISTS is_enabled BOOLEAN DEFAULT TRUE;
+
+-- =============================================
+-- Tabla de tokens de recuperación de contraseña
+-- =============================================
+CREATE TABLE IF NOT EXISTS public.password_reset_tokens (
+    id           SERIAL PRIMARY KEY,
+    user_email   VARCHAR(150) NOT NULL,
+    otp_code     VARCHAR(6)   NOT NULL,
+    expires_at   TIMESTAMP    NOT NULL,
+    used         BOOLEAN      DEFAULT FALSE,
+    created_at   TIMESTAMP    DEFAULT NOW()
+);
 `;
 
 async function migrate() {

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Mail, CheckCircle2, RefreshCw, Clock, ArrowLeft, Info } from "lucide-react";
 import { Button, BackButton } from "@/shared";
 import { StepRing } from "@/shared";
+import { verifyOtp, sendOtp } from "../services/forgotPasswordService";
 
 // ─── OTP 6 cajas ─────────────────────────────────────────────────────────────
 const OTP_LENGTH = 6;
@@ -67,6 +68,7 @@ export default function ForgotPasswordPage2({ email, onNext, onBack }) {
     const [error, setError]     = useState("");
     const [seconds, setSeconds] = useState(10 * 60);
     const [resent, setResent]   = useState(false);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (seconds <= 0) return;
@@ -77,20 +79,33 @@ export default function ForgotPasswordPage2({ email, onNext, onBack }) {
     const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
     const ss = String(seconds % 60).padStart(2, "0");
 
-    const handleValidate = () => {
+    const handleValidate = async () => {
         if (otp.replace(/\D/g, "").length < OTP_LENGTH) {
             setError("Ingresa los 6 dígitos del código");
             return;
         }
-        onNext();
+        try {
+            setLoading(true);
+            await verifyOtp(email, otp);
+            onNext(otp);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleResend = () => {
-        setSeconds(10 * 60);
-        setOtp("");
-        setError("");
-        setResent(true);
-        setTimeout(() => setResent(false), 3000);
+    const handleResend = async () => {
+        try {
+            await sendOtp(email);
+            setSeconds(10 * 60);
+            setOtp("");
+            setError("");
+            setResent(true);
+            setTimeout(() => setResent(false), 3000);
+        } catch {
+            setError("Error al reenviar el código. Intenta de nuevo.");
+        }
     };
 
     return (
@@ -136,8 +151,8 @@ export default function ForgotPasswordPage2({ email, onNext, onBack }) {
 
             {/* Botones */}
             <div className="flex flex-col gap-3 mt-5">
-                <Button variant="primary" size="md" onClick={handleValidate}>
-                    <CheckCircle2 size={16} className="mr-2" /> Validar código
+                <Button variant="primary" size="md" onClick={handleValidate} disabled={loading}>
+                    <CheckCircle2 size={16} className="mr-2" /> {loading ? "Validando..." : "Validar código"}
                 </Button>
 
                 <button

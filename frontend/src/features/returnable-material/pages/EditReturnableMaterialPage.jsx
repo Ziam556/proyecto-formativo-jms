@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { BackButton, alertSuccess, alertError, SearchField } from "@/shared";
+import { BackButton, alertSuccess, alertError, SearchField, Switch } from "@/shared";
 import { useNavigate } from "react-router-dom";
 import {
     getReturnableMaterials,
@@ -48,6 +48,7 @@ export default function EditReturnableMaterialPage() {
     const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(0);
     const [formData, setFormData]       = useState({});
+    const [isEnabled, setIsEnabled]     = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
 
     // Datos del backend (filas crudas snake_case, igual que consumable)
@@ -69,7 +70,9 @@ export default function EditReturnableMaterialPage() {
     );
 
     const handleSelectMaterial = (row) => {
-        setFormData(toWizardFields(row));
+        const fields = toWizardFields(row);
+        setFormData(fields);
+        setIsEnabled(fields.isEnabled ?? true);
         setCurrentStep(0);
     };
 
@@ -105,7 +108,7 @@ export default function EditReturnableMaterialPage() {
             materialWidth:        finalData.materialWidth,
             materialLength:       finalData.materialLength,
             materialDepth:        finalData.materialDepth,
-            isEnabled:            finalData.isEnabled,
+            isEnabled,
         };
 
         const imageFile = Array.isArray(finalData.materialImage)
@@ -172,6 +175,16 @@ export default function EditReturnableMaterialPage() {
                 <p className="text-red-400 text-sm">
                     No se pudieron cargar los materiales: {loadError}
                 </p>
+            )}
+
+            {/* Switch habilitado / deshabilitado */}
+            {formData.returnableMaterialId && (
+                <div className="w-full sm:w-[90%] mx-auto flex items-center gap-3 mb-2">
+                    <Switch checked={isEnabled} onChange={setIsEnabled} />
+                    <span className="text-sm font-semibold text-white">
+                        {isEnabled ? "Habilitado" : "Deshabilitado"}
+                    </span>
+                </div>
             )}
 
             <div className="w-full sm:w-[90%] min-h-[70vh] mx-auto rounded-2xl bg-[rgba(217,217,217,0.31)] backdrop-blur-xl border border-white/20 flex items-center justify-center relative py-8">

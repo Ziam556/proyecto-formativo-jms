@@ -6,7 +6,7 @@
 import { createElement } from "react";
 import ReturnableMaterialRowActions from "../components/ReturnableMaterialRowActions";
 
-export const returnableMaterialColumns = [
+const baseColumns = [
   { id: "id",             label: "ID",                  accessor: "id" },
   { id: "plateSena",      label: "Placa Sena",          accessor: "plateSena" },
   { id: "category",       label: "Categoría",           accessor: "category" },
@@ -24,5 +24,16 @@ export const returnableMaterialColumns = [
   { id: "accountHolder",  label: "Cuentadante",         accessor: "accountHolder" },
   { id: "location",       label: "Ubicación",           accessor: "location" },
   { id: "dimensions",     label: "Dimensiones",         accessor: "dimensions" },
-  { id: "actions",        label: "Acciones",            accessor: null,           noToggle: true, renderCell: (material) => createElement(ReturnableMaterialRowActions, { material }) },
 ];
+
+export const returnableMaterialColumns = baseColumns;
+
+export function getReturnableMaterialColumns(onToggle) {
+  return [
+    ...baseColumns,
+    {
+      id: "actions", label: "Acciones", accessor: null, noToggle: true,
+      renderCell: (material) => createElement(ReturnableMaterialRowActions, { material, onToggle }),
+    },
+  ];
+}

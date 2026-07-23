@@ -86,6 +86,7 @@ export default function UserEditForm({ initialUser, userImage, isEnabled, onCanc
 
     const handleSubmit = async () => {
         // ── 1. Campos requeridos ──────────────────────────────────────────────
+        const requieresFechas = !["Admin", "Inst"].includes(formData.userType);
         const requiredFields = {
             userName:              "El nombre es requerido",
             userEmail:             "El correo es requerido",
@@ -94,8 +95,10 @@ export default function UserEditForm({ initialUser, userImage, isEnabled, onCanc
             userDocumentType:      "Debe seleccionar un tipo de documento",
             userDocumentNumber:    "El número de documento es requerido",
             userAddress:           "La dirección es requerida",
-            startDate:             "La fecha de inicio es requerida",
-            endDate:               "La fecha de finalización es requerida",
+            ...(requieresFechas && {
+                startDate: "La fecha de inicio es requerida",
+                endDate:   "La fecha de finalización es requerida",
+            }),
         };
 
         const emptyErrors = {};
@@ -195,10 +198,14 @@ export default function UserEditForm({ initialUser, userImage, isEnabled, onCanc
 
                     <Input labelVariant="light" label="Correo institucional (opcional)" name="userEmailInstitutional" type="email" placeholder="Ingrese su correo institucional" value={formData.userEmailInstitutional} onChange={handleChange} error={errors.userEmailInstitutional} />
 
-                    <DatePicker labelVariant="light" label="Fecha inicio" name="startDate" placeholder="Fecha inicio" value={formData.startDate} onChange={handleChange} error={errors.startDate} />
+                    {!["Admin", "Inst"].includes(formData.userType) && (
+                        <DatePicker labelVariant="light" label="Fecha inicio" name="startDate" placeholder="Fecha inicio" value={formData.startDate} onChange={handleChange} error={errors.startDate} />
+                    )}
                     <Input labelVariant="light" label="Contraseña (dejar vacío para no cambiar)" name="userPassword" type="password" placeholder="••••••••••••" value={formData.userPassword} onChange={handleChange} error={errors.userPassword} />
 
-                    <DatePicker labelVariant="light" label="Fecha finalización" name="endDate" placeholder="Fecha finalización" value={formData.endDate} onChange={handleChange} error={errors.endDate} />
+                    {!["Admin", "Inst"].includes(formData.userType) && (
+                        <DatePicker labelVariant="light" label="Fecha finalización" name="endDate" placeholder="Fecha finalización" value={formData.endDate} onChange={handleChange} error={errors.endDate} />
+                    )}
 
                     <Input labelVariant="light" label="Correo electrónico" name="userEmail" type="email" placeholder="Ingrese su correo" value={formData.userEmail} onChange={handleChange} error={errors.userEmail} />
 

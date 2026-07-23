@@ -3,7 +3,7 @@ import { getReturnableMaterials } from "../services/returnableMaterialService.js
 import { normalizeReturnableMaterials } from "../utils/normalizeReturnableMaterial.js";
 import { translateStatesInList } from "@/features/consumable-material/utils/stateLabels.js";
 import { DataTable, StatsPills, ReportDropdown, BackButton, Input, Select, ClearFiltersButton } from "@/shared";
-import { returnableMaterialColumns } from "../table/returnableMaterialColumns";
+import { getReturnableMaterialColumns } from "../table/returnableMaterialColumns";
 import { returnableMaterialReportFields } from "../reports/config/returnableMaterialReportFields.js";
 import { generateReturnableMaterialReport } from "../reports/services/generateReturnableMaterialReport.js";
 
@@ -26,26 +26,20 @@ export default function ListReturnableMaterialPage() {
   const [loading, setLoading]   = useState(true);
   const [loadError, setLoadError] = useState(null);
 
-  useEffect(() => {
-    let active = true;
+  const loadMaterials = () => {
     setLoading(true);
     getReturnableMaterials()
       .then((rows) => normalizeReturnableMaterials(rows))
       .then((normalized) => translateStatesInList(normalized))
       .then((translated) => {
-        if (!active) return;
         setReturnableMaterials(translated);
         setLoadError(null);
       })
-      .catch((err) => {
-        if (!active) return;
-        setLoadError(err.message);
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
-    return () => { active = false; };
-  }, []);
+      .catch((err) => setLoadError(err.message))
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => { loadMaterials(); }, []);
 
   // Filtros
   const [filters, setFilters] = useState({
@@ -227,7 +221,7 @@ export default function ListReturnableMaterialPage() {
       ) : (
         <DataTable
           data={filtered}
-          columns={returnableMaterialColumns}
+          columns={getReturnableMaterialColumns(loadMaterials)}
           rowSelection={rowSelection}
           onRowSelectionChange={setRowSelection}
           onReportColsChange={setReportCols}

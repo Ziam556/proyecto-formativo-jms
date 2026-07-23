@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { Lock, Eye, EyeOff, CheckCircle2, ArrowLeft } from "lucide-react";
 import { Button, Input, BackButton } from "@/shared";
 import { StepRing } from "@/shared";
+import { resetPassword } from "../services/forgotPasswordService";
 
 // ─── Requisitos de contraseña ─────────────────────────────────────────────────
 const REQUIREMENTS = [
-    { key: "length",  label: "Al menos 8 caracteres",            test: (p) => p.length >= 8 },
+    { key: "length",  label: "Al menos 10 caracteres",           test: (p) => p.length >= 10 },
     { key: "upper",   label: "Una letra mayúscula",               test: (p) => /[A-Z]/.test(p) },
     { key: "lower",   label: "Una letra minúscula",               test: (p) => /[a-z]/.test(p) },
     { key: "number",  label: "Un número",                         test: (p) => /\d/.test(p) },
@@ -42,7 +43,7 @@ function PasswordStrength({ password }) {
 }
 
 // ─── Vista 3 ─────────────────────────────────────────────────────────────────
-export default function ForgotPasswordPage3({ onBack }) {
+export default function ForgotPasswordPage3({ email, otp, onBack }) {
     const navigate                    = useNavigate();
     const [password, setPassword]     = useState("");
     const [confirm, setConfirm]       = useState("");
@@ -50,18 +51,28 @@ export default function ForgotPasswordPage3({ onBack }) {
     const [showConf, setShowConf]     = useState(false);
     const [errors, setErrors]         = useState({});
     const [success, setSuccess]       = useState(false);
+    const [loading, setLoading]       = useState(false);
 
     const passed = REQUIREMENTS.filter((r) => r.test(password));
 
-    const handleSave = () => {
+    const handleSave = async () => {
         const errs = {};
-        if (!password)                           errs.password = "La contraseña es requerida";
+        if (!password)                                errs.password = "La contraseña es requerida";
         else if (passed.length < REQUIREMENTS.length) errs.password = "La contraseña no cumple todos los requisitos";
-        if (!confirm)                            errs.confirm  = "Confirma tu contraseña";
-        else if (password !== confirm)           errs.confirm  = "Las contraseñas no coinciden";
+        if (!confirm)                                 errs.confirm  = "Confirma tu contraseña";
+        else if (password !== confirm)                errs.confirm  = "Las contraseñas no coinciden";
         if (Object.keys(errs).length) { setErrors(errs); return; }
-        setSuccess(true);
-        setTimeout(() => navigate("/auth"), 3000);
+
+        try {
+            setLoading(true);
+            await resetPassword(email, otp, password);
+            setSuccess(true);
+            setTimeout(() => navigate("/auth"), 3000);
+        } catch (err) {
+            setErrors({ password: err.message });
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -168,9 +179,9 @@ export default function ForgotPasswordPage3({ onBack }) {
 
             {/* Botones */}
             <div className="flex flex-col gap-3 mt-6">
-                <Button variant="primary" size="md" onClick={handleSave} disabled={success}>
+                <Button variant="primary" size="md" onClick={handleSave} disabled={success || loading}>
                     <Lock size={16} className="mr-2" />
-                    {success ? "Contraseña guardada ✓" : "Guardar contraseña"}
+                    {loading ? "Guardando..." : success ? "Contraseña guardada ✓" : "Guardar contraseña"}
                 </Button>
 
                 {!success && (

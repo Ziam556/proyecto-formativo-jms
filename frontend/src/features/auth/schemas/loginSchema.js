@@ -10,7 +10,7 @@ export const loginSchema = z.object({
 
     userPassword: z    
         .string()
-        .min(8, "Contraseña debe tener minimo 8 caracteres")
+        .min(10, "Contraseña debe tener minimo 10 caracteres")
         .regex(/[A-Z]/, "Debe contener al menos una mayuscula")
         .regex(/[a-z]/, "Debe contener al menos una minuscula")
         .regex(/[0-9]/, "Debe contener al menos un numero")

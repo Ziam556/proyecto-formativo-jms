@@ -73,4 +73,15 @@ export const returnableMaterialController = {
     }
   },
 
+  async toggleEnabled(req, res) {
+    try {
+      const material = await returnableMaterialService.toggleEnabled(req.params.id);
+      const estado = material.enabled ? "habilitado" : "deshabilitado";
+      res.status(200).json({ message: `Material ${estado} correctamente`, material });
+    } catch (err) {
+      console.error("ERROR toggleEnabled returnableMaterial:", err);
+      res.status(400).json({ error: err.message });
+    }
+  },
+
 };
