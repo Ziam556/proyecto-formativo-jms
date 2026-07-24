@@ -5,7 +5,7 @@ export const authRepository = {
     async findByEmail(userEmail) {
         const query = `
             SELECT user_email, user_password AS password,
-                   user_type, start_date, end_date,
+                   user_group, start_date, end_date,
                    is_enabled, login_attempts, locked_until
             FROM public.users
             WHERE user_email = $1

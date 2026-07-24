@@ -61,16 +61,19 @@ const commonFields = {
         .string()
         .min(5, "La dirección debe tener mínimo 5 caracteres")
         .max(100, "La dirección es demasiado larga"),
+
+    // El grupo ES el tipo de usuario (Administrador, Instructor, Invitado)
+    userGroup: z.string().nullable().optional(),
 };
 
-// Tipos que NO requieren fechas
-const TIPOS_SIN_FECHAS = ["Admin", "Inst"];
+// Grupos que NO requieren fechas (solo Invitado las necesita)
+const GRUPOS_SIN_FECHAS = ["Administrador", "Instructor"];
 
 // ── Helper: aplica refinements comunes ────────────────────────────────────
 const applyRefinements = (schema) =>
     schema
         .superRefine((data, ctx) => {
-            const requiereFechas = !TIPOS_SIN_FECHAS.includes(data.userType);
+            const requiereFechas = !GRUPOS_SIN_FECHAS.includes(data.userGroup);
             if (requiereFechas) {
                 if (!data.startDate) {
                     ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Debe seleccionar una fecha de inicio", path: ["startDate"] });

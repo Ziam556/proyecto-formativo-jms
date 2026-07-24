@@ -9,12 +9,12 @@ import { generateReturnableMaterialReport } from "../reports/services/generateRe
 
 // ─── Colores de estado para pills ─────────────────────────────────────────────
 const STATE_DOT = {
-  Disponible:      "#16a34a",
-  "No Disponible": "#d97706",
-  Prestamo:        "#2563eb",
-  Baja:            "#ef4444",
-  Traslado:        "#9333ea",
-  Mantenimiento:   "#6b7280",
+  Disponible:       "#16a34a",
+  "No disponible":  "#d97706",
+  "En préstamo":    "#2563eb",
+  Baja:             "#ef4444",
+  Traslado:         "#9333ea",
+  Mantenimiento:    "#6b7280",
 };
 
 

@@ -60,7 +60,7 @@ export default function CreateConsumable2({
 
             {/* CUENTADANTE */}
             <Input labelVariant="dark"
-                label="Cuentadante"
+                label="Cuentadante (Nombre y apellido)"
                 name="materialStoryTeller"
                 placeholder="Escribe el nombre del cuentadante"
                 value={fields.materialStoryTeller}
@@ -98,7 +98,7 @@ export default function CreateConsumable2({
                 placeholder="Se calcula automáticamente"
                 value={fields.materialTotalValue}
                 readOnly
-                style={{ opacity: 0.6, cursor: "not-allowed" }}
+                className="opacity-60 cursor-not-allowed"
                 error={errors.materialTotalValue}
             />
 

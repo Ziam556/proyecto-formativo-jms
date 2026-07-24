@@ -86,7 +86,7 @@ export default function CreateConsumable1({
                 onChange={() => {}}
                 error={errors.consumableMaterialId}
                 readOnly
-                style={{ opacity: 0.6, cursor: "not-allowed" }}
+                className="opacity-60 cursor-not-allowed"
             />
 
             <Input labelVariant="dark"

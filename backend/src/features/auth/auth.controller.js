@@ -33,9 +33,11 @@ export const authController = {
             if (!email) return res.status(400).json({ error: "El correo es requerido" });
 
             await authService.forgotPassword(email);
-            // Siempre 200 para no revelar si el correo existe
-            res.status(200).json({ message: "Si el correo está registrado recibirás un código." });
+            res.status(200).json({ message: "Código enviado correctamente." });
         } catch (err) {
+            if (err.message === "CORREO_NO_REGISTRADO") {
+                return res.status(404).json({ error: "El correo ingresado no está registrado en el sistema." });
+            }
             res.status(500).json({ error: "Error al enviar el correo. Intenta más tarde." });
         }
     },

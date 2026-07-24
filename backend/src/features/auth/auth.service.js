@@ -58,7 +58,7 @@ export const authService = {
         }
 
         const token = jwt.sign(
-            { email: user.user_email },
+            { email: user.user_email, userGroup: user.user_group },
             process.env.JWT_SECRET,
             { expiresIn: process.env.JWT_EXPIRES },
         );
@@ -76,8 +76,7 @@ export const authService = {
     async forgotPassword(email) {
         const user = await authRepository.findByEmail(email);
         if (!user) {
-            // No revelamos si el correo existe o no (seguridad)
-            return;
+            throw new Error("CORREO_NO_REGISTRADO");
         }
 
         const otp       = generateOtp();

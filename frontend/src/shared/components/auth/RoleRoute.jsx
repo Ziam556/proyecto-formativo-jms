@@ -1,9 +1,9 @@
 import { Navigate } from "react-router-dom";
 
 /**
- * Protege una ruta por rol de usuario.
- * - Admin: acceso a todo (sin importar roles requeridos)
- * - roles: array de tipos de usuario permitidos, ej. ["Admin", "Inst"]
+ * Protege una ruta por grupo de usuario.
+ * - Administrador: acceso a todo
+ * - roles: array de grupos permitidos, ej. ["Administrador", "Instructor"]
  * - Si el usuario no tiene permiso, redirige a /dashboard/home
  */
 export default function RoleRoute({ children, roles = [] }) {
@@ -11,18 +11,18 @@ export default function RoleRoute({ children, roles = [] }) {
 
     if (!token) return <Navigate to="/auth" replace />;
 
-    let userType = null;
+    let userGroup = null;
     try {
         const payload = JSON.parse(atob(token.split(".")[1]));
-        userType = payload.userType;
+        userGroup = payload.userGroup;
     } catch {
         return <Navigate to="/auth" replace />;
     }
 
-    // Admin tiene acceso a todo
-    if (userType === "Admin") return children;
+    // Administrador tiene acceso a todo
+    if (userGroup === "Administrador") return children;
 
-    if (!roles.includes(userType)) {
+    if (!roles.includes(userGroup)) {
         return <Navigate to="/dashboard/home" replace />;
     }
 

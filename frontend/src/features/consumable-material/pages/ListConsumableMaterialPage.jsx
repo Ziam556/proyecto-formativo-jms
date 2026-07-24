@@ -14,7 +14,7 @@ import {
   ClearFiltersButton,
 } from "@/shared";
 
-import { consumableMaterialColumns } from "../table/consumableMaterialColumns.js";
+import { getConsumableMaterialColumns } from "../table/consumableMaterialColumns.jsx";
 
 import { consumableMaterialReportFields } from "../reports/config/consumableMaterialReportFields.js";
 
@@ -37,27 +37,25 @@ export default function ListConsumableMaterialPage() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
 
-  useEffect(() => {
-    let active = true;
-
+  const loadMaterials = () => {
     setLoading(true);
     getConsumableMaterials()
       .then((rows) => normalizeConsumableMaterials(rows))
       .then((normalized) => translateStatesInList(normalized))
       .then((translated) => {
-        if (!active) return;
         setConsumableMaterials(translated);
         setLoadError(null);
       })
       .catch((err) => {
-        if (!active) return;
         setLoadError(err.message);
       })
       .finally(() => {
-        if (active) setLoading(false);
+        setLoading(false);
       });
+  };
 
-    return () => { active = false; };
+  useEffect(() => {
+    loadMaterials();
   }, []);
 
   const [filters, setFilters] = useState({
@@ -279,7 +277,7 @@ export default function ListConsumableMaterialPage() {
           ) : (
             <DataTable
               data={filtered}
-              columns={consumableMaterialColumns}
+              columns={getConsumableMaterialColumns(loadMaterials)}
               rowSelection={rowSelection}
               onRowSelectionChange={setRowSelection}
               onReportColsChange={setReportCols}

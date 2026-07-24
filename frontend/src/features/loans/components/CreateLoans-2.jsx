@@ -8,7 +8,7 @@ export default function CreateLoans2({ formData, onNext, onBack }) {
   const [fields, setFields] = useState({
     file:               formData?.file               ?? "",
     amount:             formData?.amount             ?? "",
-    departureDates:     formData?.departureDates     ?? "",
+    departureDates:     formData?.departureDates     ?? new Date().toISOString().split("T")[0],
     deliveryDates:      formData?.deliveryDates      ?? "",
     justificationForUse: formData?.justificationForUse ?? "",
   });
@@ -16,7 +16,6 @@ export default function CreateLoans2({ formData, onNext, onBack }) {
   const handleNext = async () => {
     const missing = [];
     if (!fields.file.trim())         missing.push("Ficha / Grupo aprendices");
-    if (!fields.departureDates)      missing.push("Fecha de salida");
 
     if (missing.length > 0) {
       await alertWarning(
@@ -70,13 +69,11 @@ export default function CreateLoans2({ formData, onNext, onBack }) {
           />
 
           <DatePicker
-            label="Fecha de salida *"
+            label="Fecha de salida (automática)"
             name="departureDates"
             value={fields.departureDates}
-            onChange={(e) =>
-              setFields((p) => ({ ...p, departureDates: e.target.value }))
-            }
-            placeholder="Seleccione la fecha de salida"
+            onChange={() => {}}
+            disabled
           />
 
           <DatePicker

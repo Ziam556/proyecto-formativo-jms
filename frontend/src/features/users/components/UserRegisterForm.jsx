@@ -11,6 +11,8 @@ import { getGroups } from "@/features/groups/services/groupService";
 import { createUser } from "../services/userService";
 import { useNavigate } from "react-router-dom";
 
+const TODAY = new Date().toISOString().split("T")[0];
+
 // ─── Estado vacío del formulario ──────────────────────────────────────────────
 const EMPTY_FORM = {
     userName:               "",
@@ -23,7 +25,7 @@ const EMPTY_FORM = {
     userDocumentNumber:     "",
     userAddress:            "",
     userPassword:           "",
-    startDate:              "",
+    startDate:              TODAY,
     endDate:                "",
     userGroup:              null,
     userImage:              [],
@@ -74,7 +76,7 @@ export default function UserRegisterForm({ onCancel }) {
 
     const handleSubmit = async () => {
         // ── 1. Campos requeridos vacíos ───────────────────────────────────────
-        const requieresFechas = !["Admin", "Inst"].includes(formData.userType);
+        const requieresFechas = formData.userGroup === "Invitado";
         const requiredFields = {
             userName:              "El nombre es requerido",
             userEmail:             "El correo es requerido",
@@ -185,14 +187,10 @@ export default function UserRegisterForm({ onCancel }) {
 
                         <Input labelVariant="dark" label="Correo institucional (opcional)" name="userEmailInstitutional" type="email" placeholder="Ingrese su correo institucional" value={formData.userEmailInstitutional} onChange={handleChange} error={errors.userEmailInstitutional} />
 
-                        {!["Admin", "Inst"].includes(formData.userType) && (
-                            <DatePicker labelVariant="dark" label="Fecha inicio" name="startDate" placeholder="Fecha inicio" value={formData.startDate} onChange={handleChange} error={errors.startDate} />
-                        )}
+                        <DatePicker labelVariant="dark" label="Fecha inicio (automática)" name="startDate" value={formData.startDate} onChange={() => {}} disabled />
                         <Input labelVariant="dark" label="Contraseña" name="userPassword" type="password" placeholder="Ingrese su contraseña" value={formData.userPassword} onChange={handleChange} error={errors.userPassword} />
 
-                        {!["Admin", "Inst"].includes(formData.userType) && (
-                            <DatePicker labelVariant="dark" label="Fecha finalización" name="endDate" placeholder="Fecha finalización" value={formData.endDate} onChange={handleChange} error={errors.endDate} />
-                        )}
+                        <DatePicker labelVariant="dark" label="Fecha finalización" name="endDate" placeholder="Fecha finalización" value={formData.endDate} onChange={handleChange} error={errors.endDate} />
 
                         {/* FIX: celda propia (misma fila/columna que un input) con ambos botones lado a lado */}
                         <div className="flex items-end justify-between gap-3">

@@ -3,7 +3,7 @@ import ConsumableMaterialRowActions from "../components/ConsumableMaterialRowAct
 // Formato personalizado que espera el componente DataTable:
 // { id, label, accessor, format?, renderCell?, noToggle? }
 
-export const consumableMaterialColumns = [
+const baseColumns = [
   { id: "id",            label: "ID",                  accessor: "id"            },
   { id: "plateSena",     label: "Placa Sena",           accessor: "plateSena"     },
   { id: "elementName",   label: "Nombre del elemento",  accessor: "elementName"   },
@@ -15,6 +15,11 @@ export const consumableMaterialColumns = [
   { id: "state",         label: "Estado",               accessor: "state",        format: "state"    },
   { id: "accountHolder", label: "Cuentadante",          accessor: "accountHolder" },
   { id: "location",      label: "Ubicación",            accessor: "location"      },
+];
+
+// Columnas estáticas (sin callback de toggle)
+export const consumableMaterialColumns = [
+  ...baseColumns,
   {
     id:         "actions",
     label:      "Acciones",
@@ -22,3 +27,16 @@ export const consumableMaterialColumns = [
     renderCell: (material) => <ConsumableMaterialRowActions material={material} />,
   },
 ];
+
+// Factory que inyecta el callback onToggle para refrescar la lista
+export function getConsumableMaterialColumns(onToggle) {
+  return [
+    ...baseColumns,
+    {
+      id:         "actions",
+      label:      "Acciones",
+      noToggle:   true,
+      renderCell: (material) => <ConsumableMaterialRowActions material={material} onToggle={onToggle} />,
+    },
+  ];
+}

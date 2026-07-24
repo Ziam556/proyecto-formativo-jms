@@ -15,6 +15,7 @@ export default function DatePicker({
     error,
     label,
     labelVariant = "light",
+    disabled = false,
 }) {
     const labelColor = error
         ? "text-red-600"
@@ -23,7 +24,7 @@ export default function DatePicker({
         : "text-white";
 
     return (
-        <div className="w-full">
+        <div className={`w-full ${disabled ? "opacity-75 pointer-events-none" : ""}`}>
 
             {/* Label opcional, se pone rojo si hay error */}
             {label && (
@@ -49,8 +50,9 @@ export default function DatePicker({
                     })
                 }
                 dateFormat="dd/MM/yyyy"
+                disabled={disabled}
                 wrapperClassName="w-full"
-                className={`w-full h-12 px-4 text-[12px] focus:outline-none bg-[rgba(217,217,217,0.54)] rounded-[8px] border ${error ? "border-red-500" : "border-black"}`}
+                className={`w-full h-12 px-4 text-[12px] focus:outline-none bg-[rgba(217,217,217,0.54)] rounded-[8px] border ${error ? "border-red-500" : "border-black"} ${disabled ? "cursor-not-allowed" : ""}`}
             />
 
             {/* Mensaje de error visible solo si hay error */}
