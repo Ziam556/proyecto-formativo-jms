@@ -71,7 +71,7 @@ export default function EditConsumableMaterial2({
 
             {/* CUENTADANTE */}
             <Input labelVariant="dark"
-                label="Cuentadante"
+                label="Cuentadante (Nombre y apellido)"
                 name="materialStoryTeller"
                 placeholder="Escribe el nombre del cuentadante"
                 value={fields.materialStoryTeller}
@@ -110,7 +110,7 @@ export default function EditConsumableMaterial2({
                 value={fields.materialTotalValue}
                 onChange={() => {}}
                 readOnly
-                style={{ opacity: 0.75, cursor: "not-allowed" }}
+                className="opacity-75 cursor-not-allowed"
                 error={errors.materialTotalValue}
             />
 

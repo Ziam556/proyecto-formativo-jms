@@ -41,7 +41,7 @@ function buildForm(u) {
         userDocumentNumber:     String(u.document    ?? ""),
         userAddress:            u.address            ?? "",
         userPassword:           "",
-        startDate:              u.startDate          ?? "",
+        startDate:              u.startDate          ?? new Date().toISOString().split("T")[0],
         endDate:                u.endDate            ?? "",
         userGroup:              u.group              ?? null,
     };
@@ -86,7 +86,7 @@ export default function UserEditForm({ initialUser, userImage, isEnabled, onCanc
 
     const handleSubmit = async () => {
         // ── 1. Campos requeridos ──────────────────────────────────────────────
-        const requieresFechas = !["Admin", "Inst"].includes(formData.userType);
+        const requieresFechas = formData.userGroup === "Invitado";
         const requiredFields = {
             userName:              "El nombre es requerido",
             userEmail:             "El correo es requerido",
@@ -198,12 +198,12 @@ export default function UserEditForm({ initialUser, userImage, isEnabled, onCanc
 
                     <Input labelVariant="light" label="Correo institucional (opcional)" name="userEmailInstitutional" type="email" placeholder="Ingrese su correo institucional" value={formData.userEmailInstitutional} onChange={handleChange} error={errors.userEmailInstitutional} />
 
-                    {!["Admin", "Inst"].includes(formData.userType) && (
-                        <DatePicker labelVariant="light" label="Fecha inicio" name="startDate" placeholder="Fecha inicio" value={formData.startDate} onChange={handleChange} error={errors.startDate} />
+                    {formData.userGroup === "Invitado" && (
+                        <DatePicker labelVariant="light" label="Fecha inicio (automática)" name="startDate" value={formData.startDate} onChange={() => {}} disabled />
                     )}
                     <Input labelVariant="light" label="Contraseña (dejar vacío para no cambiar)" name="userPassword" type="password" placeholder="••••••••••••" value={formData.userPassword} onChange={handleChange} error={errors.userPassword} />
 
-                    {!["Admin", "Inst"].includes(formData.userType) && (
+                    {formData.userGroup === "Invitado" && (
                         <DatePicker labelVariant="light" label="Fecha finalización" name="endDate" placeholder="Fecha finalización" value={formData.endDate} onChange={handleChange} error={errors.endDate} />
                     )}
 

@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { BackButton, Field, Input, Button } from "@/shared";
 import { formatDate } from "@/shared/utils/formatDate";
-import { getConsumableMaterialById } from "../services/consumableMaterialService";
+import { getConsumableMaterials } from "../services/consumableMaterialService";
 import { normalizeConsumableMaterial } from "../utils/normalizeConsumableMaterial";
 import { translateStateCode } from "../utils/stateLabels";
 
@@ -21,30 +21,53 @@ const STATE_CLASS = {
 export default function ViewConsumableMaterial({ material: initialMaterial, onCancel }) {
 
   const { state } = useLocation();
-  const [searchId, setSearchId]     = useState("");
-  const [material, setMaterial]     = useState(initialMaterial ?? state?.material ?? null);
-  const [notFound, setNotFound]     = useState(false);
-  const [searching, setSearching]   = useState(false);
+  const [searchId, setSearchId]         = useState("");
+  const [material, setMaterial]         = useState(initialMaterial ?? state?.material ?? null);
+  const [notFound, setNotFound]         = useState(false);
+  const [allMaterials, setAllMaterials] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const wrapperRef = useRef(null);
 
-  const handleSearch = async () => {
-    const id = searchId.trim();
-    if (!id) return;
+  // Cargar todos los materiales al montar
+  useEffect(() => {
+    getConsumableMaterials().then(setAllMaterials).catch(() => {});
+  }, []);
 
-    setSearching(true);
-    try {
-      const row = await getConsumableMaterialById(id);
-      const normalized = normalizeConsumableMaterial(row);
-      // El estado viene como código (ej. "N.D", "T"); lo traducimos
-      // a la etiqueta legible (ej. "No disponible", "Traslado") para
-      // mostrarlo y para que coincida con las claves de STATE_CLASS.
-      const stateLabel = await translateStateCode(normalized.state);
-      setMaterial({ ...normalized, state: stateLabel });
-      setNotFound(false);
-    } catch (err) {
+  // Cerrar sugerencias al hacer clic fuera
+  useEffect(() => {
+    const handler = (e) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  // Filtrar mientras escribe
+  const suggestions = searchId.trim()
+    ? allMaterials.filter((m) =>
+        String(m.consumable_material_id).toLowerCase().includes(searchId.trim().toLowerCase()) ||
+        m.material_element_name?.toLowerCase().includes(searchId.trim().toLowerCase()) ||
+        m.material_plate?.toLowerCase().includes(searchId.trim().toLowerCase())
+      ).slice(0, 8)
+    : [];
+
+  const handleSelect = async (row) => {
+    const normalized = normalizeConsumableMaterial(row);
+    const stateLabel = await translateStateCode(normalized.state);
+    setMaterial({ ...normalized, state: stateLabel });
+    setSearchId(String(row.consumable_material_id));
+    setNotFound(false);
+    setShowSuggestions(false);
+  };
+
+  const handleChange = (e) => {
+    setSearchId(e.target.value);
+    setShowSuggestions(true);
+    if (!e.target.value.trim()) {
       setMaterial(null);
-      setNotFound(true);
-    } finally {
-      setSearching(false);
+      setNotFound(false);
     }
   };
 
@@ -72,21 +95,36 @@ export default function ViewConsumableMaterial({ material: initialMaterial, onCa
         </h1>
       </div>
 
-      {/* BUSCADOR POR ID */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 mb-6">
-        <div className="w-full sm:w-[220px]">
-          <Input
-            label="ID Material Consumo"
-            type="text"
-            value={searchId}
-            onChange={(e) => setSearchId(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            placeholder="Ingresa el ID"
-          />
-        </div>
-        <Button variant="secondary" size="sm" onClick={handleSearch} disabled={searching}>
-          {searching ? "Buscando..." : "Buscar"}
-        </Button>
+      {/* BUSCADOR EN VIVO */}
+      <div ref={wrapperRef} className="relative w-full sm:w-[320px] mb-6">
+        <Input
+          label="Buscar por ID, nombre o placa"
+          type="text"
+          value={searchId}
+          onChange={handleChange}
+          onFocus={() => setShowSuggestions(true)}
+          placeholder="Escribe para buscar..."
+          autoComplete="off"
+        />
+        {showSuggestions && suggestions.length > 0 && (
+          <ul className="absolute z-50 top-full left-0 right-0 mt-1 bg-[#1e1230] border border-white/20 rounded-xl overflow-hidden shadow-xl max-h-56 overflow-y-auto">
+            {suggestions.map((m) => (
+              <li
+                key={m.consumable_material_id}
+                onMouseDown={() => handleSelect(m)}
+                className="flex flex-col px-4 py-2 cursor-pointer hover:bg-white/10 border-b border-white/10 last:border-0"
+              >
+                <span className="text-white text-xs font-semibold">{m.material_element_name}</span>
+                <span className="text-white/50 text-[10px]">ID: {m.consumable_material_id} · {m.material_plate}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+        {showSuggestions && searchId.trim() && suggestions.length === 0 && (
+          <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-[#1e1230] border border-white/20 rounded-xl px-4 py-3 text-white/50 text-xs shadow-xl">
+            Sin resultados
+          </div>
+        )}
       </div>
 
       {/* NO ENCONTRADO */}

@@ -140,8 +140,10 @@ export default function DataTable({
                                     className={`hover:bg-[#dcd6f0] transition-colors duration-100 ${i % 2 === 0 ? "bg-[#E9E9E9]" : "bg-[#f0f0f0]"}`}
                                 >
                                     {row.getVisibleCells().map((cell) => (
-                                        <td key={cell.id} className="p-[8px_10px] text-[0.82rem] text-[#3D3D3D] border-b border-[#d5d5d5] whitespace-nowrap">
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        <td key={cell.id} className="p-[8px_10px] text-[0.82rem] text-[#3D3D3D] border-b border-[#d5d5d5] overflow-hidden">
+                                            <div className="truncate whitespace-nowrap" title={typeof cell.getValue() === "string" ? cell.getValue() : undefined}>
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </div>
                                         </td>
                                     ))}
                                 </tr>

@@ -16,9 +16,9 @@ import { TasksPage, MisTareasPage } from "@/features/tasks";
 // Inst   → material devolutivo/consumible + préstamos (crear, editar, ver)
 // Inv    → solo visualización (list + visualize)
 
-const ADMIN_ONLY  = ["Admin"];
-const STAFF       = ["Admin", "Inst"];       // Admin + Instructor
-const ALL_USERS   = ["Admin", "Inst", "Inv"]; // todos los roles
+const ADMIN_ONLY  = ["Administrador"];
+const STAFF       = ["Administrador", "Instructor"];
+const ALL_USERS   = ["Administrador", "Instructor", "Invitado"];
 
 const r = (roles, element) => <RoleRoute roles={roles}>{element}</RoleRoute>;
 

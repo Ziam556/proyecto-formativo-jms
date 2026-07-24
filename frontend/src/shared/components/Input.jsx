@@ -5,6 +5,7 @@ export default function Input({
     type = "text",
     error,
     labelVariant = "light",
+    className: extraClassName = "",
     ...props
 }){
     const labelColor = error
@@ -55,6 +56,7 @@ export default function Input({
                         focus:ring-1
                         focus:ring-focus-ring
                         ${error ? "border-red-600" : "border-black"}
+                        ${extraClassName}
                     `}
                     {...props}
                 />

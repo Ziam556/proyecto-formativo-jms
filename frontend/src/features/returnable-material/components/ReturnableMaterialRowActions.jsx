@@ -41,7 +41,7 @@ export default function ReturnableMaterialRowActions({ material, onToggle }) {
             Visualizar
           </DropdownItem>
 
-          <DropdownItem onClick={() => navigate("/dashboard/returnable-material/edit")}>
+          <DropdownItem onClick={() => navigate("/dashboard/returnable-material/edit", { state: { materialId: material.id } })}>
             Editar
           </DropdownItem>
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Input, Button, Select, FileInput, Textarea, alertWarning, alertError } from "@/shared";
 import { buildReturnableStep4Schema } from "../schemas/returnableStep4Schema";
+import { FileText } from "lucide-react";
 
 const STATE_OPTIONS = [
   { value: "Disponible",    label: "Disponible" },
@@ -36,6 +37,10 @@ export default function CreateReturnable4({ formData, onSave, onBack }) {
   const handleSheetChange = (files) => {
     if (files.length > 0) {
       const file = files[0];
+      if (file.type !== "application/pdf") {
+        setErrors((prev) => ({ ...prev, materialTechnicalSheet: "Solo se permiten archivos PDF" }));
+        return;
+      }
       if (file.size > MAX_SHEET_MB * 1024 * 1024) {
         setErrors((prev) => ({ ...prev, materialTechnicalSheet: `El archivo supera los ${MAX_SHEET_MB}MB` }));
         return;
@@ -80,18 +85,35 @@ export default function CreateReturnable4({ formData, onSave, onBack }) {
         placeholder="Selecciona un estado"
       />
 
-      {/* Ficha técnica — PDF, PNG o Excel, máx 3 MB */}
+      {/* Ficha técnica — Solo PDF, máx 3 MB */}
       <div className="flex flex-col gap-1">
         <label className="text-sm font-medium text-text-primary">
           Ficha técnica <span className="text-red-400">*</span>
-          <span className="text-xs text-gray-400 ml-1">(PDF, PNG o Excel · máx 3MB)</span>
+          <span className="text-xs text-gray-400 ml-1">(Solo PDF · máx 3MB)</span>
         </label>
-        <FileInput
-          value={fields.materialTechnicalSheet}
-          onChange={handleSheetChange}
-          accept="application/pdf,image/png,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-          multiple={false}
-        />
+
+        {fields.materialTechnicalSheet?.length > 0 ? (
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-xs text-white/80">
+            <FileText size={14} className="shrink-0 text-cyan-400" />
+            <span className="truncate flex-1">{fields.materialTechnicalSheet[0].name}</span>
+            <button
+              type="button"
+              onClick={() => setFields((prev) => ({ ...prev, materialTechnicalSheet: [] }))}
+              className="shrink-0 text-red-400 hover:text-red-300 font-semibold px-1"
+              title="Eliminar archivo seleccionado"
+            >
+              Eliminar
+            </button>
+          </div>
+        ) : (
+          <FileInput
+            value={fields.materialTechnicalSheet}
+            onChange={handleSheetChange}
+            accept="application/pdf"
+            multiple={false}
+          />
+        )}
+
         {errors.materialTechnicalSheet && (
           <span className="text-red-500 text-xs">{errors.materialTechnicalSheet}</span>
         )}

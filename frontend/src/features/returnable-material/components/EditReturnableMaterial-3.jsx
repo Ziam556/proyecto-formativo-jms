@@ -48,7 +48,7 @@ export default function EditReturnableMaterial3({ formData = {}, onNext, onBack 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
       <Input labelVariant="dark"
-        label="Cuentadante"
+        label="Cuentadante (Nombre y apellido)"
         name="materialStoryTeller"
         placeholder="Nombre del cuentadante"
         value={fields.materialStoryTeller}
@@ -81,7 +81,7 @@ export default function EditReturnableMaterial3({ formData = {}, onNext, onBack 
         value={fields.materialTotalValue}
         onChange={() => {}}
         readOnly
-        style={{ opacity: 0.75, cursor: "not-allowed" }}
+        className="opacity-75 cursor-not-allowed"
         error={errors.materialTotalValue}
       />
       <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-4">

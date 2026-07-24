@@ -2,12 +2,19 @@ import { useState } from "react";
 import { z } from "zod";
 import { Input, Button, Select, FileInput, Switch, alertWarning, alertError  } from "@/shared";
 import { buildReturnableStep4Schema } from "../schemas/returnableStep4Schema";
+import { FileText } from "lucide-react";
 
 // En edición la ficha técnica es opcional (ya existe en el servidor)
 const buildEditStep4Schema = (isMuebles) =>
   buildReturnableStep4Schema(isMuebles).extend({
     materialTechnicalSheet: z.array(z.any()).optional(),
   });
+
+// Extrae solo el nombre de archivo de una ruta como "uploads/returnable/ficha.pdf"
+function sheetFileName(url) {
+  if (!url) return null;
+  return url.split("/").pop();
+}
 
 const STATE_OPTIONS = [
   { value: "Disponible",    label: "Disponible" },
@@ -22,8 +29,10 @@ const MAX_SHEET_MB = 3;
 
 export default function EditReturnableMaterial4({ formData = {}, onSave, onBack }) {
   const isMuebles = formData.materialCategory === "Muebles y enseres";
+  const currentSheetUrl = formData.materialTechnicalSheetUrl || null;
 
-  const [isEnabled, setIsEnabled] = useState(formData?.isEnabled ?? true);
+  const [isEnabled, setIsEnabled]   = useState(formData?.isEnabled ?? true);
+  const [sheetRemoved, setSheetRemoved] = useState(false);
 
   const [fields, setFields] = useState({
     materialState:          formData.materialState          || "",
@@ -43,9 +52,16 @@ export default function EditReturnableMaterial4({ formData = {}, onSave, onBack 
   };
 
   const handleSheetChange = (files) => {
-    if (files.length > 0 && files[0].size > MAX_SHEET_MB * 1024 * 1024) {
-      setErrors((prev) => ({ ...prev, materialTechnicalSheet: `El archivo supera los ${MAX_SHEET_MB}MB` }));
-      return;
+    if (files.length > 0) {
+      const file = files[0];
+      if (file.type !== "application/pdf") {
+        setErrors((prev) => ({ ...prev, materialTechnicalSheet: "Solo se permiten archivos PDF" }));
+        return;
+      }
+      if (file.size > MAX_SHEET_MB * 1024 * 1024) {
+        setErrors((prev) => ({ ...prev, materialTechnicalSheet: `El archivo supera los ${MAX_SHEET_MB}MB` }));
+        return;
+      }
     }
     setFields((prev) => ({ ...prev, materialTechnicalSheet: files }));
     setErrors((prev) => ({ ...prev, materialTechnicalSheet: "" }));
@@ -87,15 +103,50 @@ export default function EditReturnableMaterial4({ formData = {}, onSave, onBack 
 
       <div className="flex flex-col gap-1">
         <label className="text-sm font-medium text-text-primary">
-          Ficha técnica <span className="text-red-400">*</span>
-          <span className="text-xs text-gray-400 ml-1">(PDF, PNG o Excel · máx 3MB)</span>
+          Ficha técnica
+          <span className="text-xs text-black ml-1">(Solo PDF · máx 3MB · dejar vacío para mantener el actual)</span>
         </label>
-        <FileInput
-          value={fields.materialTechnicalSheet}
-          onChange={handleSheetChange}
-          accept="application/pdf,image/png,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-          multiple={false}
-        />
+
+        {/* Caso 1: el usuario acaba de seleccionar un archivo nuevo */}
+        {fields.materialTechnicalSheet?.length > 0 ? (
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-xs text-white/80">
+            <FileText size={14} className="shrink-0 text-cyan-400" />
+            <span className="truncate flex-1">{fields.materialTechnicalSheet[0].name}</span>
+            <button
+              type="button"
+              onClick={() => setFields((prev) => ({ ...prev, materialTechnicalSheet: [] }))}
+              className="shrink-0 text-red-400 hover:text-red-300 font-semibold px-1"
+            >
+              Eliminar
+            </button>
+          </div>
+
+        ) : currentSheetUrl && !sheetRemoved ? (
+          /* Caso 2: existe archivo en el servidor y no se ha eliminado → mostrar nombre + Eliminar, sin FileInput */
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-xs text-white/80">
+            <FileText size={14} className="shrink-0 text-cyan-400" />
+            <span className="truncate flex-1">
+              doc - <strong>{sheetFileName(currentSheetUrl)}</strong>
+            </span>
+            <button
+              type="button"
+              onClick={() => setSheetRemoved(true)}
+              className="shrink-0 text-red-400 hover:text-red-300 font-semibold px-1"
+            >
+              Eliminar
+            </button>
+          </div>
+
+        ) : (
+          /* Caso 3: sin archivo (nunca tuvo o el usuario eliminó) → mostrar selector */
+          <FileInput
+            value={fields.materialTechnicalSheet}
+            onChange={handleSheetChange}
+            accept="application/pdf"
+            multiple={false}
+          />
+        )}
+
         {errors.materialTechnicalSheet && (
           <span className="text-red-500 text-xs">{errors.materialTechnicalSheet}</span>
         )}

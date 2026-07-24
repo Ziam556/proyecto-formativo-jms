@@ -46,7 +46,7 @@ export default function EditReturnableMaterial1({ formData = {}, onNext, onCance
         value={fields.returnableMaterialId}
         onChange={() => {}}
         readOnly
-        style={{ opacity: 0.6, cursor: "not-allowed" }}
+        className="opacity-60 cursor-not-allowed"
         error={errors.returnableMaterialId}
       />
       <Input labelVariant="dark"

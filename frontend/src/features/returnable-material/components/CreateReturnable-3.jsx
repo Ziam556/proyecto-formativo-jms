@@ -49,7 +49,7 @@ export default function CreateReturnable3({ formData, onNext, onBack }) {
   return (
     <div className="grid grid-cols-[320px_320px] gap-6">
       <Input labelVariant="dark"
-        label="Cuentadante"
+        label="Cuentadante (Nombre y apellido)"
         name="materialStoryTeller"
         placeholder="Nombre del cuentadante"
         value={fields.materialStoryTeller}
@@ -85,7 +85,7 @@ export default function CreateReturnable3({ formData, onNext, onBack }) {
         placeholder="Se calcula automáticamente"
         value={fields.materialTotalValue}
         readOnly
-        style={{ opacity: 0.6, cursor: "not-allowed" }}
+        className="opacity-60 cursor-not-allowed"
         error={errors.materialTotalValue}
       />
 
