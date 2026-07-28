@@ -2,6 +2,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { authRepository } from "./auth.repository.js";
+import { accessRepository } from "../access/access.repository.js";
 import { transporter, MAIL_USER } from "../../config/mailer.js";
 
 function generateOtp() {
@@ -17,7 +18,9 @@ export const authService = {
         }
 
         // ── Cuenta deshabilitada ─────────────────────────────────────────────
-        if (user.is_enabled === false) {
+        // is_enabled puede ser null en filas previas a la migración; null se trata como habilitado.
+        const isEnabled = user.is_enabled ?? true;
+        if (!isEnabled) {
             throw new Error("Tu cuenta está deshabilitada. Comunícate con un administrador.");
         }
 
@@ -43,9 +46,8 @@ export const authService = {
             throw new Error(`Credenciales invalidas. Te quedan ${restantes} intento(s) antes del bloqueo.`);
         }
 
-        // Login exitoso — reiniciar intentos
-        await authRepository.resetLoginAttempts(email);
-
+        // ── Verificar vigencia de la cuenta ANTES de resetear intentos ────────
+        // Así un usuario con cuenta expirada no limpia su historial de intentos.
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
@@ -57,8 +59,18 @@ export const authService = {
             throw new Error("Tu cuenta ha vencido. Comunícate con un administrador.");
         }
 
+        // Login exitoso — reiniciar intentos solo cuando el acceso es definitivamente válido
+        await authRepository.resetLoginAttempts(email);
+
+        // Obtener permisos efectivos (grupo + individuales) para incluirlos en el token
+        const permissions = await accessRepository.getUserPermissions(user.user_email);
+
         const token = jwt.sign(
-            { email: user.user_email, userGroup: user.user_group },
+            {
+                email:       user.user_email,
+                userGroup:   user.user_group,
+                permissions, // codenames: ["create_user", "list_loan", ...]
+            },
             process.env.JWT_SECRET,
             { expiresIn: process.env.JWT_EXPIRES },
         );

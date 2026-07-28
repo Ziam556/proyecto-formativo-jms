@@ -1,5 +1,5 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import { AuthLayout, DashboardLayout, ProtectedRoute, RoleRoute } from "@/shared";
+import { AuthLayout, DashboardLayout, ProtectedRoute, PermissionRoute } from "@/shared";
 import { Login, ForgotPasswordPage } from "@/features/auth";
 import { UserPage, CreateUserPage, ListUserPage, ViewUserPage, EditUserPage, UserProfilePage } from "@/features/users";
 import { HomePage } from "@/features/home";
@@ -11,16 +11,11 @@ import { BrandsPage, CreateBrandPage } from "@/features/brands";
 import { LoansPage, CreateLoansPage, ListWeLendAssetsPage, ViewLoansPage, EditLoansPage, ReturnLoansPage } from "@/features/loans";
 import { TasksPage, MisTareasPage } from "@/features/tasks";
 
-// Permisos por módulo:
-// Admin  → todo
-// Inst   → material devolutivo/consumible + préstamos (crear, editar, ver)
-// Inv    → solo visualización (list + visualize)
-
-const ADMIN_ONLY  = ["Administrador"];
-const STAFF       = ["Administrador", "Instructor"];
-const ALL_USERS   = ["Administrador", "Instructor", "Invitado"];
-
-const r = (roles, element) => <RoleRoute roles={roles}>{element}</RoleRoute>;
+// Helpers de rutas protegidas:
+// p(codename)  → requiere permiso específico del JWT (Administrador siempre pasa)
+// adm(element) → exclusivo para Administrador, sin importar permisos asignados
+const p   = (permission, element) => <PermissionRoute permission={permission}>{element}</PermissionRoute>;
+const adm = (element)             => <PermissionRoute adminOnly>{element}</PermissionRoute>;
 
 const router = createBrowserRouter([
     {
@@ -48,44 +43,44 @@ const router = createBrowserRouter([
             { path: "userpage/profile",  element: <UserProfilePage /> },
             { path: "mis-tareas",        element: <MisTareasPage /> },
 
-            // ── Gestión de usuarios (solo Admin) ─────────────────────────────
-            { path: "userpage",             element: r(ADMIN_ONLY, <UserPage />) },
-            { path: "userpage/create",      element: r(ADMIN_ONLY, <CreateUserPage />) },
-            { path: "userpage/list",        element: r(ADMIN_ONLY, <ListUserPage />) },
-            { path: "userpage/:id/view",    element: r(ADMIN_ONLY, <ViewUserPage />) },
-            { path: "userpage/edit",        element: r(ADMIN_ONLY, <EditUserPage />) },
+            // ── Gestión de usuarios ───────────────────────────────────────────
+            { path: "userpage",             element: p("list_user",    <UserPage />) },
+            { path: "userpage/create",      element: p("create_user",  <CreateUserPage />) },
+            { path: "userpage/list",        element: p("list_user",    <ListUserPage />) },
+            { path: "userpage/:id/view",    element: p("list_user",    <ViewUserPage />) },
+            { path: "userpage/edit",        element: p("edit_user",    <EditUserPage />) },
 
             // ── Material devolutivo ───────────────────────────────────────────
-            { path: "returnable-material",          element: r(STAFF,     <ReturnableMaterialPage />) },
-            { path: "returnable-material/list",     element: r(ALL_USERS, <ListReturnableMaterialPage />) },
-            { path: "returnable-material/create",   element: r(STAFF,     <CreateReturnableMaterialPage />) },
-            { path: "returnable-material/edit",     element: r(STAFF,     <EditReturnableMaterialPage />) },
-            { path: "returnable-material/visualize",element: r(ALL_USERS, <ViewReturnableMaterialPage />) },
+            { path: "returnable-material",           element: p("list_returnable",   <ReturnableMaterialPage />) },
+            { path: "returnable-material/list",      element: p("list_returnable",   <ListReturnableMaterialPage />) },
+            { path: "returnable-material/create",    element: p("create_returnable", <CreateReturnableMaterialPage />) },
+            { path: "returnable-material/edit",      element: p("edit_returnable",   <EditReturnableMaterialPage />) },
+            { path: "returnable-material/visualize", element: p("view_returnable",   <ViewReturnableMaterialPage />) },
 
             // ── Material consumible ───────────────────────────────────────────
-            { path: "consumable-material",          element: r(STAFF,     <ConsumableMaterialPage />) },
-            { path: "consumable-material/create",   element: r(STAFF,     <CreateConsumableMaterialPage />) },
-            { path: "consumable-material/list",     element: r(ALL_USERS, <ListConsumableMaterialPage />) },
-            { path: "consumable-material/visualize",element: r(ALL_USERS, <ViewConsumableMaterialPage />) },
-            { path: "consumable-material/edit",     element: r(STAFF,     <EditConsumableMaterialPage />) },
+            { path: "consumable-material",           element: p("list_consumable",   <ConsumableMaterialPage />) },
+            { path: "consumable-material/create",    element: p("create_consumable", <CreateConsumableMaterialPage />) },
+            { path: "consumable-material/list",      element: p("list_consumable",   <ListConsumableMaterialPage />) },
+            { path: "consumable-material/visualize", element: p("view_consumable",   <ViewConsumableMaterialPage />) },
+            { path: "consumable-material/edit",      element: p("edit_consumable",   <EditConsumableMaterialPage />) },
 
             // ── Préstamos ─────────────────────────────────────────────────────
-            { path: "loans",            element: r(STAFF,     <LoansPage />) },
-            { path: "loans/create",     element: r(STAFF,     <CreateLoansPage />) },
-            { path: "loans/list",       element: r(ALL_USERS, <ListWeLendAssetsPage />) },
-            { path: "loans/visualize",  element: r(ALL_USERS, <ViewLoansPage />) },
-            { path: "loans/edit",       element: r(STAFF,     <EditLoansPage />) },
-            { path: "loans/return",     element: r(STAFF,     <ReturnLoansPage />) },
+            { path: "loans",            element: p("list_loan",         <LoansPage />) },
+            { path: "loans/create",     element: p("create_loan",       <CreateLoansPage />) },
+            { path: "loans/list",       element: p("list_loan",         <ListWeLendAssetsPage />) },
+            { path: "loans/visualize",  element: p("view_loan",         <ViewLoansPage />) },
+            { path: "loans/edit",       element: p("edit_loan",         <EditLoansPage />) },
+            { path: "loans/return",     element: p("return_returnable", <ReturnLoansPage />) },
 
-            // ── Configuración (solo Admin) ────────────────────────────────────
-            { path: "brands",                        element: r(ADMIN_ONLY, <BrandsPage />) },
-            { path: "config/brands",                 element: r(ADMIN_ONLY, <CreateBrandPage />) },
-            { path: "config",                        element: r(ADMIN_ONLY, <ConfigPage />) },
-            { path: "config/groups",                 element: r(ADMIN_ONLY, <GroupsListPage />) },
-            { path: "config/groups/create",          element: r(ADMIN_ONLY, <CreateGroupPage />) },
-            { path: "config/groups/edit/:id",        element: r(ADMIN_ONLY, <EditGroupPage />) },
-            { path: "config/groups/:id/add-users",   element: r(ADMIN_ONLY, <AddUsersToGroupPage />) },
-            { path: "config/tasks",                  element: r(ADMIN_ONLY, <TasksPage />) },
+            // ── Configuración (solo Administrador) ────────────────────────────
+            { path: "brands",                       element: adm(<BrandsPage />) },
+            { path: "config/brands",                element: adm(<CreateBrandPage />) },
+            { path: "config",                       element: adm(<ConfigPage />) },
+            { path: "config/groups",                element: adm(<GroupsListPage />) },
+            { path: "config/groups/create",         element: adm(<CreateGroupPage />) },
+            { path: "config/groups/edit/:id",       element: adm(<EditGroupPage />) },
+            { path: "config/groups/:id/add-users",  element: adm(<AddUsersToGroupPage />) },
+            { path: "config/tasks",                 element: adm(<TasksPage />) },
         ],
     },
 ]);

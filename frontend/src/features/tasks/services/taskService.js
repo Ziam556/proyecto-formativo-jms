@@ -79,3 +79,13 @@ export async function retryTask(taskId) {
   if (!res.ok) throw new Error(json.error || "Error al reintentar la tarea");
   return json;
 }
+
+export async function deleteTask(taskId) {
+  const res  = await fetch(`${API_URL}/${taskId}`, {
+    method:  "DELETE",
+    headers: getAuthHeaders(),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error || "Error al eliminar la tarea");
+  return json;
+}

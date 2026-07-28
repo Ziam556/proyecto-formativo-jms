@@ -1,4 +1,4 @@
-import { Undo2, EllipsisVertical } from "lucide-react";
+import { Undo2, EllipsisVertical, Ban } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
   Dropdown,
@@ -6,7 +6,11 @@ import {
   DropdownContent,
   DropdownItem,
   IconButton,
+  alertConfirm,
+  alertSuccess,
+  alertError,
 } from "@/shared";
+import { cancelLoan } from "../services/loanService";
 
 // ── Chip de tipo de material ─────────────────────────────────────────────────
 const TYPE_STYLES = {
@@ -100,9 +104,26 @@ function StatusChip({ value }) {
 }
 
 // ── Celda de acciones ────────────────────────────────────────────────────────
-function AccionesCell({ row }) {
-  const navigate = useNavigate();
+function AccionesCell({ row, onRefresh }) {
+  const navigate   = useNavigate();
   const yaDevuelto = row.status === "devuelto";
+  const cancelado  = row.status === "cancelado";
+  const activo     = row.status === "activo";
+
+  const handleCancel = async () => {
+    const result = await alertConfirm(
+      "¿Cancelar préstamo?",
+      `¿Confirmas que deseas cancelar el préstamo #${row.id}? Esta acción no se puede deshacer.`
+    );
+    if (!result.isConfirmed) return;
+    try {
+      await cancelLoan(row.id);
+      await alertSuccess("Cancelado", `El préstamo #${row.id} fue cancelado correctamente.`);
+      if (onRefresh) onRefresh(); else navigate(0);
+    } catch (err) {
+      await alertError("Error", err.message || "No se pudo cancelar el préstamo.");
+    }
+  };
 
   return (
     <div className="flex items-center gap-2">
@@ -113,8 +134,8 @@ function AccionesCell({ row }) {
           </IconButton>
         </DropdownTrigger>
 
-        <DropdownContent className="right-0 w-40 bg-[#1e1230]">
-          {!yaDevuelto && (
+        <DropdownContent className="right-0 w-44 bg-[#1e1230]">
+          {activo && (
             <DropdownItem onClick={() => navigate("/dashboard/loans/return", { state: { loan: row } })}>
               <span className="inline-flex items-center gap-[5px]">
                 <Undo2 size={13} />
@@ -127,9 +148,20 @@ function AccionesCell({ row }) {
             Visualizar
           </DropdownItem>
 
-          <DropdownItem onClick={() => navigate("/dashboard/loans/edit")}>
-            Editar
-          </DropdownItem>
+          {!yaDevuelto && !cancelado && (
+            <DropdownItem onClick={() => navigate("/dashboard/loans/edit", { state: { loan: row } })}>
+              Editar
+            </DropdownItem>
+          )}
+
+          {activo && (
+            <DropdownItem onClick={handleCancel} className="text-red-400 hover:text-red-300">
+              <span className="inline-flex items-center gap-[5px]">
+                <Ban size={13} />
+                Cancelar
+              </span>
+            </DropdownItem>
+          )}
         </DropdownContent>
       </Dropdown>
     </div>
@@ -137,7 +169,7 @@ function AccionesCell({ row }) {
 }
 
 // ── Definición de columnas ────────────────────────────────────────────────────
-export const listLoansColumns = [
+const baseLoansColumns = [
   {
     id: "id",
     label: "ID Préstamo",
@@ -176,6 +208,10 @@ export const listLoansColumns = [
     width: "11%",
     renderCell: (row) => <StatusChip value={row.status} />,
   },
+];
+
+export const listLoansColumns = [
+  ...baseLoansColumns,
   {
     id: "accion",
     label: "Acción",
@@ -184,3 +220,16 @@ export const listLoansColumns = [
     renderCell: (row) => <AccionesCell row={row} />,
   },
 ];
+
+export function getListLoansColumns(onRefresh) {
+  return [
+    ...baseLoansColumns,
+    {
+      id: "accion",
+      label: "Acción",
+      accessor: null,
+      width: "16%",
+      renderCell: (row) => <AccionesCell row={row} onRefresh={onRefresh} />,
+    },
+  ];
+}

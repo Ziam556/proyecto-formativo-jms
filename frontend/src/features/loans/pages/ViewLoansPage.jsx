@@ -8,15 +8,12 @@ export default function ViewLoansPage() {
   const loan      = location.state?.loan ?? null;
 
   return (
-
     <div className="min-h-full px-6 py-5">
-
       <ViewLoans
         loan={loan}
-        onCancel={() => navigate("/dashboard/loans", { state: { loan } })}
+        onCancel={() => navigate("/dashboard/loans")}
+        onEdit={(loanData) => navigate("/dashboard/loans/edit", { state: { loan: loanData } })}
       />
-
     </div>
-
   );
 }

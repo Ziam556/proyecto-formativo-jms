@@ -1,4 +1,4 @@
-// Definición de columnas para la tabla de material devolutivo.
+// Definición de columnas para la tabla de material de consumo.
 // Se usa con el componente DataTable.
 // format: 'currency' | 'state' | 'link'
 // accessor: clave del objeto de datos

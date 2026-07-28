@@ -82,4 +82,15 @@ export const tasksController = {
       res.status(status).json({ error: err.message });
     }
   },
+
+  async delete(req, res) {
+    try {
+      const deleted = await tasksService.delete(Number(req.params.id));
+      res.status(200).json({ message: "Tarea eliminada correctamente", task: deleted });
+    } catch (err) {
+      console.error("ERROR delete task:", err);
+      const status = err.message.includes("no encontrada") ? 404 : 500;
+      res.status(status).json({ error: err.message });
+    }
+  },
 };

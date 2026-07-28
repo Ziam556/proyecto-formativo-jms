@@ -72,3 +72,14 @@ export async function updateGroup(groupId, groupName, permissionCodenames) {
     if (!response.ok) throw new Error(data.error || "Error actualizando grupo");
     return data;
 }
+
+export async function deleteGroup(groupId) {
+    const token    = sessionStorage.getItem("token");
+    const response = await fetch(`/api/groups/${groupId}`, {
+        method:  "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Error al eliminar el grupo");
+    return data;
+}

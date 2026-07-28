@@ -1,8 +1,8 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { getUsers } from "../services/userService.js";
 import { normalizeUsers } from "../utils/normalizeUser.js";
 import { ClearFiltersButton, DataTable, StatsPills, ReportDropdown, BackButton, Input, Select } from "@/shared";
-import { userColumns } from "../table/userColumns.jsx";
+import { getUserColumns } from "../table/userColumns.jsx";
 import { userReportFields } from "../reports/config/userReportFields.js";
 import { generateUserReport } from "../reports/services/generateUserReport.js";
 
@@ -14,7 +14,7 @@ export default function ListUserPage() {
     const [loading, setLoading]   = useState(true);
     const [loadError, setLoadError] = useState(null);
 
-    useEffect(() => {
+    const loadUsers = useCallback(() => {
         let active = true;
         setLoading(true);
         getUsers()
@@ -29,6 +29,8 @@ export default function ListUserPage() {
         return () => { active = false; };
     }, []);
 
+    useEffect(() => { return loadUsers(); }, [loadUsers]);
+
     // Filtros
     const [filters, setFilters] = useState({
         name:         "",
@@ -41,8 +43,9 @@ export default function ListUserPage() {
     const [rowSelection, setRowSelection] = useState({});
 
     // Columnas activas del reporte
+    const columns = getUserColumns(loadUsers);
     const [reportCols, setReportCols] = useState(
-        Object.fromEntries(userColumns.map((c) => [c.id, true]))
+        Object.fromEntries(columns.map((c) => [c.id, true]))
     );
 
     // Datos filtrados
@@ -56,16 +59,13 @@ export default function ListUserPage() {
         });
     }, [filters, users]);
 
-    // Stats pills: total + conteo por grupo asignado
+    // Stats pills: total + conteo por grupos predefinidos únicamente
+    const GRUPOS_PREDEFINIDOS = ["Administrador", "Instructor", "Invitado"];
     const statsPills = useMemo(() => {
         const pills = [{ label: "Total", count: users.length, color: "#e2e8f0" }];
-        const groupCounts = {};
-        users.forEach((u) => {
-            if (!u.group) return;
-            groupCounts[u.group] = (groupCounts[u.group] ?? 0) + 1;
-        });
-        Object.entries(groupCounts).forEach(([group, count]) => {
-            pills.push({ label: group, count, color: "#2563eb" });
+        GRUPOS_PREDEFINIDOS.forEach((grupo) => {
+            const count = users.filter((u) => u.group === grupo).length;
+            pills.push({ label: grupo, count, color: "#2563eb" });
         });
         return pills;
     }, [users]);
@@ -197,7 +197,7 @@ export default function ListUserPage() {
             ) : (
                 <DataTable
                     data={filtered}
-                    columns={userColumns}
+                    columns={columns}
                     rowSelection={rowSelection}
                     onRowSelectionChange={setRowSelection}
                     onReportColsChange={setReportCols}

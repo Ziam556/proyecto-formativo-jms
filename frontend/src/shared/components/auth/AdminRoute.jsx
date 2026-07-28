@@ -32,19 +32,19 @@ export default function AdminRoute() {
             return;
         }
 
-        const payload  = getTokenPayload(token);
-        const userType = payload?.userType ?? "";
+        const payload   = getTokenPayload(token);
+        const userGroup = payload?.userGroup ?? "";
 
-        if (userType === "Admin") {
+        if (userGroup === "Administrador") {
             setAllowed(true);
             return;
         }
 
-        // No es admin → mostrar modal y regresar
+        // No es Administrador → mostrar modal y regresar
         Swal.fire({
             icon:               "error",
             title:              "Acceso denegado",
-            text:               "No tienes permisos para acceder a este módulo. Se requiere tipo de usuario Administrador.",
+            text:               "No tienes permisos para acceder a este módulo. Se requiere grupo Administrador.",
             confirmButtonText:  "Entendido",
             iconColor:          "#f87171",
             allowOutsideClick:  false,

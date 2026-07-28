@@ -59,7 +59,7 @@ pool.on("connect", () => {
 // Evento que se dispara cuando ocurre un error en el pool
 // Importante para monitoreo y diagnóstico de fallos
 pool.on("error", (err) => {
-  console.error("Error en la conexión con PostgreSQL", err);
-});
+    console.error("Error en la conexión con PostgreSQL", err);
+  });
 
 

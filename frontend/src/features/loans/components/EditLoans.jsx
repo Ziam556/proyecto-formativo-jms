@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { Input, Button, BackButton, DataTable, DatePicker, Textarea, alertWarning, alertConfirm } from "@/shared";
+import { Input, Button, BackButton, DataTable, DatePicker, Textarea, alertWarning, alertConfirm, alertError } from "@/shared";
 import { loansColumns } from "../table/loansColumns";
 import { getMaterialsForLoan } from "../services/loanService";
 
@@ -24,7 +24,7 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
   useEffect(() => {
     getMaterialsForLoan()
       .then(setMaterials)
-      .catch(console.error);
+      .catch(() => alertError("Error", "No se pudieron cargar los materiales."));
   }, []);
 
   const filtered = useMemo(() => {
@@ -48,7 +48,6 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
 
   const handleSave = async () => {
     const newErrors = {};
-    if (!fields.loansId)         newErrors.loansId         = "El ID es requerido";
     if (!fields.fichaGrupo)      newErrors.fichaGrupo      = "La ficha es requerida";
     if (!fields.fechaSalida)     newErrors.fechaSalida     = "La fecha de salida es requerida";
     if (!fields.usuarioSolicita) newErrors.usuarioSolicita = "El usuario es requerido";
@@ -88,10 +87,10 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
           <Input
             label="ID Préstamo"
             name="loansId"
-            placeholder="ID del préstamo"
             value={fields.loansId}
-            onChange={handleChange}
-            error={errors.loansId}
+            onChange={() => {}}
+            readOnly
+            className="opacity-60 cursor-not-allowed"
           />
         </div>
 

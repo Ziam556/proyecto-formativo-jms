@@ -84,4 +84,15 @@ export const returnableMaterialController = {
     }
   },
 
+  async delete(req, res) {
+    try {
+      const deleted = await returnableMaterialService.delete(req.params.id);
+      res.status(200).json({ message: "Material eliminado correctamente", material: deleted });
+    } catch (err) {
+      console.error("ERROR delete returnableMaterial:", err);
+      const status = err.message.includes("no encontrado") ? 404 : 500;
+      res.status(status).json({ error: err.message });
+    }
+  },
+
 };

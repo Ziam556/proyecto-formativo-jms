@@ -138,6 +138,15 @@ export const consumableMaterialRepository = {
     return result.rows[0] ?? null;
   },
 
+  async delete(id) {
+    const result = await pool.query(
+      `DELETE FROM public.consumable_material WHERE consumable_material_id = $1
+       RETURNING consumable_material_id, material_element_name`,
+      [id]
+    );
+    return result.rows[0] ?? null;
+  },
+
   // Cambiar estado enabled de un material de consumo
   async toggleEnabled(id, enabled) {
     const result = await pool.query(

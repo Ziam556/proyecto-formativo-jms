@@ -3,11 +3,12 @@ import { transporter, MAIL_USER } from "../../config/mailer.js";
 
 // ── Helpers de email ─────────────────────────────────────────────────────────
 
-async function sendLoanCreatedEmail(loan) {
-    if (!loan?.requesting_user) return;
+async function sendLoanCreatedEmail(loan, notificationEmail) {
+    const recipient = notificationEmail || loan?.requesting_user;
+    if (!recipient) return;
     await transporter.sendMail({
         from:    `"Sistema de Inventario SENA" <${MAIL_USER}>`,
-        to:      loan.requesting_user,
+        to:      recipient,
         subject: `Préstamo #${loan.loan_id} creado`,
         html: `
             <div style="font-family:sans-serif;max-width:520px;margin:auto;padding:32px;background:#0e123e;border-radius:16px;color:#fff;">
@@ -28,11 +29,11 @@ async function sendLoanCreatedEmail(loan) {
     }).catch((err) => console.error("Error enviando email de préstamo creado:", err));
 }
 
-async function sendLoanUpdatedEmail(loan) {
-    if (!loan?.requesting_user) return;
+async function sendLoanUpdatedEmail(loan, recipientEmail) {
+    if (!recipientEmail) return;
     await transporter.sendMail({
         from:    `"Sistema de Inventario SENA" <${MAIL_USER}>`,
-        to:      loan.requesting_user,
+        to:      recipientEmail,
         subject: `Préstamo #${loan.loan_id} actualizado`,
         html: `
             <div style="font-family:sans-serif;max-width:520px;margin:auto;padding:32px;background:#0e123e;border-radius:16px;color:#fff;">
@@ -54,10 +55,21 @@ async function sendLoanUpdatedEmail(loan) {
 
 export const loansService = {
     async create(loanData) {
-        const { items = [], ...loanFields } = loanData;
+        const { items = [], notificationEmail, ...loanFields } = loanData;
         const loan = await loansRepository.create(loanFields);
         await loansRepository.createItems(loan.loan_id, items);
-        sendLoanCreatedEmail(loan); // no-await: no bloquea la respuesta
+
+        // Actualizar inventario: descontar stock al salir el préstamo
+        for (const item of items) {
+            if (!item.materialId) continue;
+            if (item.materialType === "M.C") {
+                await loansRepository.decrementConsumableStock(item.materialId, item.amount ?? 1);
+            } else if (item.materialType === "M.D") {
+                await loansRepository.disableReturnableMaterial(item.materialId);
+            }
+        }
+
+        sendLoanCreatedEmail(loan, notificationEmail); // no-await: no bloquea la respuesta
         return loan;
     },
 
@@ -73,12 +85,56 @@ export const loansService = {
         const loan = await loansRepository.findById(loanId);
         if (!loan) throw new Error("Préstamo no encontrado");
         const updated = await loansRepository.update(loanId, fields);
-        sendLoanUpdatedEmail(updated); // no-await: no bloquea la respuesta
+
+        // Buscar el email real del cuentadante para notificar correctamente.
+        // requesting_user almacena el nombre, no el email, así que se busca por nombre o documento.
+        loansRepository
+            .findUserEmailByNameOrDoc(updated.requesting_user)
+            .then((email) => sendLoanUpdatedEmail(updated, email))
+            .catch((err) => console.error("Error buscando email para notificación:", err));
+
         return updated;
     },
 
     async updateStatus(loanId, status) {
+        // Al cancelar un préstamo, restaurar el inventario de cada ítem
+        if (status === "cancelado") {
+            const loan = await loansRepository.findById(loanId);
+            if (loan?.items?.length) {
+                for (const item of loan.items) {
+                    if (item.material_type === "M.C" && item.consumable_material_id) {
+                        // Devolver la cantidad completa (nada se consumió físicamente)
+                        await loansRepository.restoreConsumableStock(
+                            item.consumable_material_id,
+                            item.amount
+                        );
+                    } else if (item.material_type === "M.D" && item.returnable_material_id) {
+                        await loansRepository.enableReturnableMaterial(item.returnable_material_id);
+                    }
+                }
+            }
+        }
         return loansRepository.updateStatus(loanId, status);
+    },
+
+    async delete(loanId) {
+        // Restaurar inventario antes de eliminar (igual que al cancelar)
+        const loan = await loansRepository.findById(loanId);
+        if (!loan) throw new Error("Préstamo no encontrado");
+
+        if (loan.items?.length) {
+            for (const item of loan.items) {
+                if (item.material_type === "M.C" && item.consumable_material_id) {
+                    await loansRepository.restoreConsumableStock(item.consumable_material_id, item.amount);
+                } else if (item.material_type === "M.D" && item.returnable_material_id) {
+                    await loansRepository.enableReturnableMaterial(item.returnable_material_id);
+                }
+            }
+        }
+
+        const deleted = await loansRepository.delete(loanId);
+        if (!deleted) throw new Error("Préstamo no encontrado");
+        return deleted;
     },
 
     async registerReturn(loanId, items) {
@@ -92,6 +148,28 @@ export const loansService = {
                 observations:   it.observations ?? null,
             }))
         );
+
+        // Actualizar inventario con los materiales físicamente devueltos
+        const itemIds  = items.map((it) => it.loanItemId);
+        const refs     = await loansRepository.getMaterialRefsByItemIds(itemIds);
+        for (const ref of refs) {
+            const returnData = items.find((it) => it.loanItemId === ref.loan_item_id);
+            if (!returnData) continue;
+
+            if (ref.material_type === "M.C" && ref.consumable_material_id) {
+                // Sumar sobrante reportado al stock del consumible
+                await loansRepository.restoreConsumableStock(
+                    ref.consumable_material_id,
+                    returnData.leftoverAmount ?? 0
+                );
+            } else if (ref.material_type === "M.D" && ref.returnable_material_id) {
+                // Actualizar estado del devolutivo y re-habilitarlo (salvo pérdida)
+                await loansRepository.restoreReturnableMaterial(
+                    ref.returnable_material_id,
+                    returnData.state ?? "Bueno"
+                );
+            }
+        }
 
         const { total, returned } = await loansRepository.countItemsAndReturns(loanId);
 

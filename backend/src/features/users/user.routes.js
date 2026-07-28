@@ -23,8 +23,11 @@ router.get("/:id/permissions", authenticateToken, userController.getUserPermissi
 // POST /api/users/:id/permissions → asignar permisos individuales
 router.post("/:id/permissions", authenticateToken, userController.assignPermissions);
 
-// PUT /api/users/:id → actualizar usuario por número de documento
-router.put("/:id", authenticateToken, upload.single("userImage"), userController.update);
+// PUT    /api/users/:id → actualizar usuario por número de documento
+router.put("/:id",    authenticateToken, upload.single("userImage"), userController.update);
+
+// DELETE /api/users/:id → eliminar usuario por número de documento
+router.delete("/:id", authenticateToken, userController.delete);
 
 // Exportamos el router para ser registrado en la aplicación principal
 // (ej: app.use("/users", router))

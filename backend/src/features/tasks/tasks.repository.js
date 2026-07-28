@@ -147,6 +147,14 @@ export const tasksRepository = {
     await pool.query(`DELETE FROM public.task_evidence WHERE task_id = $1`, [taskId]);
   },
 
+  async delete(taskId) {
+    const result = await pool.query(
+      `DELETE FROM public.tasks WHERE task_id = $1 RETURNING task_id, task_name`,
+      [taskId]
+    );
+    return result.rows[0] ?? null;
+  },
+
   // ── Obtener doc del usuario por email ────────────────────────
   async getDocByEmail(email) {
     const result = await pool.query(

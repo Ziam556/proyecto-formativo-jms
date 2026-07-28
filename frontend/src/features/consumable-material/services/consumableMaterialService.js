@@ -119,3 +119,13 @@ export async function toggleConsumableMaterial(id, enabled) {
   }
   return result;
 }
+export async function deleteConsumableMaterial(id) {
+  const token    = sessionStorage.getItem("token");
+  const response = await fetch(`${API_URL}/${id}`, {
+    method:  "DELETE",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error || "Error al eliminar el material");
+  return result;
+}

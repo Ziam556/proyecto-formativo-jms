@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/server.js",
-    "migrate": "node src/scripts/migrate.js"
+    "migrate": "echo \"Las migraciones se aplican manualmente desde database/migrations/\""
   },
   "keywords": [],
   "author": "",

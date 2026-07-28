@@ -1,18 +1,22 @@
 import { useNavigate } from "react-router-dom";
 import { Users, Package, ShoppingCart, Handshake, ArrowLeft } from "lucide-react";
-import { MenuButton } from "@/shared";
+import { MenuButton, usePermissions } from "@/shared";
 import { handleLogout } from "@/features/auth/services/logoutService";
 
-// Opciones del menú principal — cada item lleva a un módulo del sistema
-const menuItems = [
-  { label: "Gestion de Usuarios", icon: Users, to: "/dashboard/userpage" },
-  { label: "Material Devolutivo", icon: Package, to: "/dashboard/returnable-material" },
-  { label: "Material Consumo", icon: ShoppingCart, to: "/dashboard/consumable-material" },
-  { label: "Prestamo", icon: Handshake, to: "/dashboard/loans" },
+// Módulos disponibles — cada uno requiere un permiso mínimo para aparecer
+const ALL_MODULES = [
+  { label: "Gestion de Usuarios", icon: Users,         to: "/dashboard/userpage",             permission: "list_user" },
+  { label: "Material Devolutivo", icon: Package,        to: "/dashboard/returnable-material",  permission: "list_returnable" },
+  { label: "Material Consumo",    icon: ShoppingCart,   to: "/dashboard/consumable-material",  permission: "list_consumable" },
+  { label: "Prestamo",            icon: Handshake,      to: "/dashboard/loans",                permission: "list_loan" },
 ];
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const { hasPermission } = usePermissions();
+
+  // Mostrar solo los módulos a los que el usuario tiene acceso
+  const menuItems = ALL_MODULES.filter((m) => hasPermission(m.permission));
 
   return (
     /* Contenedor principal — ocupa el alto disponible y centra la tarjeta */

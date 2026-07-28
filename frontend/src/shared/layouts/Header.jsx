@@ -4,6 +4,7 @@ import { IconButton, Dropdown, DropdownTrigger, DropdownContent, DropdownItem } 
 import logo from "@/assets/images/logo-1.png";
 import { CircleUserRound, Bell } from "lucide-react";
 import { handleLogout } from "@/features/auth/services/logoutService";
+import { usePermissions } from "@/shared/hooks/usePermissions";
 import {
   getMyNotifications,
   getUnreadCount,
@@ -94,7 +95,8 @@ function NotificationPanel({ notifications, onMarkAll, onMarkOne, onClose }) {
 // ── Header ────────────────────────────────────────────────────────────────────
 
 export default function Header() {
-  const navigate = useNavigate();
+  const navigate      = useNavigate();
+  const { isAdmin }   = usePermissions();
 
   const [showNotifs, setShowNotifs]       = useState(false);
   const [notifications, setNotifications] = useState([]);
@@ -226,11 +228,13 @@ export default function Header() {
                   Mis tareas
                 </Link>
               </DropdownItem>
-              <DropdownItem>
-                <Link to="/dashboard/config" className="block w-full">
-                  Configuración
-                </Link>
-              </DropdownItem>
+              {isAdmin && (
+                <DropdownItem>
+                  <Link to="/dashboard/config" className="block w-full">
+                    Configuración
+                  </Link>
+                </DropdownItem>
+              )}
             </DropdownContent>
           </Dropdown>
         </div>

@@ -90,4 +90,15 @@ export const userController = {
       res.status(status).json({ error: err.message });
     }
   },
+
+  async delete(req, res) {
+    try {
+      const deleted = await userService.deleteUser(req.params.id);
+      res.status(200).json({ message: "Usuario eliminado correctamente", user: deleted });
+    } catch (err) {
+      console.error("ERROR delete user:", err);
+      const status = err.message.includes("no encontrado") ? 404 : 500;
+      res.status(status).json({ error: err.message });
+    }
+  },
 };

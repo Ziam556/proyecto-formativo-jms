@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { z } from "zod";
-import { Input, Button, Select, FileInput, Switch, alertWarning, alertError  } from "@/shared";
+import { Input, Textarea, Button, Select, FileInput, Switch, alertWarning, alertError  } from "@/shared";
 import { buildReturnableStep4Schema } from "../schemas/returnableStep4Schema";
 import { FileText } from "lucide-react";
 
@@ -152,7 +152,7 @@ export default function EditReturnableMaterial4({ formData = {}, onSave, onBack 
         )}
       </div>
 
-      <Input labelVariant="dark"
+      <Textarea
         label="Descripción"
         name="materialDescription"
         placeholder="Escribe la descripción"
