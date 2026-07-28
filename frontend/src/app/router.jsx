@@ -44,38 +44,41 @@ const router = createBrowserRouter([
             { path: "mis-tareas",        element: <MisTareasPage /> },
 
             // ── Gestión de usuarios ───────────────────────────────────────────
-            { path: "userpage",             element: p("list_user",    <UserPage />) },
+            { path: "userpage",             element: p(["list_user","create_user","edit_user","toggle_user","report_user"], <UserPage />) },
             { path: "userpage/create",      element: p("create_user",  <CreateUserPage />) },
             { path: "userpage/list",        element: p("list_user",    <ListUserPage />) },
             { path: "userpage/:id/view",    element: p("list_user",    <ViewUserPage />) },
             { path: "userpage/edit",        element: p("edit_user",    <EditUserPage />) },
 
             // ── Material devolutivo ───────────────────────────────────────────
-            { path: "returnable-material",           element: p("list_returnable",   <ReturnableMaterialPage />) },
+            { path: "returnable-material",           element: p(["list_returnable","create_returnable","edit_returnable","view_returnable","toggle_returnable","report_returnable","return_returnable"], <ReturnableMaterialPage />) },
             { path: "returnable-material/list",      element: p("list_returnable",   <ListReturnableMaterialPage />) },
             { path: "returnable-material/create",    element: p("create_returnable", <CreateReturnableMaterialPage />) },
             { path: "returnable-material/edit",      element: p("edit_returnable",   <EditReturnableMaterialPage />) },
             { path: "returnable-material/visualize", element: p("view_returnable",   <ViewReturnableMaterialPage />) },
 
             // ── Material consumible ───────────────────────────────────────────
-            { path: "consumable-material",           element: p("list_consumable",   <ConsumableMaterialPage />) },
+            { path: "consumable-material",           element: p(["list_consumable","create_consumable","edit_consumable","view_consumable","toggle_consumable","report_consumable","return_consumable"], <ConsumableMaterialPage />) },
             { path: "consumable-material/create",    element: p("create_consumable", <CreateConsumableMaterialPage />) },
             { path: "consumable-material/list",      element: p("list_consumable",   <ListConsumableMaterialPage />) },
             { path: "consumable-material/visualize", element: p("view_consumable",   <ViewConsumableMaterialPage />) },
             { path: "consumable-material/edit",      element: p("edit_consumable",   <EditConsumableMaterialPage />) },
 
             // ── Préstamos ─────────────────────────────────────────────────────
-            { path: "loans",            element: p("list_loan",         <LoansPage />) },
+            { path: "loans",            element: p(["list_loan","create_loan","edit_loan","view_loan","report_loan","return_returnable"], <LoansPage />) },
             { path: "loans/create",     element: p("create_loan",       <CreateLoansPage />) },
             { path: "loans/list",       element: p("list_loan",         <ListWeLendAssetsPage />) },
             { path: "loans/visualize",  element: p("view_loan",         <ViewLoansPage />) },
             { path: "loans/edit",       element: p("edit_loan",         <EditLoansPage />) },
             { path: "loans/return",     element: p("return_returnable", <ReturnLoansPage />) },
 
-            // ── Configuración (solo Administrador) ────────────────────────────
-            { path: "brands",                       element: adm(<BrandsPage />) },
-            { path: "config/brands",                element: adm(<CreateBrandPage />) },
-            { path: "config",                       element: adm(<ConfigPage />) },
+            // ── Configuración ─────────────────────────────────────────────────
+            // Marcas: accesible con permiso de marcas (o admin)
+            { path: "brands",        element: p(["list_brand","create_brand","edit_brand","toggle_brand","delete_brand"], <BrandsPage />) },
+            { path: "config/brands", element: p(["list_brand","create_brand","edit_brand","toggle_brand","delete_brand"], <CreateBrandPage />) },
+            // Hub de configuración: admin O permisos de marcas
+            { path: "config", element: p(["list_brand","create_brand","edit_brand","toggle_brand","delete_brand"], <ConfigPage />) },
+            // Solo Administrador
             { path: "config/groups",                element: adm(<GroupsListPage />) },
             { path: "config/groups/create",         element: adm(<CreateGroupPage />) },
             { path: "config/groups/edit/:id",       element: adm(<EditGroupPage />) },

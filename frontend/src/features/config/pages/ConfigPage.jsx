@@ -1,15 +1,18 @@
 import { useNavigate } from "react-router-dom"
 import { Cylinder, Users, FileSliders, ArrowLeft } from "lucide-react"
-import { MenuButton } from "@/shared";
+import { MenuButton, usePermissions } from "@/shared";
 
-const menuItems = [
-    { label: "Marcas", icon: Cylinder, to: "/dashboard/config/brands" },
-    { label: "Grupos", icon: Users, to: "/dashboard/config/groups" },
-    { label: "Gestión de tareas", icon: FileSliders, to: "/dashboard/config/tasks" },
-];
+const BRAND_PERMS = ["list_brand","create_brand","edit_brand","toggle_brand","delete_brand"];
 
 export default function ConfigPage() {
     const navigate = useNavigate();
+    const { isAdmin, hasPermission } = usePermissions();
+
+    const menuItems = [
+        hasPermission(BRAND_PERMS) && { label: "Marcas",            icon: Cylinder,    to: "/dashboard/config/brands" },
+        isAdmin                    && { label: "Grupos",             icon: Users,       to: "/dashboard/config/groups" },
+        isAdmin                    && { label: "Gestión de tareas",  icon: FileSliders, to: "/dashboard/config/tasks"  },
+    ].filter(Boolean);
 
     return (
         <div className="min-h-full flex items-center justify-center p-6">

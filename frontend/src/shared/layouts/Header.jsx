@@ -96,7 +96,8 @@ function NotificationPanel({ notifications, onMarkAll, onMarkOne, onClose }) {
 
 export default function Header() {
   const navigate      = useNavigate();
-  const { isAdmin }   = usePermissions();
+  const { isAdmin, hasPermission } = usePermissions();
+  const showConfig = isAdmin || hasPermission(["create_brand","list_brand","edit_brand","toggle_brand","delete_brand"]);
 
   const [showNotifs, setShowNotifs]       = useState(false);
   const [notifications, setNotifications] = useState([]);
@@ -228,7 +229,7 @@ export default function Header() {
                   Mis tareas
                 </Link>
               </DropdownItem>
-              {isAdmin && (
+              {showConfig && (
                 <DropdownItem>
                   <Link to="/dashboard/config" className="block w-full">
                     Configuración
