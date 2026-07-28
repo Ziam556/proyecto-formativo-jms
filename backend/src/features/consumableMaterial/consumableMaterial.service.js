@@ -29,4 +29,10 @@ export const consumableMaterialService = {
     return updated;
   },
 
+  async delete(id) {
+    const deleted = await consumableMaterialRepository.delete(id);
+    if (!deleted) throw new Error(`Material de consumo con id ${id} no encontrado`);
+    return deleted;
+  },
+
 };

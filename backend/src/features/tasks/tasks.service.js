@@ -108,4 +108,10 @@ export const tasksService = {
     }
     return tasksRepository.resetToPending(taskId);
   },
+
+  async delete(taskId) {
+    const deleted = await tasksRepository.delete(taskId);
+    if (!deleted) throw new Error("Tarea no encontrada");
+    return deleted;
+  },
 };

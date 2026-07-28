@@ -56,6 +56,12 @@ export const userService = {
     return { userId, assigned: permissionIds.length };
   },
 
+  async deleteUser(documentNumber) {
+    const deleted = await userRepository.delete(documentNumber);
+    if (!deleted) throw new Error("Usuario no encontrado");
+    return deleted;
+  },
+
   async updateUser(documentNumber, data) {
     // Hash de contraseña solo si viene una nueva
     let hashedPassword = null;

@@ -154,10 +154,10 @@ export const userRepository = {
       [groupName]
     );
     const permissionIds = result.rows.map((r) => r.permission_id);
-
-    // Reemplazar permisos individuales del usuario con los del grupo
-    await pool.query(`DELETE FROM user_permissions WHERE user_id = $1`, [userId]);
     if (!permissionIds.length) return;
+
+    // UPSERT: agrega los permisos del grupo sin borrar los individuales que el usuario
+    // pueda tener asignados de forma explícita. ON CONFLICT DO NOTHING evita duplicados.
     const values = permissionIds.map((pid) => `(${userId}, ${pid})`).join(", ");
     await pool.query(
       `INSERT INTO user_permissions (user_id, permission_id) VALUES ${values} ON CONFLICT DO NOTHING`
@@ -192,6 +192,14 @@ export const userRepository = {
       [codenames]
     );
     return result.rows.map((r) => r.permission_id);
+  },
+
+  async delete(documentNumber) {
+    const result = await pool.query(
+      `DELETE FROM public.users WHERE user_document_number = $1 RETURNING user_document_number, user_name`,
+      [documentNumber]
+    );
+    return result.rows[0] ?? null;
   },
 
   async update(documentNumber, data) {

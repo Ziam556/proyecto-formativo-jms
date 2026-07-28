@@ -19,7 +19,7 @@ function TypeChip({ value }) {
   );
 }
 
-export default function ViewLoans({ loan: initialLoan, onCancel }) {
+export default function ViewLoans({ loan: initialLoan, onCancel, onEdit }) {
 
   const [searchId, setSearchId] = useState(
     initialLoan ? String(initialLoan.id) : ""
@@ -130,11 +130,16 @@ export default function ViewLoans({ loan: initialLoan, onCancel }) {
             </div>
           </div>
 
-          {/* BOTÓN EDITAR */}
-          <div className="flex justify-end">
+          {/* BOTONES */}
+          <div className="flex justify-end gap-3">
             <Button variant="secondary" onClick={onCancel}>
-              Editar
+              Volver
             </Button>
+            {loan.status === "activo" && (
+              <Button variant="primary" onClick={() => onEdit?.(loan)}>
+                Editar
+              </Button>
+            )}
           </div>
         </>
       )}

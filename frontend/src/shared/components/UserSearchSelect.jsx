@@ -21,6 +21,7 @@ export default function UserSearchSelect({
     users = [],
     value,
     onChange,
+    onUserSelect,
     error,
     placeholder = "Buscar usuario...",
     labelVariant = "light",
@@ -63,6 +64,7 @@ export default function UserSearchSelect({
 
     const handleSelect = (u) => {
         onChange(String(u.user_document_number));
+        onUserSelect?.(u);
         setOpen(false);
         setQuery("");
     };

@@ -29,4 +29,10 @@ export const returnableMaterialService = {
     return updated;
   },
 
+  async delete(id) {
+    const deleted = await returnableMaterialRepository.delete(id);
+    if (!deleted) throw new Error(`Material devolutivo con id ${id} no encontrado`);
+    return deleted;
+  },
+
 };

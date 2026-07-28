@@ -31,6 +31,12 @@ export function buildLoansReportDataset({
   const rows = filteredLoans.map((loan) =>
     selectedFields.map((field) => {
       const value = loan[field.key];
+
+      // El campo materiales es un array de objetos — se serializa a texto legible
+      if (field.key === "materiales" && Array.isArray(value)) {
+        return value.map((m) => `${m.name} (${m.type})`).join(", ") || "—";
+      }
+
       return value ?? "";
     })
   );

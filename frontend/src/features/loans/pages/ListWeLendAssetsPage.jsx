@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { ClipboardList, Info } from "lucide-react";
 
 import {
@@ -10,9 +10,10 @@ import {
   Select,
   ClearFiltersButton,
   alertWarning,
+  alertError,
 } from "@/shared";
 
-import { listLoansColumns } from "../table/listLoansColumns.jsx";
+import { getListLoansColumns } from "../table/listLoansColumns.jsx";
 import { loansReportFields } from "../reports/config/loansReportFields.js";
 import { generateLoansReport } from "../reports/services/generateLoansReport.js";
 import { getLoans } from "../services/loanService.js";
@@ -37,12 +38,15 @@ export default function ListWeLendAssetsPage() {
 
   const [rowSelection, setRowSelection] = useState({});
 
-  useEffect(() => {
+  const loadLoans = useCallback(() => {
+    setLoading(true);
     getLoans()
       .then(setLoans)
-      .catch(console.error)
+      .catch(() => alertError("Error", "No se pudieron cargar los préstamos. Recarga la página."))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => { loadLoans(); }, [loadLoans]);
 
   // 🔎 FILTROS
   const filtered = useMemo(() => {
@@ -159,6 +163,17 @@ export default function ListWeLendAssetsPage() {
             />
           </div>
 
+          {/* Material */}
+          <div className="w-full sm:w-[240px]">
+            <Input
+              label="Material"
+              name="materiales"
+              value={filters.materiales}
+              onChange={(e) => setFilters((f) => ({ ...f, materiales: e.target.value }))}
+              placeholder="Buscar material"
+            />
+          </div>
+
           {/* Estado */}
           <div className="w-full sm:w-[200px]">
             <Select
@@ -209,7 +224,7 @@ export default function ListWeLendAssetsPage() {
           <div className="rounded-xl overflow-visible">
             <DataTable
               data={filtered}
-              columns={listLoansColumns}
+              columns={getListLoansColumns(loadLoans)}
               rowSelection={rowSelection}
               onRowSelectionChange={setRowSelection}
             />

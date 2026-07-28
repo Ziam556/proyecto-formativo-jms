@@ -22,4 +22,7 @@ router.put("/:id", upload.array("materialImage", 5), consumableMaterialControlle
 // PATCH  /consumableMaterial/:id/toggle → habilitar/deshabilitar
 router.patch("/:id/toggle", consumableMaterialController.toggleEnabled);
 
+// DELETE /consumableMaterial/:id → eliminar
+router.delete("/:id", consumableMaterialController.delete);
+
 export default router;

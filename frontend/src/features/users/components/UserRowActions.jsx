@@ -2,7 +2,7 @@ import { IconButton, Dropdown, DropdownTrigger, DropdownContent, DropdownItem } 
 import { EllipsisVertical } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-export default function UserRowActions({ user }) {
+export default function UserRowActions({ user, onRefresh }) {
   const navigate = useNavigate();
 
   return (

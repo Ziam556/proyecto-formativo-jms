@@ -81,6 +81,15 @@ export const returnableMaterialRepository = {
     return result.rows[0] ?? null;
   },
 
+  async delete(id) {
+    const result = await pool.query(
+      `DELETE FROM public.returnable_material WHERE returnable_material_id = $1
+       RETURNING returnable_material_id, material_element_name`,
+      [id]
+    );
+    return result.rows[0] ?? null;
+  },
+
   async toggleEnabled(id) {
     const result = await pool.query(
       `UPDATE public.returnable_material

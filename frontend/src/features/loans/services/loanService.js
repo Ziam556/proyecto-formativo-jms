@@ -19,15 +19,17 @@ function mapLoan(l) {
         d ? new Date(d).toLocaleDateString("es-CO") : "—";
 
     return {
-        id:           l.loan_id,
-        ficha:        l.file_group   ?? "—",
-        amount:       l.amount,
-        departureDate: fmt(l.departure_date),
-        deliveryDate:  fmt(l.delivery_date),
-        justification: l.justification,
-        user:          l.requesting_user,
-        status:        l.loan_status,
-        materiales:   (l.materiales || []).map((m) => ({
+        id:               l.loan_id,
+        ficha:            l.file_group   ?? "—",
+        amount:           l.amount,
+        departureDate:    fmt(l.departure_date),
+        deliveryDate:     fmt(l.delivery_date),
+        departureDateRaw: l.departure_date ? l.departure_date.split("T")[0] : "",
+        deliveryDateRaw:  l.delivery_date  ? l.delivery_date.split("T")[0]  : "",
+        justification:    l.justification,
+        user:             l.requesting_user,
+        status:           l.loan_status,
+        materiales:      (l.materiales || []).map((m) => ({
             name:   m.name,
             type:   m.type,
             amount: m.amount ?? 1,
@@ -91,6 +93,45 @@ export async function updateLoan(id, fields) {
 
 // ── Devoluciones ──────────────────────────────────────────────────────────────
 
+export async function sendVerificationCode({ userEmail, userName }) {
+    const response = await fetch(`${API_URL}/send-verification`, {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ userEmail, userName }),
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Error al enviar el código");
+    }
+    return response.json();
+}
+
+export async function verifyLoanCode({ userEmail, code }) {
+    const response = await fetch(`${API_URL}/verify-code`, {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ userEmail, code }),
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Código incorrecto");
+    }
+    return response.json();
+}
+
+export async function cancelLoan(id) {
+    const response = await fetch(`${API_URL}/${id}/status`, {
+        method: "PATCH",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ status: "cancelado" }),
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Error al cancelar el préstamo");
+    }
+    return response.json();
+}
+
 export async function registerLoanReturn(loanId, items) {
     const response = await fetch(`${API_URL}/${loanId}/return`, {
         method: "POST",
@@ -117,21 +158,41 @@ export async function getMaterialsForLoan() {
     const returnable = returnableRes.ok ? await returnableRes.json() : [];
 
     return [
-        ...consumable.map((m) => ({
-            id:           `C-${m.consumable_material_id}`,
-            material:     m.material_element_name,
-            materialtype: "M.C",
-            plateSena:    m.material_plate    ?? "—",
-            serial:       null,
-            amount:       m.material_amount   ?? 0,
-        })),
-        ...returnable.map((m) => ({
-            id:           `D-${m.returnable_material_id}`,
-            material:     m.material_element_name,
-            materialtype: "M.D",
-            plateSena:    m.material_plate    ?? "—",
-            serial:       m.material_serial   ?? "—",
-            amount:       1,
-        })),
+        // Solo consumibles con stock disponible (amount > 0)
+        ...consumable
+            .filter((m) => (m.material_amount ?? 0) > 0)
+            .map((m) => ({
+                id:           `C-${m.consumable_material_id}`,
+                materialId:   m.consumable_material_id,   // ID numérico para el backend
+                material:     m.material_element_name,
+                materialtype: "M.C",
+                plateSena:    m.material_plate ?? "—",
+                serial:       null,
+                amount:       m.material_amount ?? 0,
+            })),
+        // Solo devolutivos habilitados (enabled !== false)
+        ...returnable
+            .filter((m) => m.enabled !== false)
+            .map((m) => ({
+                id:           `D-${m.returnable_material_id}`,
+                materialId:   m.returnable_material_id,  // ID numérico para el backend
+                material:     m.material_element_name,
+                materialtype: "M.D",
+                plateSena:    m.material_plate  ?? "—",
+                serial:       m.material_serial ?? "—",
+                amount:       1,
+            })),
     ];
+}
+
+export async function deleteLoan(id) {
+    const response = await fetch(`${API_URL}/${id}`, {
+        method:  "DELETE",
+        headers: getAuthHeaders(),
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Error al eliminar el préstamo");
+    }
+    return response.json();
 }

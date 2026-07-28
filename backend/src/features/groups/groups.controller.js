@@ -82,4 +82,17 @@ export const groupsController = {
             res.status(500).json({ error: error.message });
         }
     },
+
+    async delete(req, res) {
+        try {
+            const deleted = await groupsService.delete(Number(req.params.groupId));
+            res.status(200).json({ message: "Grupo eliminado correctamente", group: deleted });
+        } catch (err) {
+            console.error("ERROR delete group:", err);
+            const status = err.message.includes("no encontrado") ? 404
+                         : err.message.includes("sistema")      ? 403
+                         : 500;
+            res.status(status).json({ error: err.message });
+        }
+    },
 };

@@ -45,4 +45,17 @@ export const groupsService = {
         await groupsRepository.removeUsersFromGroup(groupId, userIds);
         return { removed: userIds.length };
     },
+
+    async delete(groupId) {
+        // Los grupos predeterminados del sistema no se pueden eliminar
+        const PROTECTED = ["Administrador", "Instructor", "Invitado"];
+        const group = await groupsRepository.findById(groupId);
+        if (!group) throw new Error("Grupo no encontrado");
+        if (PROTECTED.includes(group.group_name)) {
+            throw new Error(`El grupo "${group.group_name}" es un grupo del sistema y no se puede eliminar`);
+        }
+        const deleted = await groupsRepository.delete(groupId);
+        if (!deleted) throw new Error("Grupo no encontrado");
+        return deleted;
+    },
 };

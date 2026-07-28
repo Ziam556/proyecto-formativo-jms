@@ -1,2 +1,5 @@
 #Variables de entorno
 .env
+
+# Store temporal de códigos de verificación (generado en runtime)
+src/features/loans/.verification-store.json

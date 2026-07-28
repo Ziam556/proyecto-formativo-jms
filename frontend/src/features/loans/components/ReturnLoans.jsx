@@ -89,24 +89,26 @@ export default function ReturnLoans({ loan: initialLoan }) {
 
   const addItem = (mat) => {
     if (mat.returned) return;
-    if (toReturn.find((i) => i.name === mat.name)) return;
+    // Se usa mat.id (loan_item_id) como clave única para evitar conflictos
+    // cuando hay dos materiales con el mismo nombre en el mismo préstamo.
+    if (toReturn.find((i) => i.id === mat.id)) return;
     const base = { ...mat, observations: "" };
     if (mat.type === "Devolutivo") {
-      setToReturn((p) => [...p, { ...base, state: null, returned: false }]);
+      setToReturn((p) => [...p, { ...base, state: null }]);
     } else {
       setToReturn((p) => [...p, { ...base, lent: mat.amount ?? 1, leftover: 0 }]);
     }
   };
 
-  const removeItem = (name) =>
-    setToReturn((p) => p.filter((i) => i.name !== name));
+  const removeItem = (itemId) =>
+    setToReturn((p) => p.filter((i) => i.id !== itemId));
 
-  const updateItem = (name, changes) =>
+  const updateItem = (itemId, changes) =>
     setToReturn((p) =>
-      p.map((i) => (i.name === name ? { ...i, ...changes } : i))
+      p.map((i) => (i.id === itemId ? { ...i, ...changes } : i))
     );
 
-  const isAdded = (name) => toReturn.some((i) => i.name === name);
+  const isAdded = (matId) => toReturn.some((i) => i.id === matId);
 
   const handleConfirm = async () => {
     if (toReturn.length === 0) return;
@@ -237,7 +239,7 @@ export default function ReturnLoans({ loan: initialLoan }) {
                     <TypeTag type={mat.type} />
                     <span
                       className={`text-[12px] flex-1 ${
-                        mat.returned || isAdded(mat.name) ? "text-white/35 line-through" : "text-white"
+                        mat.returned || isAdded(mat.id) ? "text-white/35 line-through" : "text-white"
                       }`}
                     >
                       {mat.name}
@@ -246,7 +248,7 @@ export default function ReturnLoans({ loan: initialLoan }) {
                       <span className="text-[9px] font-medium px-2 py-[2px] rounded-full bg-white/10 text-white/50 whitespace-nowrap">
                         Devuelto
                       </span>
-                    ) : isAdded(mat.name) ? (
+                    ) : isAdded(mat.id) ? (
                       <span className="w-[22px] h-[22px] rounded-md flex items-center justify-center bg-green-500/15 border border-green-400/30 text-green-400 text-[12px]">
                         ✓
                       </span>
@@ -299,7 +301,7 @@ export default function ReturnLoans({ loan: initialLoan }) {
                       </span>
                       <IconButton
                         ariaLabel={`Quitar ${item.name} de la devolución`}
-                        onClick={() => removeItem(item.name)}
+                        onClick={() => removeItem(item.id)}
                         hitSize={22}
                         iconSize={14}
                         className="rounded-md bg-red-500/15 border border-red-400/30 text-red-300 hover:bg-red-500/30"
@@ -310,25 +312,11 @@ export default function ReturnLoans({ loan: initialLoan }) {
 
                     {/* DEVOLUTIVO */}
                     {item.type === "Devolutivo" && (
-                      <>
-                        <div className="flex gap-1 mb-2">
-                          <StatePill label="✓ Bueno"  color="good" active={item.state === "Bueno"}   onClick={() => updateItem(item.name, { state: "Bueno" })} />
-                          <StatePill label="Dañado"   color="bad"  active={item.state === "Dañado"}  onClick={() => updateItem(item.name, { state: "Dañado" })} />
-                          <StatePill label="Pérdida"  color="loss" active={item.state === "Pérdida"} onClick={() => updateItem(item.name, { state: "Pérdida" })} />
-                        </div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <div
-                            onClick={() =>
-                              updateItem(item.name, { returned: !item.returned })
-                            }
-                            className={`w-[17px] h-[17px] rounded-[5px] border-[1.5px] flex items-center justify-center cursor-pointer transition flex-shrink-0
-                              ${item.returned ? "bg-green-500/25 border-green-400 text-green-300 text-[10px]" : "bg-white/4 border-white/20"}`}
-                          >
-                            {item.returned && "✓"}
-                          </div>
-                          <span className="text-white text-[11px]">Marcar como devuelto</span>
-                        </div>
-                      </>
+                      <div className="flex gap-1 mb-2">
+                        <StatePill label="✓ Bueno"  color="good" active={item.state === "Bueno"}   onClick={() => updateItem(item.id, { state: "Bueno" })} />
+                        <StatePill label="Dañado"   color="bad"  active={item.state === "Dañado"}  onClick={() => updateItem(item.id, { state: "Dañado" })} />
+                        <StatePill label="Pérdida"  color="loss" active={item.state === "Pérdida"} onClick={() => updateItem(item.id, { state: "Pérdida" })} />
+                      </div>
                     )}
 
                     {/* CONSUMO */}
@@ -343,7 +331,7 @@ export default function ReturnLoans({ loan: initialLoan }) {
                           <IconButton
                             ariaLabel="Disminuir cantidad sobrante"
                             onClick={() =>
-                              updateItem(item.name, {
+                              updateItem(item.id, {
                                 leftover: Math.max(0, item.leftover - 1),
                               })
                             }
@@ -359,7 +347,7 @@ export default function ReturnLoans({ loan: initialLoan }) {
                           <IconButton
                             ariaLabel="Aumentar cantidad sobrante"
                             onClick={() =>
-                              updateItem(item.name, {
+                              updateItem(item.id, {
                                 leftover: Math.min(item.lent, item.leftover + 1),
                               })
                             }
@@ -373,7 +361,7 @@ export default function ReturnLoans({ loan: initialLoan }) {
                       </div>
                     )}
 
-                    {/* OBSERVACIONES — Input shared */}
+                    {/* OBSERVACIONES */}
                     <div>
                       <span className="text-white text-[9px] uppercase tracking-wider">
                         Observaciones
@@ -381,7 +369,7 @@ export default function ReturnLoans({ loan: initialLoan }) {
                       <Input
                         value={item.observations}
                         onChange={(e) =>
-                          updateItem(item.name, { observations: e.target.value })
+                          updateItem(item.id, { observations: e.target.value })
                         }
                         placeholder="Sin novedad..."
                         className="mt-[3px]"

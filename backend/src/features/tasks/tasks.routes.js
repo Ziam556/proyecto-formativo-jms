@@ -26,7 +26,10 @@ router.put("/:id/complete", uploadTaskEvidence.array("evidence", 5), tasksContro
 // PUT  /api/tasks/:id/verify  → admin aprueba o rechaza
 router.put("/:id/verify", tasksController.verify);
 
-// PUT  /api/tasks/:id/retry   → usuario reintenta tarea rechazada
+// PUT    /api/tasks/:id/retry   → usuario reintenta tarea rechazada
 router.put("/:id/retry", tasksController.retry);
+
+// DELETE /api/tasks/:id         → eliminar tarea (admin)
+router.delete("/:id", tasksController.delete);
 
 export default router;

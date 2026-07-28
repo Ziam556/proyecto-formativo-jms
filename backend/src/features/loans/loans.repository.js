@@ -26,17 +26,29 @@ export const loansRepository = {
     async createItems(loanId, items) {
         if (!items.length) return;
 
+        // 5 columnas por ítem: material_name, material_type, amount,
+        // returnable_material_id, consumable_material_id
         const values = items
-            .map((_, i) => `($1, $${i * 3 + 2}, $${i * 3 + 3}, $${i * 3 + 4})`)
+            .map((_, i) => `($1, $${i * 5 + 2}, $${i * 5 + 3}, $${i * 5 + 4}, $${i * 5 + 5}, $${i * 5 + 6})`)
             .join(", ");
 
         const params = [loanId];
         items.forEach((item) => {
-            params.push(item.materialName, item.materialType, item.amount);
+            const isReturnable = item.materialType === "M.D";
+            const isConsumable = item.materialType === "M.C";
+            params.push(
+                item.materialName,
+                item.materialType,
+                item.amount,
+                isReturnable ? (item.materialId ?? null) : null,   // returnable_material_id
+                isConsumable ? (item.materialId ?? null) : null,   // consumable_material_id
+            );
         });
 
         await pool.query(
-            `INSERT INTO public.loan_items (loan_id, material_name, material_type, amount) VALUES ${values}`,
+            `INSERT INTO public.loan_items
+                (loan_id, material_name, material_type, amount, returnable_material_id, consumable_material_id)
+             VALUES ${values}`,
             params
         );
     },
@@ -110,6 +122,104 @@ export const loansRepository = {
         return result.rows[0];
     },
 
+    // ── Gestión de inventario ─────────────────────────────────────────────────
+
+    /** Descuenta `amount` unidades de un consumible al crear el préstamo. */
+    async decrementConsumableStock(materialId, amount) {
+        await pool.query(
+            `UPDATE public.consumable_material
+             SET material_amount = GREATEST(material_amount - $2, 0)
+             WHERE consumable_material_id = $1`,
+            [materialId, amount]
+        );
+    },
+
+    /** Marca un devolutivo como no disponible al salir en préstamo. */
+    async disableReturnableMaterial(materialId) {
+        await pool.query(
+            `UPDATE public.returnable_material
+             SET enabled = false
+             WHERE returnable_material_id = $1`,
+            [materialId]
+        );
+    },
+
+    /**
+     * Restaura unidades al devolver un consumible.
+     * `amount` es la cantidad sobrante (leftover) reportada por el usuario.
+     */
+    async restoreConsumableStock(materialId, amount) {
+        if (!amount || amount <= 0) return;
+        await pool.query(
+            `UPDATE public.consumable_material
+             SET material_amount = material_amount + $2
+             WHERE consumable_material_id = $1`,
+            [materialId, amount]
+        );
+    },
+
+    /**
+     * Actualiza el estado de un devolutivo tras su devolución física.
+     * - "Bueno" / "Dañado" → se re-habilita con el nuevo estado
+     * - "Pérdida"          → queda deshabilitado permanentemente
+     */
+    async restoreReturnableMaterial(materialId, state) {
+        const enabled      = state !== "Pérdida";
+        const materialState = ["Bueno", "Dañado", "Pérdida"].includes(state) ? state : "Bueno";
+        await pool.query(
+            `UPDATE public.returnable_material
+             SET enabled        = $2,
+                 material_state = $3
+             WHERE returnable_material_id = $1`,
+            [materialId, enabled, materialState]
+        );
+    },
+
+    /** Vuelve a habilitar un devolutivo sin cambiar su estado (usado al cancelar). */
+    async enableReturnableMaterial(materialId) {
+        await pool.query(
+            `UPDATE public.returnable_material
+             SET enabled = true
+             WHERE returnable_material_id = $1`,
+            [materialId]
+        );
+    },
+
+    /**
+     * Devuelve las referencias de material para una lista de loan_item_id.
+     * Necesario para saber qué registro de inventario actualizar al devolver.
+     */
+    async getMaterialRefsByItemIds(itemIds) {
+        if (!itemIds.length) return [];
+        const result = await pool.query(
+            `SELECT loan_item_id,
+                    material_type,
+                    returnable_material_id,
+                    consumable_material_id
+             FROM public.loan_items
+             WHERE loan_item_id = ANY($1)`,
+            [itemIds]
+        );
+        return result.rows;
+    },
+
+    // ── Helpers de usuario ───────────────────────────────────────────────────
+    /**
+     * Busca el email de un usuario por su nombre o número de documento.
+     * Se usa para enviar notificaciones de actualización de préstamo,
+     * ya que requesting_user almacena el nombre, no el email.
+     */
+    async findUserEmailByNameOrDoc(nameOrDoc) {
+        if (!nameOrDoc) return null;
+        const result = await pool.query(
+            `SELECT user_email FROM public.users
+             WHERE user_name = $1 OR user_document_number::text = $1
+             LIMIT 1`,
+            [String(nameOrDoc)]
+        );
+        return result.rows[0]?.user_email ?? null;
+    },
+
     // ── Devoluciones ──────────────────────────────────────────────────────────
     async createReturns(returns) {
         if (!returns.length) return [];
@@ -135,6 +245,14 @@ export const loansRepository = {
             params
         );
         return result.rows;
+    },
+
+    async delete(loanId) {
+        const result = await pool.query(
+            `DELETE FROM public.loans WHERE loan_id = $1 RETURNING loan_id`,
+            [loanId]
+        );
+        return result.rows[0] ?? null;
     },
 
     async countItemsAndReturns(loanId) {

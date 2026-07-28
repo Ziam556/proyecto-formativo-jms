@@ -21,6 +21,7 @@ export default function UserSearchField({
     label        = "Usuario solicitante",
     value,
     onChange,
+    onUserSelect,
     error,
     placeholder  = "Buscar por nombre o documento...",
     labelVariant = "light",
@@ -39,6 +40,7 @@ export default function UserSearchField({
             users={users}
             value={value}
             onChange={onChange}
+            onUserSelect={onUserSelect}
             error={error}
             placeholder={placeholder}
             labelVariant={labelVariant}

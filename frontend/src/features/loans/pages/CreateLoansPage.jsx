@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Check } from "lucide-react";
-import { BackButton } from "@/shared";
+import { BackButton, alertWarning } from "@/shared";
 import { alertSuccess, alertError } from "@/shared";
 import CreateLoans1 from "../components/CreateLoans-1";
 import CreateLoans2 from "../components/CreateLoans-2";
 import CreateLoans3 from "../components/CreateLoans-3";
 import { createLoan, getMaterialsForLoan } from "../services/loanService";
+import { getUsers } from "@/features/users/services/userService";
 
 const steps = [
   { num: 1, title: "Materiales a prestar",  sub: "Búsqueda y selección"      },
@@ -24,12 +25,25 @@ export default function CreateLoansPage() {
   const [formData, setFormData]       = useState({});
   const [materials, setMaterials]     = useState([]);
   const [saving, setSaving]           = useState(false);
+  const [usersBlocked, setUsersBlocked] = useState(false);
 
-  // Cargar materiales al montar
+  // Cargar materiales y verificar mínimo de usuarios al montar
   useEffect(() => {
     getMaterialsForLoan()
       .then(setMaterials)
       .catch(() => setMaterials([]));
+
+    getUsers()
+      .then((users) => {
+        if (users.length < 2) {
+          setUsersBlocked(true);
+          alertWarning(
+            "Usuarios insuficientes",
+            "Debe haber al menos 2 usuarios registrados en el sistema para poder crear un préstamo."
+          );
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const handleNext = (data) => {
@@ -47,6 +61,7 @@ export default function CreateLoansPage() {
       materialName: m.material,
       materialType: m.materialtype,
       amount:       m.amount ?? 1,
+      materialId:   m.materialId ?? null,   // ID numérico para gestión de inventario
     }));
 
     const body = {
@@ -58,9 +73,10 @@ export default function CreateLoansPage() {
       deliveryDate:     finalData.deliveryDates
         ? new Date(finalData.deliveryDates).toISOString().split("T")[0]
         : null,
-      justification:    finalData.justificationForUse || null,
-      requestingUser:   finalData.user,
-      verificationCode: finalData.verificationCode,
+      justification:     finalData.justificationForUse || null,
+      requestingUser:    finalData.user,
+      notificationEmail: finalData.notificationEmail  || null,
+      verificationCode:  finalData.verificationCode,
       items,
     };
 
@@ -101,6 +117,20 @@ export default function CreateLoansPage() {
       saving={saving}
     />,
   ];
+
+  if (usersBlocked) {
+    return (
+      <div className="px-4 sm:px-16 py-6 sm:py-10 min-h-full flex items-center justify-center">
+        <div className="bg-white/10 rounded-2xl p-8 max-w-md text-center">
+          <p className="text-white text-2xl font-bold mb-3">⚠️ Usuarios insuficientes</p>
+          <p className="text-white/70 text-sm">
+            Se necesitan al menos <strong className="text-white">2 usuarios</strong> registrados en el sistema para poder crear un préstamo.
+            Registra más usuarios e intenta de nuevo.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="px-4 sm:px-16 py-6 sm:py-10 min-h-full">

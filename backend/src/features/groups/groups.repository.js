@@ -8,6 +8,14 @@ export const groupsRepository = {
         return result.rows;
     },
 
+    async findById(groupId) {
+        const result = await pool.query(
+            `SELECT group_id, group_name FROM groups WHERE group_id = $1`,
+            [groupId]
+        );
+        return result.rows[0] ?? null;
+    },
+
     async getAllPermissions() {
         const result = await pool.query(
             `SELECT permission_id, permission_name, permission_codename, permission_module
@@ -106,5 +114,13 @@ export const groupsRepository = {
             `DELETE FROM user_groups WHERE group_id = $1 AND user_id = ANY($2)`,
             [groupId, userIds]
         );
+    },
+
+    async delete(groupId) {
+        const result = await pool.query(
+            `DELETE FROM public.groups WHERE group_id = $1 RETURNING group_id, group_name`,
+            [groupId]
+        );
+        return result.rows[0] ?? null;
     },
 };

@@ -90,3 +90,14 @@ export async function createReturnableMaterial(data, imageFiles, technicalSheetF
   if (!response.ok) throw new Error(result.error || "Error al crear el material devolutivo");
   return result;
 }
+
+export async function deleteReturnableMaterial(id) {
+  const token    = sessionStorage.getItem("token");
+  const response = await fetch(`${API_URL}/${id}`, {
+    method:  "DELETE",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || "Error al eliminar el material");
+  return data;
+}
