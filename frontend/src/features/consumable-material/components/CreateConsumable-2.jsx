@@ -66,6 +66,7 @@ export default function CreateConsumable2({
                 value={fields.materialStoryTeller}
                 onChange={handleChange}
                 error={errors.materialStoryTeller}
+                required
             />
 
             {/* CANTIDAD */}
@@ -77,6 +78,7 @@ export default function CreateConsumable2({
                 value={fields.materialAmount}
                 onChange={handleChange}
                 error={errors.materialAmount}
+                required
             />
 
             {/* VALOR UNITARIO */}
@@ -88,6 +90,7 @@ export default function CreateConsumable2({
                 value={fields.materialUnitValue}
                 onChange={handleChange}
                 error={errors.materialUnitValue}
+                required
             />
 
             {/* VALOR TOTAL — calculado automáticamente, no editable */}

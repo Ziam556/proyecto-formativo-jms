@@ -110,6 +110,16 @@ export async function updateUser(id, userData, imageFile) {
   return data;
 }
 
+export async function toggleUser(id) {
+  const response = await fetch(`${API_URL}/${id}/toggle`, {
+    method: "PATCH",
+    headers: getAuthHeaders(),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || "Error al cambiar estado del usuario");
+  return data;
+}
+
 export async function deleteUser(documentNumber) {
   const response = await fetch(`${API_URL}/${documentNumber}`, {
     method: "DELETE",

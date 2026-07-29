@@ -89,6 +89,7 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
         value={fields.materialPlate}
         onChange={handleChange}
         error={errors.materialPlate}
+        required
       />
       <Select labelVariant="dark"
         label="Categoría"
@@ -98,6 +99,7 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
         onChange={handleChange}
         error={errors.materialCategory}
         placeholder="Selecciona una categoría"
+        required
       />
       <Input labelVariant="dark"
         label="Nombre del elemento"
@@ -106,6 +108,7 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
         value={fields.materialElementName}
         onChange={handleChange}
         error={errors.materialElementName}
+        required
       />
       <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4">
         <Button variant="secondary" size="sm" onClick={onCancel}>Cancelar</Button>

@@ -1,7 +1,7 @@
-import { useState, useMemo, useEffect, useCallback } from "react";
-import { getUsers } from "../services/userService.js";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import { getUsers, toggleUser } from "../services/userService.js";
 import { normalizeUsers } from "../utils/normalizeUser.js";
-import { ClearFiltersButton, DataTable, StatsPills, ReportDropdown, BackButton, Input, Select } from "@/shared";
+import { ClearFiltersButton, DataTable, StatsPills, ReportDropdown, BackButton, Input, Select, alertConfirm, alertSuccess, alertError } from "@/shared";
 import { getUserColumns } from "../table/userColumns.jsx";
 import { userReportFields } from "../reports/config/userReportFields.js";
 import { generateUserReport } from "../reports/services/generateUserReport.js";
@@ -41,12 +41,7 @@ export default function ListUserPage() {
 
     // Selección de filas
     const [rowSelection, setRowSelection] = useState({});
-
-    // Columnas activas del reporte
-    const columns = getUserColumns(loadUsers);
-    const [reportCols, setReportCols] = useState(
-        Object.fromEntries(columns.map((c) => [c.id, true]))
-    );
+    const [reportCols, setReportCols] = useState({});
 
     // Datos filtrados
     const filtered = useMemo(() => {
@@ -78,10 +73,50 @@ export default function ListUserPage() {
     const clearFilters = () =>
         setFilters({ name: "", email: "", group: "", phone: "" });
 
+    // Selección masiva
+    const selectedUsers = useMemo(() =>
+        Object.keys(rowSelection)
+            .filter((idx) => rowSelection[idx])
+            .map((idx) => filtered[Number(idx)])
+            .filter(Boolean),
+        [rowSelection, filtered]
+    );
+
+    const selectedUsersRef = useRef(selectedUsers);
+    selectedUsersRef.current = selectedUsers;
+
+    const handleBulkToggle = useCallback(async (targetEnabled) => {
+        const accion = targetEnabled ? "habilitar" : "deshabilitar";
+        const targets = selectedUsersRef.current.filter((u) => u.enabled !== targetEnabled);
+        if (!targets.length) {
+            alertError("Sin cambios", `Todos los seleccionados ya están ${targetEnabled ? "habilitados" : "deshabilitados"}.`);
+            return;
+        }
+        const count = targets.length;
+        const confirm = await alertConfirm(
+            `¿${accion.charAt(0).toUpperCase() + accion.slice(1)} ${count} usuario(s)?`,
+            `Se ${accion}n ${count} usuario(s) seleccionado(s).`
+        );
+        if (!confirm.isConfirmed) return;
+        try {
+            await Promise.all(targets.map((u) => toggleUser(u.document)));
+            alertSuccess("Listo", `${count} usuario(s) ${targetEnabled ? "habilitados" : "deshabilitados"} correctamente.`);
+            setRowSelection({});
+            loadUsers();
+        } catch (err) {
+            alertError("Error", err.message);
+        }
+    }, [loadUsers]);
+
     // Campos activos según los toggles de la tabla
     const activeFields = useMemo(() =>
         userReportFields.filter((f) => reportCols[f.key] !== false),
         [reportCols]
+    );
+
+    const columns = useMemo(
+        () => getUserColumns(loadUsers, selectedUsers, handleBulkToggle),
+        [loadUsers, selectedUsers, handleBulkToggle]
     );
 
     const handleAllReport = (format) => {

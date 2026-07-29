@@ -9,6 +9,7 @@ export default function Select({
     onChange,
     placeholder = "Seleccione una opción",
     labelVariant = "light",
+    required = false,
 }) {
     const labelColor = error
         ? "text-red-600"
@@ -20,7 +21,7 @@ export default function Select({
         <div className="w-full">
             {label && (
                 <label className={`block text-[12px] mb-1 place-self-start font-semibold ${labelColor}`}>
-                    {label}
+                    {label}{required && <span className="text-red-500 ml-[2px]">*</span>}
                 </label>
             )}
 

@@ -1,8 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { User, Lock, Eye, EyeOff } from "lucide-react";
-import { loginSchema } from "../schemas/loginSchema";
 import { login } from "../services/authService";
+import Swal from "sweetalert2";
+
+const SESSION_KEY = "jms_active_user";
+const SESSION_TIMEOUT_MS = 8 * 60 * 60 * 1000; // 8 horas
+
+function getActiveSession() {
+    try {
+        const raw = localStorage.getItem(SESSION_KEY);
+        if (!raw) return null;
+        const session = JSON.parse(raw);
+        if (Date.now() - session.loggedAt > SESSION_TIMEOUT_MS) {
+            localStorage.removeItem(SESSION_KEY);
+            return null;
+        }
+        return session;
+    } catch {
+        return null;
+    }
+}
+
+function setActiveSession(email) {
+    localStorage.setItem(SESSION_KEY, JSON.stringify({ email, loggedAt: Date.now() }));
+}
 
 export default function LoginForm() {
     const navigate = useNavigate();
@@ -16,6 +38,13 @@ export default function LoginForm() {
     const [errors, setErrors] = useState({});
     const [serverError, setServerError] = useState("");
 
+    // Al montar la página de login (incluso por retroceso del navegador),
+    // limpiar sesión para que "adelante" no permita re-entrar sin autenticarse.
+    useEffect(() => {
+        sessionStorage.removeItem("token");
+        localStorage.removeItem("jms_active_user");
+    }, []);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
@@ -26,26 +55,38 @@ export default function LoginForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const result = loginSchema.safeParse(formData);
+        const fieldErrors = {};
+        if (!formData.userEmail.trim())    fieldErrors.userEmail    = "El correo es requerido";
+        if (!formData.userPassword.trim()) fieldErrors.userPassword = "La contraseña es requerida";
 
-        if (!result.success) {
-            const fieldErrors = {};
-            result.error.issues.forEach((issue) => {
-                fieldErrors[issue.path[0]] = issue.message;
-            });
+        if (Object.keys(fieldErrors).length > 0) {
             setErrors(fieldErrors);
             return;
         }
 
         setErrors({});
 
-        try {
-            const data = await login(result.data);
+        // Verificar si ya hay una sesión activa con el mismo correo
+        const activeSession = getActiveSession();
+        if (activeSession && activeSession.email === formData.userEmail.trim()) {
+            await Swal.fire({
+                title: "Sesión ya activa",
+                html: `La cuenta <b>${formData.userEmail}</b> ya tiene una sesión abierta en otra ventana o pestaña.<br/><br/>Cierra sesión allí antes de iniciar aquí.`,
+                icon: "warning",
+                confirmButtonText: "Entendido",
+                confirmButtonColor: "#7e22ce",
+                background: "#1e1e2e",
+                color: "#ffffff",
+            });
+            return;
+        }
 
+        try {
+            const data = await login(formData);
             if (data.token) {
                 sessionStorage.setItem("token", data.token);
+                setActiveSession(formData.userEmail.trim());
             }
-
             navigate("/dashboard/home");
         } catch (error) {
             setServerError(error.message);
@@ -115,7 +156,7 @@ export default function LoginForm() {
                     {/* Olvidé contraseña */}
                     <p
                         onClick={() => navigate("/auth/forgot-password")}
-                        className="text-center text-[0.85rem] font-semibold text-[#8b3a8b] cursor-pointer m-0 hover:underline"
+                        className="text-center text-[0.85rem] font-semibold text-white cursor-pointer m-0 hover:underline"
                     >
                         ¡Olvidé mi contraseña!
                     </p>

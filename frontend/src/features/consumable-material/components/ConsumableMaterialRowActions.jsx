@@ -7,11 +7,20 @@ import { EllipsisVertical } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toggleConsumableMaterial } from "../services/consumableMaterialService";
 
-export default function ConsumableMaterialRowActions({ material, onToggle }) {
+export default function ConsumableMaterialRowActions({ material, onToggle, selectedCount = 0, isSelected = false, onBulkToggle }) {
   const navigate = useNavigate();
   const [isEnabled, setIsEnabled] = useState(material.enabled ?? true);
 
   const handleToggle = async () => {
+    const targetEnabled = !isEnabled;
+
+    // Modo masivo
+    if (selectedCount > 1 && isSelected) {
+      if (onBulkToggle) onBulkToggle(targetEnabled);
+      return;
+    }
+
+    // Modo individual
     const action = isEnabled ? "deshabilitar" : "habilitar";
     const confirmed = await alertConfirm(
       `¿${action.charAt(0).toUpperCase() + action.slice(1)} material?`,
@@ -20,9 +29,9 @@ export default function ConsumableMaterialRowActions({ material, onToggle }) {
     if (!confirmed.isConfirmed) return;
 
     try {
-      await toggleConsumableMaterial(material.id, !isEnabled);
-      setIsEnabled((prev) => !prev);
-      alertSuccess("Estado actualizado", `Material ${!isEnabled ? "habilitado" : "deshabilitado"} correctamente.`);
+      await toggleConsumableMaterial(material.id, targetEnabled);
+      setIsEnabled(targetEnabled);
+      alertSuccess("Estado actualizado", `Material ${targetEnabled ? "habilitado" : "deshabilitado"} correctamente.`);
       if (onToggle) onToggle();
     } catch (err) {
       alertError("Error", err.message || "No se pudo cambiar el estado.");

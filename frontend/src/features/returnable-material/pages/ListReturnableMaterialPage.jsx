@@ -1,8 +1,8 @@
-import { useState, useMemo, useEffect } from "react";
-import { getReturnableMaterials } from "../services/returnableMaterialService.js";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import { getReturnableMaterials, toggleReturnableMaterial } from "../services/returnableMaterialService.js";
 import { normalizeReturnableMaterials } from "../utils/normalizeReturnableMaterial.js";
 import { translateStatesInList } from "@/features/consumable-material/utils/stateLabels.js";
-import { DataTable, StatsPills, ReportDropdown, BackButton, Input, Select, ClearFiltersButton } from "@/shared";
+import { DataTable, StatsPills, ReportDropdown, BackButton, Input, Select, ClearFiltersButton, alertConfirm, alertSuccess, alertError } from "@/shared";
 import { getReturnableMaterialColumns } from "../table/returnableMaterialColumns";
 import { returnableMaterialReportFields } from "../reports/config/returnableMaterialReportFields.js";
 import { generateReturnableMaterialReport } from "../reports/services/generateReturnableMaterialReport.js";
@@ -80,6 +80,41 @@ export default function ListReturnableMaterialPage() {
 
   const clearFilters = () =>
     setFilters({ elementName: "", accountHolder: "", state: "", serial: "" });
+
+  // Selección masiva
+  const selectedMaterials = useMemo(() =>
+    Object.keys(rowSelection)
+      .filter((idx) => rowSelection[idx])
+      .map((idx) => filtered[Number(idx)])
+      .filter(Boolean),
+    [rowSelection, filtered]
+  );
+
+  const selectedMaterialsRef = useRef(selectedMaterials);
+  selectedMaterialsRef.current = selectedMaterials;
+
+  const handleBulkToggle = useCallback(async (targetEnabled) => {
+    const accion = targetEnabled ? "habilitar" : "deshabilitar";
+    const targets = selectedMaterialsRef.current.filter((m) => (m.enabled ?? true) !== targetEnabled);
+    if (!targets.length) {
+      alertError("Sin cambios", `Todos los seleccionados ya están ${targetEnabled ? "habilitados" : "deshabilitados"}.`);
+      return;
+    }
+    const count = targets.length;
+    const confirm = await alertConfirm(
+      `¿${accion.charAt(0).toUpperCase() + accion.slice(1)} ${count} material(es)?`,
+      `Se ${accion}n ${count} material(es) devolutivo(s) seleccionado(s).`
+    );
+    if (!confirm.isConfirmed) return;
+    try {
+      await Promise.all(targets.map((m) => toggleReturnableMaterial(m.id)));
+      alertSuccess("Listo", `${count} material(es) ${targetEnabled ? "habilitados" : "deshabilitados"} correctamente.`);
+      setRowSelection({});
+      loadMaterials();
+    } catch (err) {
+      alertError("Error", err.message);
+    }
+  }, [loadMaterials]);
 
   // Campos activos según toggles de la tabla
   const activeFields = useMemo(
@@ -221,7 +256,7 @@ export default function ListReturnableMaterialPage() {
       ) : (
         <DataTable
           data={filtered}
-          columns={getReturnableMaterialColumns(loadMaterials)}
+          columns={getReturnableMaterialColumns(loadMaterials, selectedMaterials, handleBulkToggle)}
           rowSelection={rowSelection}
           onRowSelectionChange={setRowSelection}
           onReportColsChange={setReportCols}

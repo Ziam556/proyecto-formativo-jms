@@ -1,21 +1,18 @@
 import { Navigate } from "react-router-dom";
 import { usePermissions } from "@/shared/hooks/usePermissions";
+import { useEffect, useRef } from "react";
+import { alertError } from "@/shared/utils/alerts";
 
-/**
- * Protege una ruta basándose en permisos del JWT, no en el grupo de usuario.
- *
- * Props:
- *   - permission  {string|string[]} Codename requerido (o array de opciones OR).
- *   - adminOnly   {boolean}         Solo para Administrador, sin importar permisos.
- *   - children    El componente de la ruta.
- *
- * Comportamiento:
- *   - Sin token → redirige a /auth
- *   - Administrador → siempre pasa (es superusuario)
- *   - adminOnly y no es admin → redirige a /dashboard/home
- *   - hasPermission(permission) → pasa
- *   - Sin permiso → redirige a /dashboard/home
- */
+function NoPermission() {
+    const alerted = useRef(false);
+    useEffect(() => {
+        if (alerted.current) return;
+        alerted.current = true;
+        alertError("Sin permiso", "No tienes permiso para acceder a esta sección.");
+    }, []);
+    return <Navigate to="/dashboard/home" replace />;
+}
+
 export default function PermissionRoute({ children, permission, adminOnly = false }) {
     const token = sessionStorage.getItem("token");
 
@@ -24,8 +21,8 @@ export default function PermissionRoute({ children, permission, adminOnly = fals
     const { isAdmin, hasPermission } = usePermissions();
 
     if (adminOnly) {
-        return isAdmin ? children : <Navigate to="/dashboard/home" replace />;
+        return isAdmin ? children : <NoPermission />;
     }
 
-    return hasPermission(permission) ? children : <Navigate to="/dashboard/home" replace />;
+    return hasPermission(permission) ? children : <NoPermission />;
 }

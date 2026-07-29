@@ -1,9 +1,42 @@
-import { IconButton, Dropdown, DropdownTrigger, DropdownContent, DropdownItem } from "@/shared";
+import { useState } from "react";
+import { IconButton, Dropdown, DropdownTrigger, DropdownContent, DropdownItem, alertConfirm, alertSuccess, alertError } from "@/shared";
 import { EllipsisVertical } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toggleUser } from "../services/userService";
 
-export default function UserRowActions({ user, onRefresh }) {
+export default function UserRowActions({ user, onRefresh, selectedCount = 0, isSelected = false, onBulkToggle }) {
   const navigate = useNavigate();
+  const [isEnabled, setIsEnabled] = useState(user.enabled ?? true);
+
+  const handleToggle = async () => {
+    const targetEnabled = !isEnabled;
+
+    // Modo masivo: hay más de una fila seleccionada y esta está incluida
+    if (selectedCount > 1 && isSelected) {
+      if (onBulkToggle) onBulkToggle(targetEnabled);
+      return;
+    }
+
+    // Modo individual
+    const accion = isEnabled ? "deshabilitar" : "habilitar";
+    const confirm = await alertConfirm(
+      `¿${accion.charAt(0).toUpperCase() + accion.slice(1)} usuario?`,
+      `¿Deseas ${accion} a "${user.name}"?`
+    );
+    if (!confirm.isConfirmed) return;
+
+    try {
+      const result = await toggleUser(user.document);
+      setIsEnabled(result.enabled);
+      alertSuccess(
+        `Usuario ${result.enabled ? "habilitado" : "deshabilitado"}`,
+        `${user.name} fue ${result.enabled ? "habilitado" : "deshabilitado"} correctamente.`
+      );
+      if (onRefresh) onRefresh();
+    } catch (err) {
+      alertError("Error", err.message);
+    }
+  };
 
   return (
     <div className="flex items-center gap-2">
@@ -21,6 +54,10 @@ export default function UserRowActions({ user, onRefresh }) {
 
           <DropdownItem onClick={() => navigate("/dashboard/userpage/edit", { state: { user } })}>
             Editar
+          </DropdownItem>
+
+          <DropdownItem onClick={handleToggle}>
+            {isEnabled ? "Deshabilitar" : "Habilitar"}
           </DropdownItem>
         </DropdownContent>
       </Dropdown>

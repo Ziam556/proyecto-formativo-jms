@@ -55,6 +55,7 @@ export default function CreateReturnable3({ formData, onNext, onBack }) {
         value={fields.materialStoryTeller}
         onChange={handleChange}
         error={errors.materialStoryTeller}
+        required
       />
 
       {/* Cantidad: solo obligatoria si no tiene placa */}

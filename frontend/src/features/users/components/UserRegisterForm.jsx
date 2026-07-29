@@ -100,6 +100,11 @@ export default function UserRegisterForm({ onCancel }) {
             }
         }
 
+        // Validar imagen obligatoria
+        if (!formData.userImage?.[0]) {
+            emptyErrors.userImage = "La foto de perfil es requerida";
+        }
+
         if (Object.keys(emptyErrors).length > 0) {
             setErrors(emptyErrors);
             alertWarning("Campos incompletos", "Por favor completa todos los campos requeridos antes de guardar.");
@@ -155,23 +160,28 @@ export default function UserRegisterForm({ onCancel }) {
             <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center md:items-start w-full mx-auto">
 
                 {/* ── Foto de perfil ── */}
-                <AvatarUpload
-                    value={formData.userImage?.[0] ?? null}
-                    onChange={handleImageChange}
-                />
+                <div className="flex flex-col items-center gap-1">
+                    <AvatarUpload
+                        value={formData.userImage?.[0] ?? null}
+                        onChange={handleImageChange}
+                    />
+                    {errors.userImage && (
+                        <p className="text-red-500 text-[0.75rem] font-medium">{errors.userImage}</p>
+                    )}
+                </div>
 
                 {/* ── Formulario ── */}
                 {/* FIX: onSubmit en el form llama handleSubmit */}
                 <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="w-full">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 
-                        <Input labelVariant="dark" label="Nombre" name="userName" placeholder="Ingresar su nombre" value={formData.userName} onChange={handleChange} error={errors.userName} />
+                        <Input labelVariant="dark" label="Nombre" name="userName" placeholder="Ingresar su nombre" value={formData.userName} onChange={handleChange} error={errors.userName} required />
 
-                        <Select labelVariant="dark" label="Tipo de documento" name="userDocumentType" value={formData.userDocumentType} options={documentTypes} onChange={handleChange} error={errors.userDocumentType} placeholder="Tipo de documento" />
-                        <Input labelVariant="dark" label="Correo electrónico" name="userEmail" type="email" placeholder="Ingrese su correo" value={formData.userEmail} onChange={handleChange} error={errors.userEmail} />
-                        <Input labelVariant="dark" label="Confirmación de correo electrónico" name="userEmailVerification" type="email" placeholder="Confirme su correo" value={formData.userEmailVerification} onChange={handleChange} error={errors.userEmailVerification} />
+                        <Select labelVariant="dark" label="Tipo de documento" name="userDocumentType" value={formData.userDocumentType} options={documentTypes} onChange={handleChange} error={errors.userDocumentType} placeholder="Tipo de documento" required />
+                        <Input labelVariant="dark" label="Correo electrónico" name="userEmail" type="email" placeholder="Ingrese su correo" value={formData.userEmail} onChange={handleChange} error={errors.userEmail} required />
+                        <Input labelVariant="dark" label="Confirmación de correo electrónico" name="userEmailVerification" type="email" placeholder="Confirme su correo" value={formData.userEmailVerification} onChange={handleChange} error={errors.userEmailVerification} required />
                         <div className="relative">
-                            <Input labelVariant="dark" label="Número telefónico de contacto" name="userPhone" type="tel" placeholder="Ingrese su teléfono" value={formData.userPhone} onChange={handleChange} error={errors.userPhone} />
+                            <Input labelVariant="dark" label="Número telefónico de contacto" name="userPhone" type="tel" placeholder="Ingrese su teléfono" value={formData.userPhone} onChange={handleChange} error={errors.userPhone} required />
                             <button
                                 type="button"
                                 title={formData.userSecondaryPhone ? `Secundario: ${formData.userSecondaryPhone}` : "Agregar número secundario"}
@@ -182,13 +192,13 @@ export default function UserRegisterForm({ onCancel }) {
                             </button>
                         </div>
 
-                        <Input labelVariant="dark" label="Número de documento" name="userDocumentNumber" placeholder="Ingrese su número de documento" value={formData.userDocumentNumber} onChange={handleChange} error={errors.userDocumentNumber} />
-                        <Input labelVariant="dark" label="Dirección" name="userAddress" placeholder="Ingrese su dirección" value={formData.userAddress} onChange={handleChange} error={errors.userAddress} />
+                        <Input labelVariant="dark" label="Número de documento" name="userDocumentNumber" placeholder="Ingrese su número de documento" value={formData.userDocumentNumber} onChange={handleChange} error={errors.userDocumentNumber} required />
+                        <Input labelVariant="dark" label="Dirección" name="userAddress" placeholder="Ingrese su dirección" value={formData.userAddress} onChange={handleChange} error={errors.userAddress} required />
 
                         <Input labelVariant="dark" label="Correo institucional (opcional)" name="userEmailInstitutional" type="email" placeholder="Ingrese su correo institucional" value={formData.userEmailInstitutional} onChange={handleChange} error={errors.userEmailInstitutional} />
 
                         <DatePicker labelVariant="dark" label="Fecha inicio (automática)" name="startDate" value={formData.startDate} onChange={() => {}} disabled />
-                        <Input labelVariant="dark" label="Contraseña" name="userPassword" type="password" placeholder="Ingrese su contraseña" value={formData.userPassword} onChange={handleChange} error={errors.userPassword} />
+                        <Input labelVariant="dark" label="Contraseña" name="userPassword" type="password" placeholder="Ingrese su contraseña" value={formData.userPassword} onChange={handleChange} error={errors.userPassword} required />
 
                         <DatePicker labelVariant="dark" label="Fecha finalización" name="endDate" placeholder="Fecha finalización" value={formData.endDate} onChange={handleChange} error={errors.endDate} />
 

@@ -101,4 +101,18 @@ export const userController = {
       res.status(status).json({ error: err.message });
     }
   },
+
+  async toggle(req, res) {
+    try {
+      const result = await userService.toggleUser(req.params.id);
+      res.status(200).json({
+        message: `Usuario ${result.enabled ? "habilitado" : "deshabilitado"} correctamente`,
+        enabled: result.enabled,
+      });
+    } catch (err) {
+      console.error("ERROR toggle user:", err);
+      const status = err.message.includes("no encontrado") ? 404 : 500;
+      res.status(status).json({ error: err.message });
+    }
+  },
 };

@@ -54,6 +54,7 @@ export default function EditReturnableMaterial3({ formData = {}, onNext, onBack 
         value={fields.materialStoryTeller}
         onChange={handleChange}
         error={errors.materialStoryTeller}
+        required
       />
       <Input labelVariant="dark"
         label={`Cantidad${hasPlate ? " (opcional)" : " *"}`}

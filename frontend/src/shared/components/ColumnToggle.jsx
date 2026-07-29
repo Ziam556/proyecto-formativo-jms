@@ -8,7 +8,7 @@ export default function ColumnToggle({ label, active = true, onChange }) {
         <button
             type="button"
             onClick={() => onChange?.(!active)}
-            className="inline-flex items-center gap-[5px] bg-transparent border-0 cursor-pointer p-0 whitespace-nowrap"
+            className="inline-flex items-start gap-[5px] bg-transparent border-0 cursor-pointer p-0 whitespace-normal text-left"
         >
             {/* Icono de estado — el color de fondo varía según estado, se mantiene inline */}
             <span

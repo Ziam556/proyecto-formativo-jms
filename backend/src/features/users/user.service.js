@@ -92,4 +92,10 @@ export const userService = {
 
     return updated;
   },
+
+  async toggleUser(id) {
+    const result = await userRepository.toggleUser(id);
+    if (!result) throw new Error("Usuario no encontrado");
+    return result;
+  },
 };
