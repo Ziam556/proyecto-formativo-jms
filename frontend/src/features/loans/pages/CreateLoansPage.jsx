@@ -219,15 +219,15 @@ export default function CreateLoansPage() {
                     <p
                       className={`text-sm ${
                         isCurrent
-                          ? "font-bold text-white"
+                          ? "font-bold text-black"
                           : isCompleted
                           ? "font-semibold text-green-300"
-                          : "font-normal text-black/70"
+                          : "font-normal text-black/60"
                       }`}
                     >
                       {step.title}
                     </p>
-                    <p className="text-[11px] text-black/50 mt-0.5">
+                    <p className="text-[11px] text-white/90 mt-0.5">
                       {step.sub}
                     </p>
                   </div>

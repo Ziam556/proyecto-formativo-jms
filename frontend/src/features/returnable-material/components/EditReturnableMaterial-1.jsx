@@ -56,6 +56,7 @@ export default function EditReturnableMaterial1({ formData = {}, onNext, onCance
         value={fields.materialPlate}
         onChange={handleChange}
         error={errors.materialPlate}
+        required
       />
       <Select labelVariant="dark"
         label="Categoría"
@@ -65,6 +66,7 @@ export default function EditReturnableMaterial1({ formData = {}, onNext, onCance
         onChange={handleChange}
         error={errors.materialCategory}
         placeholder="Selecciona una categoría"
+        required
       />
       <Input labelVariant="dark"
         label="Nombre del elemento"
@@ -73,6 +75,7 @@ export default function EditReturnableMaterial1({ formData = {}, onNext, onCance
         value={fields.materialElementName}
         onChange={handleChange}
         error={errors.materialElementName}
+        required
       />
       <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-4">
         <Button variant="secondary" size="sm" onClick={onCancel}>Cancelar</Button>

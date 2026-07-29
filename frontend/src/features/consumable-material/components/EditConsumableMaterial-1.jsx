@@ -86,6 +86,7 @@ export default function EditConsumableMaterial1({
                 value={fields.materialElementName}
                 onChange={handleChange}
                 error={errors.materialElementName}
+                required
             />
 
             <BrandSearchField

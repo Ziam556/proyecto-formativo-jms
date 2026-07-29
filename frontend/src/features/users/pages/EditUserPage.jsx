@@ -71,6 +71,11 @@ export default function EditUserPage() {
                             : null
                         }
                     />
+                    {selectedUser && !imageFile && !selectedUser.image && (
+                        <p className="text-red-400 text-[0.72rem] text-center font-medium">
+                            La foto de perfil es requerida
+                        </p>
+                    )}
 
                     {/* Switch habilitado / deshabilitado */}
                     <div className="flex items-center gap-3">

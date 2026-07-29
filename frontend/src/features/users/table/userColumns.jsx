@@ -20,14 +20,22 @@ export const userColumns = [
     { id: "actions", label: "Acciones", noToggle: true, renderCell: (user) => <UserRowActions user={user} /> },
 ];
 
-export function getUserColumns(onRefresh) {
+export function getUserColumns(onRefresh, selectedUsers = [], onBulkToggle) {
     return [
         ...baseColumns,
         {
             id:         "actions",
             label:      "Acciones",
             noToggle:   true,
-            renderCell: (user) => <UserRowActions user={user} onRefresh={onRefresh} />,
+            renderCell: (user) => (
+                <UserRowActions
+                    user={user}
+                    onRefresh={onRefresh}
+                    selectedCount={selectedUsers.length}
+                    isSelected={selectedUsers.some((u) => u.document === user.document)}
+                    onBulkToggle={onBulkToggle}
+                />
+            ),
         },
     ];
 }

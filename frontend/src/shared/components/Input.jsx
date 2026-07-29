@@ -5,6 +5,7 @@ export default function Input({
     type = "text",
     error,
     labelVariant = "light",
+    required = false,
     className: extraClassName = "",
     ...props
 }){
@@ -20,7 +21,7 @@ export default function Input({
             {/* Label opcional, se pone rojo si hay error */}
             {label && (
                 <label className={`block text-[12px] mb-1 place-self-start font-semibold ${labelColor}`}>
-                    {label}
+                    {label}{required && <span className="text-red-500 ml-[2px]">*</span>}
                 </label>
             )}
 

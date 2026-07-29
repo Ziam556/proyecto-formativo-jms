@@ -53,11 +53,12 @@ export default function CreateLoans2({ formData, onNext, onBack }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-5">
 
           <Input
-            label="Ficha/Grupo aprendices *"
+            label="Ficha/Grupo aprendices"
             type="text"
             value={fields.file}
             onChange={(e) => setFields((p) => ({ ...p, file: e.target.value }))}
             placeholder="Escribe la ficha o el grupo"
+            required
           />
 
           <Input

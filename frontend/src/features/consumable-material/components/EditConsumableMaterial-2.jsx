@@ -77,6 +77,7 @@ export default function EditConsumableMaterial2({
                 value={fields.materialStoryTeller}
                 onChange={handleChange}
                 error={errors.materialStoryTeller}
+                required
             />
 
             {/* CANTIDAD */}
@@ -88,6 +89,7 @@ export default function EditConsumableMaterial2({
                 value={fields.materialAmount}
                 onChange={handleChange}
                 error={errors.materialAmount}
+                required
             />
 
             {/* VALOR UNITARIO */}
@@ -99,6 +101,7 @@ export default function EditConsumableMaterial2({
                 value={fields.materialUnitValue}
                 onChange={handleChange}
                 error={errors.materialUnitValue}
+                required
             />
 
             {/* VALOR TOTAL (auto-calculado) */}

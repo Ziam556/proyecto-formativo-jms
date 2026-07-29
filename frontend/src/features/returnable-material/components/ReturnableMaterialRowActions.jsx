@@ -4,11 +4,20 @@ import { EllipsisVertical } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toggleReturnableMaterial } from "../services/returnableMaterialService";
 
-export default function ReturnableMaterialRowActions({ material, onToggle }) {
+export default function ReturnableMaterialRowActions({ material, onToggle, selectedCount = 0, isSelected = false, onBulkToggle }) {
   const navigate = useNavigate();
   const [isEnabled, setIsEnabled] = useState(material.enabled ?? true);
 
   const handleToggle = async () => {
+    const targetEnabled = !isEnabled;
+
+    // Modo masivo
+    if (selectedCount > 1 && isSelected) {
+      if (onBulkToggle) onBulkToggle(targetEnabled);
+      return;
+    }
+
+    // Modo individual
     const accion = isEnabled ? "deshabilitar" : "habilitar";
     const confirm = await alertConfirm(
       `¿${accion.charAt(0).toUpperCase() + accion.slice(1)} material?`,

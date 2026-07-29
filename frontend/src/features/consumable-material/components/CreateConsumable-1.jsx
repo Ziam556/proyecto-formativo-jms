@@ -105,6 +105,7 @@ export default function CreateConsumable1({
                 value={fields.materialElementName}
                 onChange={handleChange}
                 error={errors.materialElementName}
+                required
             />
 
             <BrandSearchField

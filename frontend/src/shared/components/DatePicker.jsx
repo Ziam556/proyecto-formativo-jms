@@ -16,6 +16,9 @@ export default function DatePicker({
     label,
     labelVariant = "light",
     disabled = false,
+    maxDate,
+    minDate,
+    required = false,
 }) {
     const labelColor = error
         ? "text-red-600"
@@ -29,7 +32,7 @@ export default function DatePicker({
             {/* Label opcional, se pone rojo si hay error */}
             {label && (
                 <label className={`block text-[12px] mb-1 place-self-start font-semibold ${labelColor}`}>
-                    {label}
+                    {label}{required && <span className="text-red-500 ml-[2px]">*</span>}
                 </label>
             )}
 
@@ -40,17 +43,18 @@ export default function DatePicker({
             <ReactDatePicker
                 locale="es"
                 placeholderText={placeholder}
-                selected={value ? new Date(value) : null}
-                onChange={(date) =>
-                    onChange({
-                        target: {
-                            name,
-                            value: date ? date.toISOString().split("T")[0] : "",
-                        },
-                    })
-                }
+                selected={value ? new Date(`${value}T00:00:00`) : null}
+                onChange={(date) => {
+                    if (!date) { onChange({ target: { name, value: "" } }); return; }
+                    const yyyy = date.getFullYear();
+                    const mm   = String(date.getMonth() + 1).padStart(2, "0");
+                    const dd   = String(date.getDate()).padStart(2, "0");
+                    onChange({ target: { name, value: `${yyyy}-${mm}-${dd}` } });
+                }}
                 dateFormat="dd/MM/yyyy"
                 disabled={disabled}
+                maxDate={maxDate}
+                minDate={minDate}
                 wrapperClassName="w-full"
                 className={`w-full h-12 px-4 text-[12px] focus:outline-none bg-[rgba(217,217,217,0.54)] rounded-[8px] border ${error ? "border-red-500" : "border-black"} ${disabled ? "cursor-not-allowed" : ""}`}
             />

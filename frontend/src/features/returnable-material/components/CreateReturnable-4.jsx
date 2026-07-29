@@ -83,6 +83,7 @@ export default function CreateReturnable4({ formData, onSave, onBack }) {
         onChange={handleChange}
         error={errors.materialState}
         placeholder="Selecciona un estado"
+        required
       />
 
       {/* Ficha técnica — Solo PDF, máx 3 MB */}

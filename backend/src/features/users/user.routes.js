@@ -26,6 +26,9 @@ router.post("/:id/permissions", authenticateToken, userController.assignPermissi
 // PUT    /api/users/:id → actualizar usuario por número de documento
 router.put("/:id",    authenticateToken, upload.single("userImage"), userController.update);
 
+// PATCH  /api/users/:id/toggle → habilitar/deshabilitar usuario
+router.patch("/:id/toggle", authenticateToken, userController.toggle);
+
 // DELETE /api/users/:id → eliminar usuario por número de documento
 router.delete("/:id", authenticateToken, userController.delete);
 

@@ -91,12 +91,12 @@ export default function WizardStepper({ steps, currentStep, backTo }) {
                       ? "font-bold text-white"
                       : isCompleted
                       ? "font-semibold text-green-300"
-                      : "font-semibold text-[#0f172a]"
+                      : "font-semibold text-white/50"
                   }`}
                 >
                   {step.title}
                 </p>
-                <p className="text-[11px] text-[#1e293b] mt-0.5">{step.sub}</p>
+                <p className="text-[11px] text-white/90 mt-0.5">{step.sub}</p>
               </div>
             </div>
           );

@@ -28,6 +28,7 @@ export function normalizeReturnableMaterial(row) {
       if (!row.material_image) return [];
       try { return JSON.parse(row.material_image); } catch { return [row.material_image]; }
     })(),
+    enabled: row.enabled,
   };
 }
 

@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { IconButton, Dropdown, DropdownTrigger, DropdownContent, DropdownItem } from "@/shared";
 import logo from "@/assets/images/logo-1.png";
-import { CircleUserRound, Bell } from "lucide-react";
+import { CircleUserRound, Bell, House } from "lucide-react";
 import { handleLogout } from "@/features/auth/services/logoutService";
 import { usePermissions } from "@/shared/hooks/usePermissions";
 import {
@@ -197,6 +197,15 @@ export default function Header() {
             )}
           </div>
 
+          {/* Casita — ir al menú principal */}
+          <button
+            onClick={() => navigate("/dashboard/home")}
+            aria-label="Menú principal"
+            className="w-11 h-11 flex items-center justify-center rounded-full hover:bg-[rgba(255,255,255,0.15)] transition-colors bg-transparent border-0 cursor-pointer"
+          >
+            <House size={24} color="#fff" />
+          </button>
+
           {/* Ícono usuario con dropdown */}
           <Dropdown>
             <DropdownTrigger>
@@ -213,11 +222,6 @@ export default function Header() {
                 >
                   Cerrar sesión
                 </button>
-              </DropdownItem>
-              <DropdownItem>
-                <Link to="/dashboard/home" className="block w-full">
-                  Menu
-                </Link>
               </DropdownItem>
               <DropdownItem>
                 <Link to="/dashboard/userpage/profile" className="block w-full">

@@ -276,4 +276,15 @@ export const userRepository = {
     return result.rows[0] ?? null;
   },
 
+  async toggleUser(id) {
+    const result = await pool.query(
+      `UPDATE public.users
+       SET enabled = NOT enabled
+       WHERE user_document_number = $1
+       RETURNING user_document_number AS id, enabled`,
+      [id]
+    );
+    return result.rows[0] ?? null;
+  },
+
 };

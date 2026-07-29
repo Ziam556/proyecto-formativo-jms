@@ -29,14 +29,22 @@ export const consumableMaterialColumns = [
 ];
 
 // Factory que inyecta el callback onToggle para refrescar la lista
-export function getConsumableMaterialColumns(onToggle) {
+export function getConsumableMaterialColumns(onToggle, selectedMaterials = [], onBulkToggle) {
   return [
     ...baseColumns,
     {
-      id:         "actions",
-      label:      "Acciones",
-      noToggle:   true,
-      renderCell: (material) => <ConsumableMaterialRowActions material={material} onToggle={onToggle} />,
+      id:       "actions",
+      label:    "Acciones",
+      noToggle: true,
+      renderCell: (material) => (
+        <ConsumableMaterialRowActions
+          material={material}
+          onToggle={onToggle}
+          selectedCount={selectedMaterials.length}
+          isSelected={selectedMaterials.some((m) => m.id === material.id)}
+          onBulkToggle={onBulkToggle}
+        />
+      ),
     },
   ];
 }

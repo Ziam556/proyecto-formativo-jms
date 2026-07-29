@@ -65,6 +65,7 @@ export default function EditConsumableMaterial3({ formData, onSave, onBack }) {
         options={states}
         onChange={handleChange}
         error={errors.materialState}
+        required
       />
 
       <Textarea
@@ -82,6 +83,8 @@ export default function EditConsumableMaterial3({ formData, onSave, onBack }) {
         value={fields.MaterialPurchaseDate}
         onChange={handleChange}
         error={errors.MaterialPurchaseDate}
+        maxDate={new Date()}
+        required
       />
 
       <Input labelVariant="dark"
@@ -91,6 +94,7 @@ export default function EditConsumableMaterial3({ formData, onSave, onBack }) {
         value={fields.materialLocation}
         onChange={handleChange}
         error={errors.materialLocation}
+        required
       />
 
       <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-2">

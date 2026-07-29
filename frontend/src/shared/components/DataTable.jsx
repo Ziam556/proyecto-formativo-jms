@@ -107,19 +107,17 @@ export default function DataTable({
 
     return (
         <>
-            <div className="overflow-x-auto rounded-xl border border-[#bdbdbd] bg-[#E9E9E9]">
-                <table className="w-full border-collapse table-fixed">
-                    <colgroup>
-                        <col className="w-[50px]" />
-                        {colDefs.map((col) => (
-                            <col key={col.id} style={{ width: col.width ?? "auto" }} />
-                        ))}
-                    </colgroup>
+            <div className="overflow-x-auto rounded-xl border border-[#bdbdbd] bg-[#E9E9E9] -mx-1 sm:mx-0">
+                <table className="border-collapse" style={{ minWidth: "max-content", width: "100%" }}>
                     <thead>
                         {table.getHeaderGroups().map((hg) => (
                             <tr key={hg.id}>
                                 {hg.headers.map((header) => (
-                                    <th key={header.id} className="p-[8px_10px] bg-[#D1D1D1] text-black text-[0.8rem] font-semibold border-b border-[#bdbdbd] sticky top-0 z-10 text-left">
+                                    <th
+                                        key={header.id}
+                                        className="p-[8px_10px] bg-[#D1D1D1] text-black text-[0.8rem] font-semibold border-b border-[#bdbdbd] sticky top-0 z-10 text-left whitespace-normal break-words"
+                                        style={{ minWidth: header.column.id === "select" ? 40 : 110 }}
+                                    >
                                         {flexRender(header.column.columnDef.header, header.getContext())}
                                     </th>
                                 ))}
@@ -140,8 +138,8 @@ export default function DataTable({
                                     className={`hover:bg-[#dcd6f0] transition-colors duration-100 ${i % 2 === 0 ? "bg-[#E9E9E9]" : "bg-[#f0f0f0]"}`}
                                 >
                                     {row.getVisibleCells().map((cell) => (
-                                        <td key={cell.id} className="p-[8px_10px] text-[0.82rem] text-[#3D3D3D] border-b border-[#d5d5d5] overflow-hidden">
-                                            <div className="truncate whitespace-nowrap" title={typeof cell.getValue() === "string" ? cell.getValue() : undefined}>
+                                        <td key={cell.id} className="p-[8px_10px] text-[0.82rem] text-[#3D3D3D] border-b border-[#d5d5d5]">
+                                            <div className="truncate" style={{ maxWidth: 220 }} title={typeof cell.getValue() === "string" ? cell.getValue() : undefined}>
                                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                             </div>
                                         </td>

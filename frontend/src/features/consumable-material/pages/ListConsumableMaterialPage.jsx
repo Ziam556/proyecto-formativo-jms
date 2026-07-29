@@ -1,6 +1,6 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 
-import { getConsumableMaterials } from "../services/consumableMaterialService.js";
+import { getConsumableMaterials, toggleConsumableMaterial } from "../services/consumableMaterialService.js";
 import { normalizeConsumableMaterials } from "../utils/normalizeConsumableMaterial.js";
 import { translateStatesInList } from "../utils/stateLabels.js";
 
@@ -12,6 +12,9 @@ import {
   Input,
   Select,
   ClearFiltersButton,
+  alertConfirm,
+  alertSuccess,
+  alertError,
 } from "@/shared";
 
 import { getConsumableMaterialColumns } from "../table/consumableMaterialColumns.jsx";
@@ -143,6 +146,41 @@ export default function ListConsumableMaterialPage() {
     });
 
   };
+
+  // Selección masiva
+  const selectedMaterials = useMemo(() =>
+    Object.keys(rowSelection)
+      .filter((idx) => rowSelection[idx])
+      .map((idx) => filtered[Number(idx)])
+      .filter(Boolean),
+    [rowSelection, filtered]
+  );
+
+  const selectedMaterialsRef = useRef(selectedMaterials);
+  selectedMaterialsRef.current = selectedMaterials;
+
+  const handleBulkToggle = useCallback(async (targetEnabled) => {
+    const accion = targetEnabled ? "habilitar" : "deshabilitar";
+    const targets = selectedMaterialsRef.current.filter((m) => (m.enabled ?? true) !== targetEnabled);
+    if (!targets.length) {
+      alertError("Sin cambios", `Todos los seleccionados ya están ${targetEnabled ? "habilitados" : "deshabilitados"}.`);
+      return;
+    }
+    const count = targets.length;
+    const confirm = await alertConfirm(
+      `¿${accion.charAt(0).toUpperCase() + accion.slice(1)} ${count} material(es)?`,
+      `Se ${accion}n ${count} material(es) de consumo seleccionado(s).`
+    );
+    if (!confirm.isConfirmed) return;
+    try {
+      await Promise.all(targets.map((m) => toggleConsumableMaterial(m.id, targetEnabled)));
+      alertSuccess("Listo", `${count} material(es) ${targetEnabled ? "habilitados" : "deshabilitados"} correctamente.`);
+      setRowSelection({});
+      loadMaterials();
+    } catch (err) {
+      alertError("Error", err.message);
+    }
+  }, [loadMaterials]);
 
   // Campos activos según toggles de la tabla
   const activeFields = useMemo(
@@ -277,7 +315,7 @@ export default function ListConsumableMaterialPage() {
           ) : (
             <DataTable
               data={filtered}
-              columns={getConsumableMaterialColumns(loadMaterials)}
+              columns={getConsumableMaterialColumns(loadMaterials, selectedMaterials, handleBulkToggle)}
               rowSelection={rowSelection}
               onRowSelectionChange={setRowSelection}
               onReportColsChange={setReportCols}

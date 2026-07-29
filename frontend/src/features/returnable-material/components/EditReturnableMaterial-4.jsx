@@ -99,6 +99,7 @@ export default function EditReturnableMaterial4({ formData = {}, onSave, onBack 
         onChange={handleChange}
         error={errors.materialState}
         placeholder="Selecciona un estado"
+        required
       />
 
       <div className="flex flex-col gap-1">
