@@ -7,14 +7,12 @@ import {
 } from "../services/returnableMaterialService";
 import EditReturnableMaterial1 from "../components/EditReturnableMaterial-1";
 import EditReturnableMaterial2 from "../components/EditReturnableMaterial-2";
-import EditReturnableMaterial3 from "../components/EditReturnableMaterial-3";
 import EditReturnableMaterial4 from "../components/EditReturnableMaterial-4";
 
 const steps = [
-    { num: 1, title: "Identificación",    sub: "ID · Placa · Categoría · Nombre"         },
+    { num: 1, title: "Identificación",    sub: "ID · Placa · Nombre · Cuentadante" },
     { num: 2, title: "Características",   sub: "Marca · Modelo · Serial · Imagen"          },
-    { num: 3, title: "Valoración",         sub: "Cuentadante · Cantidad · Valores"          },
-    { num: 4, title: "Estado y detalles", sub: "Estado · Ficha · Descripción · Ubicación"  },
+    { num: 3, title: "Estado y detalles", sub: "Estado · Ficha · Descripción · Ubicación"  },
 ];
 
 function toWizardFields(row) {
@@ -28,9 +26,6 @@ function toWizardFields(row) {
         materialSerial:          row.material_serial           || "",
         materialImage:           [],
         materialStoryTeller:        row.material_story_teller     || "",
-        materialAmount:             row.material_amount    != null ? String(row.material_amount)    : "",
-        materialUnitValue:          row.material_unit_value!= null ? String(row.material_unit_value): "",
-        materialTotalValue:         row.material_total_value!=null ? String(row.material_total_value): "",
         isEnabled:                  row.enabled                   ?? true,
         materialState:              row.material_state            || "",
         materialTechnicalSheet:     [],
@@ -101,9 +96,6 @@ export default function EditReturnableMaterialPage() {
             materialModel:        finalData.materialModel,
             materialSerial:       finalData.materialSerial,
             materialStoryTeller:  finalData.materialStoryTeller,
-            materialAmount:       finalData.materialAmount,
-            materialUnitValue:    finalData.materialUnitValue,
-            materialTotalValue:   finalData.materialTotalValue,
             materialState:        finalData.materialState,
             materialDescription:  finalData.materialDescription,
             materialLocation:     finalData.materialLocation,
@@ -138,8 +130,7 @@ export default function EditReturnableMaterialPage() {
     const stepComponents = [
         <EditReturnableMaterial1 key={`s0-${matKey}`} formData={formData} onNext={handleNext} onCancel={() => navigate("/dashboard/returnable-material")} />,
         <EditReturnableMaterial2 key={`s1-${matKey}`} formData={formData} onNext={handleNext} onBack={handleBack} />,
-        <EditReturnableMaterial3 key={`s2-${matKey}`} formData={formData} onNext={handleNext} onBack={handleBack} />,
-        <EditReturnableMaterial4 key={`s3-${matKey}`} formData={formData} onSave={handleSave}  onBack={handleBack} />,
+        <EditReturnableMaterial4 key={`s2-${matKey}`} formData={formData} onSave={handleSave}  onBack={handleBack} />,
     ];
 
     return (

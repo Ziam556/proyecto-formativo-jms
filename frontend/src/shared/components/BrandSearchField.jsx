@@ -8,12 +8,18 @@ const API_BASE = "http://localhost:4000";
  * cargadas desde GET /api/brands.
  *
  * Props:
- *   label    – texto del label
- *   value    – valor actual (string)
- *   onChange – fn(value: string) → actualiza el campo
- *   error    – mensaje de error (string)
+ *   label        – texto del label
+ *   value        – valor actual (string)
+ *   onChange     – fn(value: string) → actualiza el campo
+ *   error        – mensaje de error (string)
+ *   labelVariant – "light" (blanco, default) | "dark" (negro), igual que <Input>
  */
-export default function BrandSearchField({ label, value = "", onChange, error }) {
+export default function BrandSearchField({ label, value = "", onChange, error, labelVariant = "light" }) {
+  const labelColor = error
+    ? "text-red-600"
+    : labelVariant === "dark"
+    ? "text-black"
+    : "text-white";
   const [brands, setBrands]       = useState([]);
   const [open, setOpen]           = useState(false);
   const containerRef              = useRef(null);
@@ -50,11 +56,7 @@ export default function BrandSearchField({ label, value = "", onChange, error })
     <div className="w-full relative" ref={containerRef}>
       {/* Label */}
       {label && (
-        <label
-          className={`block text-[8px] mb-1 place-self-start ${
-            error ? "text-red-600" : "text-text-primary"
-          }`}
-        >
+        <label className={`block text-[12px] mb-1 place-self-start font-semibold ${labelColor}`}>
           {label}
         </label>
       )}

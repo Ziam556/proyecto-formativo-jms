@@ -30,4 +30,15 @@ export const returnableStep1Schema = z.object({
             "El nombre solo puede contener letras, números, espacios y puntuación básica"
         ),
 
+    // Cuentadante: SOLO nombre de persona (letras y espacios, sin números).
+    materialStoryTeller: z
+        .string()
+        .trim()
+        .min(3, "El cuentadante debe tener mínimo 3 caracteres")
+        .max(80, "El nombre del cuentadante es demasiado largo")
+        .regex(
+            /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s.\-']+$/,
+            "El cuentadante debe ser un nombre válido, sin números"
+        ),
+
 });

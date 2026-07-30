@@ -39,6 +39,19 @@ export default function DataTable({
     const rowSelection = externalRowSelection ?? internalRowSelection;
     const onRowSelectionChange = externalOnRowSelectionChange ?? setInternalRowSelection;
 
+    // Normaliza los anchos declarados en % para que, junto con la columna de
+    // selección, nunca sumen más del 100% del contenedor. Así ningún módulo
+    // (usuarios, préstamos, consumibles, devolutivos...) fuerza scroll
+    // horizontal solo por tener más columnas o por definir porcentajes que,
+    // sumados, se pasaban del ancho disponible.
+    const SELECT_WIDTH_PERCENT = 4;
+    const definedPercents = colDefs
+        .map((c) => (typeof c.width === "string" && c.width.trim().endsWith("%") ? parseFloat(c.width) : null))
+        .filter((w) => w != null && !Number.isNaN(w));
+    const sumDefinedPercents = definedPercents.reduce((acc, w) => acc + w, 0);
+    const hasPercentWidths = sumDefinedPercents > 0;
+    const scale = hasPercentWidths ? (100 - SELECT_WIDTH_PERCENT) / sumDefinedPercents : 1;
+
     const columns = useMemo(() => [
         {
             id: "select",
@@ -57,11 +70,16 @@ export default function DataTable({
             ),
             size: 50,
         },
-        ...colDefs.map((col) => ({
+        ...colDefs.map((col) => {
+            const isPercent = typeof col.width === "string" && col.width.trim().endsWith("%");
+            const normalizedWidth = isPercent
+                ? `${(parseFloat(col.width) * scale).toFixed(2)}%`
+                : col.width;
+            return {
             id: col.id,
             accessorKey: col.accessor ?? undefined,
             size: col.width ? undefined : undefined,
-            meta: { width: col.width },
+            meta: { width: normalizedWidth },
             header: () => col.noToggle
                 ? <span style={{ fontSize: "0.8rem", fontWeight: 600 }}>{col.label}</span>
                 : (
@@ -86,8 +104,9 @@ export default function DataTable({
                 );
                 return value ?? "—";
             },
-        })),
-    ], [colDefs, reportCols]);
+        };
+        }),
+    ], [colDefs, reportCols, scale]);
 
     const table = useReactTable({
         data,
@@ -108,19 +127,25 @@ export default function DataTable({
     return (
         <>
             <div className="overflow-x-auto rounded-xl border border-[#bdbdbd] bg-[#E9E9E9] -mx-1 sm:mx-0">
-                <table className="border-collapse" style={{ minWidth: "max-content", width: "100%" }}>
+                <table className="border-collapse w-full table-fixed">
                     <thead>
                         {table.getHeaderGroups().map((hg) => (
                             <tr key={hg.id}>
-                                {hg.headers.map((header) => (
-                                    <th
-                                        key={header.id}
-                                        className="p-[8px_10px] bg-[#D1D1D1] text-black text-[0.8rem] font-semibold border-b border-[#bdbdbd] sticky top-0 z-10 text-left whitespace-normal break-words"
-                                        style={{ minWidth: header.column.id === "select" ? 40 : 110 }}
-                                    >
-                                        {flexRender(header.column.columnDef.header, header.getContext())}
-                                    </th>
-                                ))}
+                                {hg.headers.map((header) => {
+                                    const metaWidth = header.column.columnDef.meta?.width;
+                                    return (
+                                        <th
+                                            key={header.id}
+                                            className="p-[8px_10px] bg-[#D1D1D1] text-black text-[0.8rem] font-semibold border-b border-[#bdbdbd] sticky top-0 z-10 text-left whitespace-normal break-words"
+                                            style={{
+                                                width: header.column.id === "select" ? (hasPercentWidths ? `${SELECT_WIDTH_PERCENT}%` : 40) : metaWidth,
+                                                minWidth: header.column.id === "select" ? 40 : 56,
+                                            }}
+                                        >
+                                            {flexRender(header.column.columnDef.header, header.getContext())}
+                                        </th>
+                                    );
+                                })}
                             </tr>
                         ))}
                     </thead>
@@ -139,7 +164,7 @@ export default function DataTable({
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <td key={cell.id} className="p-[8px_10px] text-[0.82rem] text-[#3D3D3D] border-b border-[#d5d5d5]">
-                                            <div className="truncate" style={{ maxWidth: 220 }} title={typeof cell.getValue() === "string" ? cell.getValue() : undefined}>
+                                            <div className="truncate" style={{ maxWidth: "100%" }} title={typeof cell.getValue() === "string" ? cell.getValue() : undefined}>
                                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                             </div>
                                         </td>

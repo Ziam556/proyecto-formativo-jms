@@ -59,7 +59,7 @@ export default function EditConsumableMaterial1({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
 
-            <Input labelVariant="dark"
+            <Input labelVariant="light"
                 label="ID"
                 name="consumableMaterialId"
                 placeholder="ID"
@@ -70,7 +70,7 @@ export default function EditConsumableMaterial1({
                 error={errors.consumableMaterialId}
             />
 
-            <Input labelVariant="dark"
+            <Input labelVariant="light"
                 label="Placa SENA"
                 name="materialPlate"
                 placeholder="Escribe la placa SENA"
@@ -79,7 +79,7 @@ export default function EditConsumableMaterial1({
                 error={errors.materialPlate}
             />
 
-            <Input labelVariant="dark"
+            <Input labelVariant="light"
                 label="Nombre del elemento"
                 name="materialElementName"
                 placeholder="Escribe el nombre del elemento"

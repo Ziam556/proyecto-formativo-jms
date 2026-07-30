@@ -31,6 +31,7 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
     materialPlate:        formData.materialPlate        || "",
     materialCategory:     formData.materialCategory     || "",
     materialElementName:  formData.materialElementName  || "",
+    materialStoryTeller:  formData.materialStoryTeller  || "",
   });
   const [errors, setErrors]       = useState({});
   const [existingIds, setExistingIds] = useState([]);
@@ -73,7 +74,7 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
 
   return (
     <div className="grid grid-cols-[320px_320px] gap-6 mx-auto">
-      <Input labelVariant="dark"
+      <Input labelVariant="light"
         label="ID"
         name="returnableMaterialId"
         value={fields.returnableMaterialId}
@@ -82,7 +83,7 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
         readOnly
         className="opacity-60 cursor-not-allowed"
       />
-      <Input labelVariant="dark"
+      <Input labelVariant="light"
         label="Placa SENA"
         name="materialPlate"
         placeholder="Escribe la placa SENA"
@@ -91,7 +92,7 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
         error={errors.materialPlate}
         required
       />
-      <Select labelVariant="dark"
+      <Select labelVariant="light"
         label="Categoría"
         name="materialCategory"
         value={fields.materialCategory}
@@ -101,13 +102,22 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
         placeholder="Selecciona una categoría"
         required
       />
-      <Input labelVariant="dark"
+      <Input labelVariant="light"
         label="Nombre del elemento"
         name="materialElementName"
         placeholder="Escribe el nombre del elemento"
         value={fields.materialElementName}
         onChange={handleChange}
         error={errors.materialElementName}
+        required
+      />
+      <Input labelVariant="light"
+        label="Cuentadante (Nombre y apellido)"
+        name="materialStoryTeller"
+        placeholder="Escribe el nombre del cuentadante"
+        value={fields.materialStoryTeller}
+        onChange={handleChange}
+        error={errors.materialStoryTeller}
         required
       />
       <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4">

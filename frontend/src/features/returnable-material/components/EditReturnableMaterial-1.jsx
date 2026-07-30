@@ -1,12 +1,6 @@
 import { useState } from "react";
-import { Input, Button, Select } from "@/shared";
+import { Input, Button } from "@/shared";
 import { returnableStep1Schema } from "../schemas/returnableStep1Schema";
-
-const CATEGORY_OPTIONS = [
-  { value: "Herramienta",          label: "Herramienta" },
-  { value: "Maquinaria y equipos", label: "Maquinaria y equipos" },
-  { value: "Muebles y enseres",    label: "Muebles y enseres" },
-];
 
 export default function EditReturnableMaterial1({ formData = {}, onNext, onCancel }) {
   const [fields, setFields] = useState({
@@ -14,6 +8,7 @@ export default function EditReturnableMaterial1({ formData = {}, onNext, onCance
     materialPlate:           formData.materialPlate           || "",
     materialCategory:        formData.materialCategory        || "",
     materialElementName:     formData.materialElementName     || "",
+    materialStoryTeller:     formData.materialStoryTeller     || "",
   });
   const [errors, setErrors] = useState({});
 
@@ -39,7 +34,7 @@ export default function EditReturnableMaterial1({ formData = {}, onNext, onCance
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
-      <Input labelVariant="dark"
+      <Input labelVariant="light"
         label="ID"
         name="returnableMaterialId"
         placeholder="Ej: HER-001"
@@ -49,7 +44,7 @@ export default function EditReturnableMaterial1({ formData = {}, onNext, onCance
         className="opacity-60 cursor-not-allowed"
         error={errors.returnableMaterialId}
       />
-      <Input labelVariant="dark"
+      <Input labelVariant="light"
         label="Placa SENA"
         name="materialPlate"
         placeholder="Escribe la placa SENA"
@@ -58,23 +53,22 @@ export default function EditReturnableMaterial1({ formData = {}, onNext, onCance
         error={errors.materialPlate}
         required
       />
-      <Select labelVariant="dark"
-        label="Categoría"
-        name="materialCategory"
-        value={fields.materialCategory}
-        options={CATEGORY_OPTIONS}
-        onChange={handleChange}
-        error={errors.materialCategory}
-        placeholder="Selecciona una categoría"
-        required
-      />
-      <Input labelVariant="dark"
+      <Input labelVariant="light"
         label="Nombre del elemento"
         name="materialElementName"
         placeholder="Escribe el nombre del elemento"
         value={fields.materialElementName}
         onChange={handleChange}
         error={errors.materialElementName}
+        required
+      />
+      <Input labelVariant="light"
+        label="Cuentadante (Nombre y apellido)"
+        name="materialStoryTeller"
+        placeholder="Escribe el nombre del cuentadante"
+        value={fields.materialStoryTeller}
+        onChange={handleChange}
+        error={errors.materialStoryTeller}
         required
       />
       <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-4">

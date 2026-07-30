@@ -59,7 +59,7 @@ export default function CreateConsumable2({
             
 
             {/* CUENTADANTE */}
-            <Input labelVariant="dark"
+            <Input labelVariant="light"
                 label="Cuentadante (Nombre y apellido)"
                 name="materialStoryTeller"
                 placeholder="Escribe el nombre del cuentadante"
@@ -70,7 +70,7 @@ export default function CreateConsumable2({
             />
 
             {/* CANTIDAD */}
-            <Input labelVariant="dark"
+            <Input labelVariant="light"
                 label="Cantidad"
                 name="materialAmount"
                 type="number"
@@ -82,7 +82,7 @@ export default function CreateConsumable2({
             />
 
             {/* VALOR UNITARIO */}
-            <Input labelVariant="dark"
+            <Input labelVariant="light"
                 label="Valor unitario"
                 name="materialUnitValue"
                 type="number"
@@ -94,7 +94,7 @@ export default function CreateConsumable2({
             />
 
             {/* VALOR TOTAL — calculado automáticamente, no editable */}
-            <Input labelVariant="dark"
+            <Input labelVariant="light"
                 label="Valor total (automático)"
                 name="materialTotalValue"
                 type="number"
@@ -107,7 +107,7 @@ export default function CreateConsumable2({
 
             {/* IMAGEN */}
             <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-text-primary">
+                <label className="text-sm font-medium text-white">
                     Imagen
                 </label>
 
