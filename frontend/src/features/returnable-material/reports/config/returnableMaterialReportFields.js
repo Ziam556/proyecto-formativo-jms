@@ -28,19 +28,7 @@ export const returnableMaterialReportFields = [
     label: "Serial", 
     default: false 
   },
-  { key: "amount", 
-    label: "Cantidad", 
-    default: true 
-  },
-  { key: "unitValue", 
-    label: "Valor unitario", 
-    default: false 
-  },
-  { key: "totalValue", 
-    label: "Valor total", 
-    default: false 
-  },
-  { key: "state", 
+  { key: "state",
     label: "Estado", 
     default: true 
   },

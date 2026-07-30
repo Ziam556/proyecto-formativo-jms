@@ -79,7 +79,7 @@ export default function CreateConsumable1({
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
 
-            <Input labelVariant="dark"
+            <Input labelVariant="light"
                 label="ID"
                 name="consumableMaterialId"
                 value={fields.consumableMaterialId}
@@ -89,7 +89,7 @@ export default function CreateConsumable1({
                 className="opacity-60 cursor-not-allowed"
             />
 
-            <Input labelVariant="dark"
+            <Input labelVariant="light"
                 label="Placa SENA"
                 name="materialPlate"
                 placeholder="Escribe la placa SENA"
@@ -98,7 +98,7 @@ export default function CreateConsumable1({
                 error={errors.materialPlate}
             />
 
-            <Input labelVariant="dark"
+            <Input labelVariant="light"
                 label="Nombre del elemento"
                 name="materialElementName"
                 placeholder="Escribe el nombre del elemento"

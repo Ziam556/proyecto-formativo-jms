@@ -4,14 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { createReturnableMaterial } from "../services/returnableMaterialService";
 import CreateReturnable1 from "../components/CreateReturnable-1";
 import CreateReturnable2 from "../components/CreateReturnable-2";
-import CreateReturnable3 from "../components/CreateReturnable-3";
 import CreateReturnable4 from "../components/CreateReturnable-4";
 
 const steps = [
-    { num: 1, title: "Identificación",    sub: "ID · Placa · Categoría · Nombre"         },
+    { num: 1, title: "Identificación",    sub: "ID · Placa · Categoría · Nombre · Cuentadante" },
     { num: 2, title: "Características",   sub: "Marca · Modelo · Serial · Imagen"          },
-    { num: 3, title: "Valoración",         sub: "Cuentadante · Cantidad · Valores"          },
-    { num: 4, title: "Estado y detalles", sub: "Estado · Ficha · Descripción · Ubicación"  },
+    { num: 3, title: "Estado y detalles", sub: "Estado · Ficha · Descripción · Ubicación"  },
 ];
 
 export default function CreateReturnableMaterialPage() {
@@ -54,8 +52,7 @@ export default function CreateReturnableMaterialPage() {
     const stepComponents = [
         <CreateReturnable1 key={0} formData={formData} onNext={handleNext} onCancel={() => navigate("/dashboard/returnable-material")} />,
         <CreateReturnable2 key={1} formData={formData} onNext={handleNext} onBack={handleBack} />,
-        <CreateReturnable3 key={2} formData={formData} onNext={handleNext} onBack={handleBack} />,
-        <CreateReturnable4 key={3} formData={formData} onSave={handleSave}  onBack={handleBack} />,
+        <CreateReturnable4 key={2} formData={formData} onSave={handleSave}  onBack={handleBack} />,
     ];
 
     return (

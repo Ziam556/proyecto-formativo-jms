@@ -23,7 +23,7 @@ export async function updateReturnableMaterial(id, data, imageFiles, technicalSh
   const fields = [
     "materialPlate", "materialCategory", "materialElementName",
     "materialBrand", "materialModel", "materialSerial", "materialPurchaseDate",
-    "materialStoryTeller", "materialAmount", "materialUnitValue", "materialTotalValue",
+    "materialStoryTeller",
     "materialState", "materialDescription", "materialLocation",
     "materialWidth", "materialLength", "materialDepth", "isEnabled",
   ];
@@ -65,7 +65,7 @@ export async function createReturnableMaterial(data, imageFiles, technicalSheetF
   const fields = [
     "returnableMaterialId", "materialPlate", "materialCategory", "materialElementName",
     "materialBrand", "materialModel", "materialSerial", "materialPurchaseDate",
-    "materialStoryTeller", "materialAmount", "materialUnitValue", "materialTotalValue",
+    "materialStoryTeller",
     "materialState", "materialDescription", "materialLocation",
     "materialWidth", "materialLength", "materialDepth",
   ];

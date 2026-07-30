@@ -56,7 +56,7 @@ export default function EditConsumableMaterial2({
 
             {/* IMAGEN */}
             <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-text-primary">
+                <label className="text-sm font-medium text-white">
                     Imagen
                 </label>
                 <FileInput
@@ -70,7 +70,7 @@ export default function EditConsumableMaterial2({
             </div>
 
             {/* CUENTADANTE */}
-            <Input labelVariant="dark"
+            <Input labelVariant="light"
                 label="Cuentadante (Nombre y apellido)"
                 name="materialStoryTeller"
                 placeholder="Escribe el nombre del cuentadante"
@@ -81,7 +81,7 @@ export default function EditConsumableMaterial2({
             />
 
             {/* CANTIDAD */}
-            <Input labelVariant="dark"
+            <Input labelVariant="light"
                 label="Cantidad"
                 name="materialAmount"
                 type="number"
@@ -93,7 +93,7 @@ export default function EditConsumableMaterial2({
             />
 
             {/* VALOR UNITARIO */}
-            <Input labelVariant="dark"
+            <Input labelVariant="light"
                 label="Valor unitario"
                 name="materialUnitValue"
                 type="number"
@@ -105,7 +105,7 @@ export default function EditConsumableMaterial2({
             />
 
             {/* VALOR TOTAL (auto-calculado) */}
-            <Input labelVariant="dark"
+            <Input labelVariant="light"
                 label="Valor total (calculado)"
                 name="materialTotalValue"
                 type="number"

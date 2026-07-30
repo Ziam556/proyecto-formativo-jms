@@ -48,14 +48,14 @@ export default function CreateReturnable2({ formData, onNext, onBack }) {
         }}
         error={errors.materialBrand}
       />
-      <Input labelVariant="dark"
+      <Input labelVariant="light"
         label="Modelo (opcional)"
         name="materialModel"
         placeholder="Escribe el modelo"
         value={fields.materialModel}
         onChange={handleChange}
       />
-      <Input labelVariant="dark"
+      <Input labelVariant="light"
         label="Serial (opcional)"
         name="materialSerial"
         placeholder="Escribe el serial"
@@ -65,7 +65,7 @@ export default function CreateReturnable2({ formData, onNext, onBack }) {
 
       {/* Imagen — solo PNG, JPG, SVG */}
       <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium text-text-primary">
+        <label className="text-sm font-medium text-white">
           Imagen <span className="text-red-400">*</span>
         </label>
         <FileInput

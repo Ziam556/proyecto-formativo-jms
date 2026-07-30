@@ -165,7 +165,7 @@ export default function Header() {
         >
           <img src={logo} alt="SENA" className="h-9 md:h-11 flex-shrink-0" />
           <span className="font-semibold text-[0.95rem] md:text-[1.15rem] tracking-[0.01em] truncate hidden sm:block">
-            Inventario Teleinformática
+            InfraSys
           </span>
         </Link>
 
