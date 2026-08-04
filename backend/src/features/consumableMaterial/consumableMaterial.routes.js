@@ -14,10 +14,16 @@ router.get("/", consumableMaterialController.getAll);
 router.get("/:id", consumableMaterialController.getById);
 
 // POST   /consumableMaterial         → crear
-router.post("/", upload.array("materialImage", 5), consumableMaterialController.create);
+router.post("/", upload.fields([
+  { name: "materialImage",         maxCount: 5 },
+  { name: "materialTechnicalSheet", maxCount: 1 },
+]), consumableMaterialController.create);
 
 // PUT    /consumableMaterial/:id     → actualizar
-router.put("/:id", upload.array("materialImage", 5), consumableMaterialController.update);
+router.put("/:id", upload.fields([
+  { name: "materialImage",         maxCount: 5 },
+  { name: "materialTechnicalSheet", maxCount: 1 },
+]), consumableMaterialController.update);
 
 // PATCH  /consumableMaterial/:id/toggle → habilitar/deshabilitar
 router.patch("/:id/toggle", consumableMaterialController.toggleEnabled);

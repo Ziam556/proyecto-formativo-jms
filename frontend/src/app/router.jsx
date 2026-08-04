@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { AuthLayout, DashboardLayout, ProtectedRoute, PermissionRoute } from "@/shared";
-import { Login, ForgotPasswordPage } from "@/features/auth";
+import { Login, ForgotPasswordPage, ForceChangePasswordPage } from "@/features/auth";
 import { UserPage, CreateUserPage, ListUserPage, ViewUserPage, EditUserPage, UserProfilePage } from "@/features/users";
 import { HomePage } from "@/features/home";
 import { ConfigPage } from "@/features/config";
@@ -28,6 +28,7 @@ const router = createBrowserRouter([
         children: [
             { index: true, element: <Login /> },
             { path: "forgot-password", element: <ForgotPasswordPage /> },
+            { path: "change-password", element: <ForceChangePasswordPage /> },
         ],
     },
     {

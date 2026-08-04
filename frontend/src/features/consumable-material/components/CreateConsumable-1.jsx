@@ -80,13 +80,12 @@ export default function CreateConsumable1({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
 
             <Input labelVariant="light"
-                label="ID"
+                label="Serial Number (SN) (opcional)"
                 name="consumableMaterialId"
+                placeholder="Ej: CON-001"
                 value={fields.consumableMaterialId}
-                onChange={() => {}}
+                onChange={handleChange}
                 error={errors.consumableMaterialId}
-                readOnly
-                className="opacity-60 cursor-not-allowed"
             />
 
             <Input labelVariant="light"
@@ -109,7 +108,7 @@ export default function CreateConsumable1({
             />
 
             <BrandSearchField
-                label="Marca"
+                label="Marca (opcional)"
                 value={fields.materialBrand}
                 onChange={(val) => {
                     setFields((prev) => ({ ...prev, materialBrand: val }));

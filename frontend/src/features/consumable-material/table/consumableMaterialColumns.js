@@ -7,7 +7,7 @@ import { createElement } from "react";
 import ConsumableMaterialRowActions from "../components/ConsumableMaterialRowActions";
 
 export const consumableMaterialColumns = [
-  { id: "id",             label: "ID",                  accessor: "id" },
+  { id: "id",             label: "SN",                  accessor: "id" },
   { id: "plateSena",      label: "Placa Sena",          accessor: "plateSena" },
   { id: "elementName",    label: "Nombre del elemento", accessor: "elementName" },
   { id: "brand",          label: "Marca",               accessor: "brand" },

@@ -12,6 +12,7 @@ import {
   Pencil,
   LogOut,
   CalendarDays,
+  HeadphonesIcon,
 } from "lucide-react";
 
 const API_BASE = "http://localhost:4000";
@@ -133,6 +134,22 @@ export default function UserProfilePage() {
                   <CalendarDays size={17} />
                   <span>Fecha finalización: <strong>{formatDate(user.end_date)}</strong></span>
                 </div>
+              </div>
+
+              {/* Soporte */}
+              <div className="flex items-center justify-center gap-2 mt-5 text-black/60 text-[0.8rem]">
+                <HeadphonesIcon size={15} />
+                <span>
+                  ¿Necesitas ayuda? Escríbenos a{" "}
+                  <a
+                    href="https://mail.google.com/mail/?view=cm&to=sc876858@gmail.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-black/80 hover:underline"
+                  >
+                    sc876858@gmail.com
+                  </a>
+                </span>
               </div>
             </>
           )}

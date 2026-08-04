@@ -12,7 +12,7 @@ import EditConsumableMaterial3 from "../components/EditConsumableMaterial-3";
 const steps = [
     { num: 1, title: "Identificación",    sub: "ID · Placa · Nombre · Marca"              },
     { num: 2, title: "Información",       sub: "Imagen · Cuentadante · Cantidad · Valores" },
-    { num: 3, title: "Estado y detalles", sub: "Estado · Descripción · Fecha · Ubicación"  },
+    { num: 3, title: "Estado y detalles", sub: "Estado · Descripción · Fecha · Ubicación · Ficha Técnica" },
 ];
 
 function toWizardFields(row) {
@@ -22,7 +22,10 @@ function toWizardFields(row) {
         materialBrand: row.material_brand || "",
         materialElementName: row.material_element_name || "",
         materialImage: [],
-        materialStoryTeller: row.material_story_teller || "",
+        materialStoryTeller: (() => {
+            try { return JSON.parse(row.material_story_teller || "[]"); }
+            catch { return row.material_story_teller ? [{ name: row.material_story_teller, document: "" }] : []; }
+        })(),
         materialAmount:    row.material_amount     != null ? String(row.material_amount)     : "",
         materialUnitValue: row.material_unit_value != null ? String(row.material_unit_value) : "",
         materialTotalValue:row.material_total_value!= null ? String(row.material_total_value): "",
@@ -33,6 +36,8 @@ function toWizardFields(row) {
             ? new Date(row.material_purchase_date).toISOString().split("T")[0]
             : "",
         materialLocation: row.material_location || "",
+        materialTechnicalSheet:    [],
+        materialTechnicalSheetUrl: row.material_technical_sheet || null,
     };
 }
 
@@ -105,8 +110,17 @@ export default function EditConsumableMaterialPage() {
             ? finalData.materialImage[0]
             : finalData.materialImage;
 
+        const sheetFile = Array.isArray(finalData.materialTechnicalSheet)
+            ? finalData.materialTechnicalSheet[0] ?? null
+            : finalData.materialTechnicalSheet ?? null;
+
+        // Si el usuario eliminó la ficha existente sin subir una nueva, indicarlo al backend
+        if (finalData.sheetRemoved && !sheetFile) {
+            payload.removeSheet = true;
+        }
+
         try {
-            await updateConsumableMaterial(finalData.consumableMaterialId, payload, imageFile);
+            await updateConsumableMaterial(finalData.consumableMaterialId, payload, imageFile, sheetFile);
             alertSuccess("Material actualizado", "El material de consumo se actualizó correctamente.");
             loadMaterials();
             setFormData({});

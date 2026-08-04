@@ -112,11 +112,12 @@ export default function ViewLoans({ loan: initialLoan, onCancel, onEdit }) {
             <div className="flex-1 h-px bg-white/20" />
           </div>
           <div className="flex flex-wrap gap-4 mb-6">
-            <Field label="ID Préstamo"   value={loan.id} />
-            <Field label="Ficha / Grupo" value={loan.ficha} />
-            <Field label="Fecha salida"  value={loan.departureDate} />
-            <Field label="Fecha entrega" value={loan.deliveryDate} />
-            <Field label="Estado"        value={loan.status} />
+            <Field label="ID Préstamo"      value={loan.id} />
+            <Field label="Ficha / Grupo"   value={loan.ficha} />
+            <Field label="Tipo de préstamo" value={loan.loanType === "externo" ? "Externo" : "Interno"} />
+            <Field label="Fecha salida"    value={loan.departureDate} />
+            <Field label="Fecha entrega"   value={loan.deliveryDate} />
+            <Field label="Estado"          value={loan.status} />
           </div>
 
           {/* USUARIO */}

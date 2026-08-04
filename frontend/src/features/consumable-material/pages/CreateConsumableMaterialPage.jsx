@@ -9,7 +9,7 @@ import CreateConsumable3 from "../components/CreateConsumable-3";
 const steps = [
     { num: 1, title: "Identificación",    sub: "ID · Placa · Nombre · Marca"              },
     { num: 2, title: "Información",       sub: "Imagen · Cuentadante · Cantidad · Valores" },
-    { num: 3, title: "Estado y detalles", sub: "Estado · Descripción · Fecha · Ubicación"  },
+    { num: 3, title: "Estado y detalles", sub: "Estado · Descripción · Fecha · Ubicación · Ficha Técnica" },
 ];
 
 export default function CreateConsumableMaterialPage() {
@@ -35,8 +35,11 @@ export default function CreateConsumableMaterialPage() {
             const payload = { ...finalData, materialPurchaseDate: purchaseDate };
 
             const imageFiles = finalData.materialImage ?? [];
+            const sheetFile  = Array.isArray(finalData.materialTechnicalSheet)
+                ? finalData.materialTechnicalSheet[0] ?? null
+                : finalData.materialTechnicalSheet ?? null;
 
-            await createConsumableMaterial(payload, imageFiles);
+            await createConsumableMaterial(payload, imageFiles, sheetFile);
 
             await alertSuccess("¡Material creado!", "El material de consumo se registró correctamente.");
             setFormData({});

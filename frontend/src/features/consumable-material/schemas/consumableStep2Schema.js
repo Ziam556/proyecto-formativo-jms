@@ -10,14 +10,13 @@ export const consumableStep2Schema = z.object({
         .optional(),
 
     materialStoryTeller: z
-        .string()
-        .trim()
-        .min(3, "El cuentadante debe tener mínimo 3 caracteres")
-        .max(80, "El nombre del cuentadante es demasiado largo")
-        .regex(
-            /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s.\-']+$/,
-            "El cuentadante debe ser un nombre válido, sin números"
-        ),
+        .array(
+            z.object({
+                name:     z.string().min(1),
+                document: z.string().min(1),
+            })
+        )
+        .min(1, "Selecciona al menos un cuentadante"),
 
     materialAmount: z
         .string()

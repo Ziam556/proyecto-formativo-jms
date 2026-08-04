@@ -4,13 +4,20 @@ export const consumableMaterialController = {
 
   async create(req, res) {
     try {
-      const imagePaths = req.files?.length
-        ? JSON.stringify(req.files.map((f) => `uploads/consumable/${f.filename}`))
+      const imageFiles = req.files?.materialImage ?? [];
+      const imagePaths = imageFiles.length
+        ? JSON.stringify(imageFiles.map((f) => `uploads/consumable/${f.filename}`))
+        : null;
+
+      const sheetFile = req.files?.materialTechnicalSheet?.[0];
+      const materialTechnicalSheet = sheetFile
+        ? `uploads/consumable/${sheetFile.filename}`
         : null;
 
       const material = await consumableMaterialService.createConsumableMaterial({
         ...req.body,
         materialImage: imagePaths,
+        materialTechnicalSheet,
       });
 
       res.status(201).json({
@@ -46,13 +53,22 @@ export const consumableMaterialController = {
 
   async update(req, res) {
     try {
-      const imagePaths = req.files?.length
-        ? JSON.stringify(req.files.map((f) => `uploads/consumable/${f.filename}`))
+      const imageFiles = req.files?.materialImage ?? [];
+      const imagePaths = imageFiles.length
+        ? JSON.stringify(imageFiles.map((f) => `uploads/consumable/${f.filename}`))
         : null;
+
+      const sheetFile = req.files?.materialTechnicalSheet?.[0];
+      const materialTechnicalSheet = sheetFile
+        ? `uploads/consumable/${sheetFile.filename}`
+        : req.body.removeSheet === "true"
+          ? ""          // vacío → el repo pondrá NULL
+          : undefined;  // undefined → el repo usará COALESCE para no tocar el valor
 
       const material = await consumableMaterialService.update(req.params.id, {
         ...req.body,
         materialImage: imagePaths,
+        materialTechnicalSheet,
         isEnabled: req.body.isEnabled === "true" || req.body.isEnabled === true,
       });
 

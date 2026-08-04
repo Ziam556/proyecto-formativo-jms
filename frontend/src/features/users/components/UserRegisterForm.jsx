@@ -11,7 +11,8 @@ import { getGroups } from "@/features/groups/services/groupService";
 import { createUser } from "../services/userService";
 import { useNavigate } from "react-router-dom";
 
-const TODAY = new Date().toISOString().split("T")[0];
+const _d = new Date();
+const TODAY = `${_d.getFullYear()}-${String(_d.getMonth() + 1).padStart(2, "0")}-${String(_d.getDate()).padStart(2, "0")}`;
 
 // ─── Estado vacío del formulario ──────────────────────────────────────────────
 const EMPTY_FORM = {

@@ -60,13 +60,11 @@ export default function EditConsumableMaterial1({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
 
             <Input labelVariant="light"
-                label="ID"
+                label="Serial Number (SN) (opcional)"
                 name="consumableMaterialId"
-                placeholder="ID"
+                placeholder="Ej: CON-001"
                 value={fields.consumableMaterialId}
-                onChange={() => {}}
-                readOnly
-                className="opacity-60 cursor-not-allowed"
+                onChange={handleChange}
                 error={errors.consumableMaterialId}
             />
 

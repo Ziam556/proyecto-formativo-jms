@@ -18,6 +18,7 @@ export const consumableMaterialRepository = {
       materialDescription,
       materialPurchaseDate,
       materialLocation,
+      materialTechnicalSheet,
     } = consumableMaterialData;
 
     const query = `
@@ -34,9 +35,10 @@ export const consumableMaterialRepository = {
         material_state,
         material_description,
         material_purchase_date,
-        material_location
+        material_location,
+        material_technical_sheet
       )
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
       RETURNING *;
     `;
 
@@ -54,6 +56,7 @@ export const consumableMaterialRepository = {
       materialDescription,
       materialPurchaseDate,
       materialLocation,
+      materialTechnicalSheet ?? null,
     ];
 
     const result = await pool.query(query, values);
@@ -95,13 +98,24 @@ export const consumableMaterialRepository = {
       materialPurchaseDate,
       materialLocation,
       isEnabled,
+      materialTechnicalSheet,
     } = consumableMaterialData;
+
+    // materialTechnicalSheet:
+    //   undefined → don't touch existing value (COALESCE)
+    //   ""        → set to NULL (user removed the sheet)
+    //   "path/..."→ update to new path
+    const sheetExpr = materialTechnicalSheet === undefined
+      ? "COALESCE($14, material_technical_sheet)"
+      : materialTechnicalSheet === ""
+        ? "NULL"
+        : "$14";
 
     const query = `
       UPDATE public.consumable_material
       SET
-        material_plate         = $1,
-        material_element_name  = $2,
+        material_plate          = $1,
+        material_element_name   = $2,
         material_brand          = $3,
         material_image          = COALESCE($4, material_image),
         material_story_teller   = $5,
@@ -112,8 +126,9 @@ export const consumableMaterialRepository = {
         material_description    = $10,
         material_purchase_date  = $11,
         material_location       = $12,
-        enabled                 = $13
-      WHERE consumable_material_id = $14
+        enabled                 = $13,
+        material_technical_sheet = ${sheetExpr}
+      WHERE consumable_material_id = $15
       RETURNING *;
     `;
 
@@ -131,6 +146,7 @@ export const consumableMaterialRepository = {
       materialPurchaseDate,
       materialLocation,
       isEnabled ?? true,
+      materialTechnicalSheet !== "" ? (materialTechnicalSheet ?? null) : null,
       id,
     ];
 

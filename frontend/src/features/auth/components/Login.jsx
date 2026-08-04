@@ -87,7 +87,12 @@ export default function LoginForm() {
                 sessionStorage.setItem("token", data.token);
                 setActiveSession(formData.userEmail.trim());
             }
-            navigate("/dashboard/home");
+            if (data.mustChangePassword) {
+                sessionStorage.setItem("must_change_password", "true");
+                navigate("/auth/change-password");
+            } else {
+                navigate("/dashboard/home");
+            }
         } catch (error) {
             setServerError(error.message);
         }
@@ -159,6 +164,19 @@ export default function LoginForm() {
                         className="text-center text-[0.85rem] font-semibold text-white cursor-pointer m-0 hover:underline"
                     >
                         ¡Olvidé mi contraseña!
+                    </p>
+
+                    {/* Soporte */}
+                    <p className="text-center text-[0.78rem] text-[#2a2a4a] font-semibold m-0">
+                        ¿No tienes cuenta? Contacta a soporte:{" "}
+                        <a
+                            href="https://mail.google.com/mail/?view=cm&to=sc876858@gmail.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline hover:opacity-75"
+                        >
+                            sc876858@gmail.com
+                        </a>
                     </p>
 
                     {/* Botón */}

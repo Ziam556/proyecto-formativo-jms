@@ -1,5 +1,10 @@
 import { useEffect, useState, useMemo } from "react";
-import { Input, Button, BackButton, DataTable, DatePicker, Textarea, alertWarning, alertConfirm, alertError } from "@/shared";
+import { Input, Button, BackButton, DataTable, DatePicker, Textarea, Select, alertWarning, alertConfirm, alertError } from "@/shared";
+
+const LOAN_TYPE_OPTIONS = [
+  { value: "interno", label: "Interno" },
+  { value: "externo", label: "Externo" },
+];
 import { loansColumns } from "../table/loansColumns";
 import { getMaterialsForLoan } from "../services/loanService";
 
@@ -12,6 +17,7 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
   const [fields, setFields] = useState({
     loansId:         formData?.loansId         || "",
     fichaGrupo:      formData?.fichaGrupo      || "",
+    loanType:        formData?.loanType        || "interno",
     cantidadConsumo: formData?.cantidadConsumo || "",
     fechaSalida:     formData?.fechaSalida     || "",
     fechaEntrega:    formData?.fechaEntrega    || "",
@@ -131,6 +137,15 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
               value={fields.fichaGrupo}
               onChange={handleChange}
               error={errors.fichaGrupo}
+            />
+
+            <Select
+              label="Tipo de préstamo"
+              name="loanType"
+              value={fields.loanType}
+              options={LOAN_TYPE_OPTIONS}
+              onChange={handleChange}
+              required
             />
 
             <Input

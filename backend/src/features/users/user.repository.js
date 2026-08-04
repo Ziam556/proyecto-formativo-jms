@@ -36,9 +36,10 @@ export const userRepository = {
         start_date,
         end_date,
         user_group,
-        user_image
+        user_image,
+      must_change_password
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
       RETURNING user_id, user_email;
     `;
 
@@ -57,6 +58,7 @@ export const userRepository = {
       endDate,                // $12
       userGroup,              // $13
       userImage,              // $14
+      true,                   // $15  must_change_password — siempre true al crear
     ];
 
     const result = await pool.query(query, values);

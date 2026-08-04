@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Input, Button, FileInput } from "@/shared";
+import { Button, FileInput, Input, MultiUserSearchField } from "@/shared";
 import { consumableStep2Schema } from "../schemas/consumableStep2Schema";
 
 export default function CreateConsumable2({
@@ -8,11 +8,11 @@ export default function CreateConsumable2({
     onBack,
 }) {
     const [fields, setFields] = useState({
-        materialImage: formData?.materialImage || [],
-        materialStoryTeller: formData?.materialStoryTeller || "",
-        materialAmount: formData?.materialAmount || "",
-        materialUnitValue: formData?.materialUnitValue || "",
-        materialTotalValue: formData?.materialTotalValue || "",
+        materialImage:       formData?.materialImage       || [],
+        materialStoryTeller: formData?.materialStoryTeller || [],
+        materialAmount:      formData?.materialAmount      || "",
+        materialUnitValue:   formData?.materialUnitValue   || "",
+        materialTotalValue:  formData?.materialTotalValue  || "",
     });
 
     const [errors, setErrors] = useState({});
@@ -58,13 +58,14 @@ export default function CreateConsumable2({
 
             
 
-            {/* CUENTADANTE */}
-            <Input labelVariant="light"
-                label="Cuentadante (Nombre y apellido)"
-                name="materialStoryTeller"
-                placeholder="Escribe el nombre del cuentadante"
+            {/* CUENTADANTE(S) */}
+            <MultiUserSearchField
+                label="Cuentadante(s)"
                 value={fields.materialStoryTeller}
-                onChange={handleChange}
+                onChange={(arr) => {
+                    setFields((prev) => ({ ...prev, materialStoryTeller: arr }));
+                    setErrors((prev) => ({ ...prev, materialStoryTeller: "" }));
+                }}
                 error={errors.materialStoryTeller}
                 required
             />

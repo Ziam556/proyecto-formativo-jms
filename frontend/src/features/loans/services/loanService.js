@@ -29,6 +29,7 @@ function mapLoan(l) {
         justification:    l.justification,
         user:             l.requesting_user,
         status:           l.loan_status,
+        loanType:         l.loan_type ?? "interno",
         materiales:      (l.materiales || []).map((m) => ({
             name:   m.name,
             type:   m.type,

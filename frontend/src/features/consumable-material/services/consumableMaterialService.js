@@ -7,7 +7,7 @@ function getAuthHeaders() {
   };
 }
 
-export async function createConsumableMaterial(data, imageFiles) {
+export async function createConsumableMaterial(data, imageFiles, sheetFile = null) {
   const formData = new FormData();
 
   const fields = [
@@ -15,7 +15,6 @@ export async function createConsumableMaterial(data, imageFiles) {
     "materialPlate",
     "materialElementName",
     "materialBrand",
-    "materialStoryTeller",
     "materialAmount",
     "materialUnitValue",
     "materialTotalValue",
@@ -31,8 +30,15 @@ export async function createConsumableMaterial(data, imageFiles) {
     }
   });
 
+  // Cuentadantes — array de objetos, serializar a JSON
+  if (Array.isArray(data.materialStoryTeller)) {
+    formData.append("materialStoryTeller", JSON.stringify(data.materialStoryTeller));
+  }
+
   const files = Array.isArray(imageFiles) ? imageFiles : (imageFiles ? [imageFiles] : []);
   files.forEach((f) => formData.append("materialImage", f));
+
+  if (sheetFile) formData.append("materialTechnicalSheet", sheetFile);
 
   const response = await fetch(API_URL, {
     method: "POST",
@@ -64,14 +70,13 @@ export async function getConsumableMaterialById(id) {
 }
 
 // Actualizar material de consumo. Misma forma de armar FormData que create.
-export async function updateConsumableMaterial(id, data, imageFiles) {
+export async function updateConsumableMaterial(id, data, imageFiles, sheetFile = null) {
   const formData = new FormData();
 
   const fields = [
     "materialPlate",
     "materialElementName",
     "materialBrand",
-    "materialStoryTeller",
     "materialAmount",
     "materialUnitValue",
     "materialTotalValue",
@@ -80,6 +85,7 @@ export async function updateConsumableMaterial(id, data, imageFiles) {
     "materialPurchaseDate",
     "materialLocation",
     "isEnabled",
+    "removeSheet",
   ];
 
   fields.forEach((key) => {
@@ -88,8 +94,15 @@ export async function updateConsumableMaterial(id, data, imageFiles) {
     }
   });
 
+  // Cuentadantes — array de objetos, serializar a JSON
+  if (Array.isArray(data.materialStoryTeller)) {
+    formData.append("materialStoryTeller", JSON.stringify(data.materialStoryTeller));
+  }
+
   const files = Array.isArray(imageFiles) ? imageFiles : (imageFiles ? [imageFiles] : []);
   files.forEach((f) => formData.append("materialImage", f));
+
+  if (sheetFile) formData.append("materialTechnicalSheet", sheetFile);
 
   const response = await fetch(`${API_URL}/${id}`, {
     method: "PUT",

@@ -25,7 +25,10 @@ function toWizardFields(row) {
         materialModel:           row.material_model            || "",
         materialSerial:          row.material_serial           || "",
         materialImage:           [],
-        materialStoryTeller:        row.material_story_teller     || "",
+        materialStoryTeller: (() => {
+            try { return JSON.parse(row.material_story_teller || "[]"); }
+            catch { return row.material_story_teller ? [{ name: row.material_story_teller, document: "" }] : []; }
+        })(),
         isEnabled:                  row.enabled                   ?? true,
         materialState:              row.material_state            || "",
         materialTechnicalSheet:     [],

@@ -40,7 +40,7 @@ export default function CreateReturnable2({ formData, onNext, onBack }) {
   return (
     <div className="grid grid-cols-[320px_320px] gap-6">
       <BrandSearchField
-        label="Marca"
+        label="Marca (opcional)"
         value={fields.materialBrand}
         onChange={(val) => {
           setFields((prev) => ({ ...prev, materialBrand: val }));

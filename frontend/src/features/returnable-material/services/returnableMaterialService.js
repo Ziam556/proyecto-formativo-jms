@@ -23,7 +23,6 @@ export async function updateReturnableMaterial(id, data, imageFiles, technicalSh
   const fields = [
     "materialPlate", "materialCategory", "materialElementName",
     "materialBrand", "materialModel", "materialSerial", "materialPurchaseDate",
-    "materialStoryTeller",
     "materialState", "materialDescription", "materialLocation",
     "materialWidth", "materialLength", "materialDepth", "isEnabled",
   ];
@@ -33,6 +32,11 @@ export async function updateReturnableMaterial(id, data, imageFiles, technicalSh
       formData.append(key, data[key]);
     }
   });
+
+  // Cuentadantes — array de objetos, serializar a JSON
+  if (Array.isArray(data.materialStoryTeller)) {
+    formData.append("materialStoryTeller", JSON.stringify(data.materialStoryTeller));
+  }
 
   const imgFiles = Array.isArray(imageFiles) ? imageFiles : (imageFiles ? [imageFiles] : []);
   imgFiles.forEach((f) => formData.append("materialImage", f));
@@ -65,7 +69,6 @@ export async function createReturnableMaterial(data, imageFiles, technicalSheetF
   const fields = [
     "returnableMaterialId", "materialPlate", "materialCategory", "materialElementName",
     "materialBrand", "materialModel", "materialSerial", "materialPurchaseDate",
-    "materialStoryTeller",
     "materialState", "materialDescription", "materialLocation",
     "materialWidth", "materialLength", "materialDepth",
   ];
@@ -75,6 +78,11 @@ export async function createReturnableMaterial(data, imageFiles, technicalSheetF
       formData.append(key, data[key]);
     }
   });
+
+  // Cuentadantes — array de objetos, serializar a JSON
+  if (Array.isArray(data.materialStoryTeller)) {
+    formData.append("materialStoryTeller", JSON.stringify(data.materialStoryTeller));
+  }
 
   const imgFiles = Array.isArray(imageFiles) ? imageFiles : (imageFiles ? [imageFiles] : []);
   imgFiles.forEach((f) => formData.append("materialImage", f));

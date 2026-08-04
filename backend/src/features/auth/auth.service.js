@@ -77,10 +77,19 @@ export const authService = {
 
         return {
             token,
+            mustChangePassword: user.must_change_password ?? false,
             user: {
                 email: user.user_email,
             },
         };
+    },
+
+    // ── Cambio de contraseña obligatorio (primer ingreso) ────────────────────
+
+    async changeFirstPassword(email, newPassword) {
+        const hashed = await bcrypt.hash(newPassword, 10);
+        await authRepository.updatePassword(email, hashed);
+        await authRepository.clearMustChangePassword(email);
     },
 
     // ── Forgot password ──────────────────────────────────────────────────────

@@ -4,7 +4,7 @@ import ConsumableMaterialRowActions from "../components/ConsumableMaterialRowAct
 // { id, label, accessor, format?, renderCell?, noToggle? }
 
 const baseColumns = [
-  { id: "id",            label: "ID",                  accessor: "id"            },
+  { id: "id",            label: "SN",                  accessor: "id"            },
   { id: "plateSena",     label: "Placa Sena",           accessor: "plateSena"     },
   { id: "elementName",   label: "Nombre del elemento",  accessor: "elementName"   },
   { id: "brand",         label: "Marca",                accessor: "brand"         },

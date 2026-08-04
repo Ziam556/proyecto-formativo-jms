@@ -3,6 +3,7 @@
 
 import { Router } from "express";
 import { authController } from "./auth.controller.js";
+import { authenticateToken } from "../../middlewares/auth.middlewares.js";
 
 const router = Router();
 
@@ -20,5 +21,8 @@ router.post("/verify-otp", authController.verifyOtp)
 
 //POST/api/auth/reset-password → cambia la contraseña
 router.post("/reset-password", authController.resetPassword)
+
+//PATCH/api/auth/change-first-password → cambio obligatorio en primer ingreso
+router.patch("/change-first-password", authenticateToken, authController.changeFirstPassword)
 
 export default router;
