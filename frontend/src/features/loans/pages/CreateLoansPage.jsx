@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
-import { Check } from "lucide-react";
-import { BackButton, alertWarning } from "@/shared";
+import { Check, ClipboardList, Plus, Eye } from "lucide-react";
+import { BackButton, alertWarning, Button } from "@/shared";
 import { alertSuccess, alertError } from "@/shared";
 import CreateLoans1 from "../components/CreateLoans-1";
 import CreateLoans2 from "../components/CreateLoans-2";
 import CreateLoans3 from "../components/CreateLoans-3";
 import { createLoan, getMaterialsForLoan } from "../services/loanService";
 import { getUsers } from "@/features/users/services/userService";
+import { useNavigate } from "react-router-dom";
 
 const steps = [
   { num: 1, title: "Materiales a prestar",  sub: "Búsqueda y selección"      },
@@ -21,11 +22,13 @@ const stepPaddingXClass = [
 ];
 
 export default function CreateLoansPage() {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [formData, setFormData]       = useState({});
-  const [materials, setMaterials]     = useState([]);
-  const [saving, setSaving]           = useState(false);
+  const navigate = useNavigate();
+  const [currentStep, setCurrentStep]   = useState(0);
+  const [formData, setFormData]         = useState({});
+  const [materials, setMaterials]       = useState([]);
+  const [saving, setSaving]             = useState(false);
   const [usersBlocked, setUsersBlocked] = useState(false);
+  const [savedLoanId, setSavedLoanId]   = useState(null); // ID del préstamo recién creado
 
   // Cargar materiales y verificar mínimo de usuarios al montar
   useEffect(() => {
@@ -77,16 +80,18 @@ export default function CreateLoansPage() {
       requestingUser:    finalData.user,
       notificationEmail: finalData.notificationEmail  || null,
       verificationCode:  finalData.verificationCode,
+      loanType:          finalData.loanType           || "interno",
       items,
     };
 
     try {
-      await createLoan(body);
+      const result = await createLoan(body);
+      const loanId = result?.loan_id ?? null;
       await alertSuccess(
         "¡Préstamo registrado!",
-        "El préstamo se guardó correctamente."
+        loanId ? `El préstamo fue guardado correctamente con el ID #${loanId}.` : "El préstamo se guardó correctamente."
       );
-      // Resetear y volver al paso 1
+      setSavedLoanId(loanId);
       setFormData({});
       setCurrentStep(0);
     } catch (error) {
@@ -117,6 +122,55 @@ export default function CreateLoansPage() {
       saving={saving}
     />,
   ];
+
+  // ── Pantalla de confirmación post-guardado ────────────────────────────────
+  if (savedLoanId !== null) {
+    return (
+      <div className="px-4 sm:px-16 py-6 sm:py-10 min-h-full flex items-center justify-center">
+        <div className="w-full max-w-[480px] bg-white/10 rounded-2xl p-10 flex flex-col items-center text-center gap-5">
+
+          {/* Ícono éxito */}
+          <div className="w-20 h-20 rounded-full bg-green-500/20 border-2 border-green-500/40 flex items-center justify-center">
+            <ClipboardList size={38} className="text-green-400" />
+          </div>
+
+          <div>
+            <p className="text-white font-bold text-xl mb-1">¡Préstamo registrado!</p>
+            <p className="text-white/60 text-sm">El préstamo fue guardado correctamente.</p>
+          </div>
+
+          {/* ID destacado */}
+          <div className="bg-white/10 border border-white/20 rounded-xl px-8 py-4 w-full">
+            <p className="text-white/50 text-xs uppercase tracking-widest mb-1">ID del préstamo</p>
+            <p className="text-white font-bold text-4xl tracking-wider">#{savedLoanId}</p>
+          </div>
+
+          {/* Acciones */}
+          <div className="flex flex-col sm:flex-row gap-3 w-full mt-2">
+            <Button
+              variant="secondary"
+              size="md"
+              className="flex-1"
+              onClick={() => setSavedLoanId(null)}
+            >
+              <Plus size={15} className="mr-2" />
+              Nuevo préstamo
+            </Button>
+            <Button
+              variant="primary"
+              size="md"
+              className="flex-1"
+              onClick={() => navigate("/dashboard/loans/visualize", { state: { loan: { id: savedLoanId } } })}
+            >
+              <Eye size={15} className="mr-2" />
+              Ver préstamo
+            </Button>
+          </div>
+
+        </div>
+      </div>
+    );
+  }
 
   if (usersBlocked) {
     return (

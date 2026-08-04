@@ -1,16 +1,20 @@
 import { useState, useEffect } from "react";
-import { Input, Button, Select, DatePicker, Textarea, alertSuccess, alertWarning, alertError } from "@/shared";
+import { Input, Button, Select, DatePicker, Textarea, FileInput, alertSuccess, alertWarning, alertError } from "@/shared";
+import { FileText } from "lucide-react";
 import { getStateTypes } from "../services/selectService";
 import { consumableStep3Schema } from "../schemas/consumableStep3Schema";
+
+const MAX_SHEET_MB = 3;
 
 export default function CreateConsumable3({ formData, onSave, onBack }) {
     const [states, setStates] = useState([]);
 
     const [fields, setFields] = useState({
-        materialState:       formData.materialState       || "",
-        materialDescription: formData.materialDescription || "",
-        MaterialPurchaseDate:formData.MaterialPurchaseDate|| "",
-        materialLocation:    formData.materialLocation    || "",
+        materialState:          formData.materialState          || "",
+        materialDescription:    formData.materialDescription    || "",
+        MaterialPurchaseDate:   formData.MaterialPurchaseDate   || "",
+        materialLocation:       formData.materialLocation       || "",
+        materialTechnicalSheet: formData.materialTechnicalSheet || [],
     });
 
     const [errors, setErrors] = useState({});
@@ -25,16 +29,32 @@ export default function CreateConsumable3({ formData, onSave, onBack }) {
         setErrors((prev) => ({ ...prev, [name]: "" }));
     };
 
-    const resetForm = () => {
-    setFields({
-        materialState: "",
-        materialDescription: "",
-        MaterialPurchaseDate: "",
-        materialLocation: "",
-    });
+    const handleSheetChange = (files) => {
+        if (files.length > 0) {
+            const file = files[0];
+            if (file.type !== "application/pdf") {
+                setErrors((prev) => ({ ...prev, materialTechnicalSheet: "Solo se permiten archivos PDF" }));
+                return;
+            }
+            if (file.size > MAX_SHEET_MB * 1024 * 1024) {
+                setErrors((prev) => ({ ...prev, materialTechnicalSheet: `El archivo supera los ${MAX_SHEET_MB}MB` }));
+                return;
+            }
+        }
+        setFields((prev) => ({ ...prev, materialTechnicalSheet: files }));
+        setErrors((prev) => ({ ...prev, materialTechnicalSheet: "" }));
+    };
 
-    setErrors({});
-};
+    const resetForm = () => {
+        setFields({
+            materialState: "",
+            materialDescription: "",
+            MaterialPurchaseDate: "",
+            materialLocation: "",
+            materialTechnicalSheet: [],
+        });
+        setErrors({});
+    };
 
           
     const handleSave = async () => {
@@ -107,6 +127,39 @@ export default function CreateConsumable3({ formData, onSave, onBack }) {
                 error={errors.materialLocation}
                 required
             />
+
+            {/* Ficha técnica — opcional, solo PDF, máx 3 MB */}
+            <div className="flex flex-col gap-1">
+                <label className="text-sm font-medium text-text-primary">
+                    Ficha técnica
+                    <span className="text-xs text-gray-400 ml-1">(Opcional · Solo PDF · máx 3MB)</span>
+                </label>
+
+                {fields.materialTechnicalSheet?.length > 0 ? (
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-xs text-white/80">
+                        <FileText size={14} className="shrink-0 text-cyan-400" />
+                        <span className="truncate flex-1">{fields.materialTechnicalSheet[0].name}</span>
+                        <button
+                            type="button"
+                            onClick={() => setFields((prev) => ({ ...prev, materialTechnicalSheet: [] }))}
+                            className="shrink-0 text-red-400 hover:text-red-300 font-semibold px-1"
+                        >
+                            Eliminar
+                        </button>
+                    </div>
+                ) : (
+                    <FileInput
+                        value={fields.materialTechnicalSheet}
+                        onChange={handleSheetChange}
+                        accept="application/pdf"
+                        multiple={false}
+                    />
+                )}
+
+                {errors.materialTechnicalSheet && (
+                    <span className="text-red-500 text-xs">{errors.materialTechnicalSheet}</span>
+                )}
+            </div>
 
             <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-2">
                 <Button variant="secondary" size="sm" onClick={onBack}>

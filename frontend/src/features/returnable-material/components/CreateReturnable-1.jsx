@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Input, Button, Select } from "@/shared";
+import { Input, Button, Select, MultiUserSearchField } from "@/shared";
 import { returnableStep1Schema } from "../schemas/returnableStep1Schema";
 import { getReturnableMaterials } from "../services/returnableMaterialService";
 
@@ -31,7 +31,7 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
     materialPlate:        formData.materialPlate        || "",
     materialCategory:     formData.materialCategory     || "",
     materialElementName:  formData.materialElementName  || "",
-    materialStoryTeller:  formData.materialStoryTeller  || "",
+    materialStoryTeller:  formData.materialStoryTeller  || [],
   });
   const [errors, setErrors]       = useState({});
   const [existingIds, setExistingIds] = useState([]);
@@ -75,13 +75,12 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
   return (
     <div className="grid grid-cols-[320px_320px] gap-6 mx-auto">
       <Input labelVariant="light"
-        label="ID"
+        label="Serial Number (SN) (opcional)"
         name="returnableMaterialId"
+        placeholder="Ej: HER-001"
         value={fields.returnableMaterialId}
-        onChange={() => {}}
+        onChange={handleChange}
         error={errors.returnableMaterialId}
-        readOnly
-        className="opacity-60 cursor-not-allowed"
       />
       <Input labelVariant="light"
         label="Placa SENA"
@@ -111,12 +110,13 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
         error={errors.materialElementName}
         required
       />
-      <Input labelVariant="light"
-        label="Cuentadante (Nombre y apellido)"
-        name="materialStoryTeller"
-        placeholder="Escribe el nombre del cuentadante"
+      <MultiUserSearchField
+        label="Cuentadante(s)"
         value={fields.materialStoryTeller}
-        onChange={handleChange}
+        onChange={(arr) => {
+          setFields((prev) => ({ ...prev, materialStoryTeller: arr }));
+          setErrors((prev) => ({ ...prev, materialStoryTeller: "" }));
+        }}
         error={errors.materialStoryTeller}
         required
       />

@@ -1,4 +1,9 @@
-import { Input, Button, DatePicker, Textarea } from "@/shared";
+import { Input, Button, DatePicker, Textarea, Select } from "@/shared";
+
+const LOAN_TYPE_OPTIONS = [
+  { value: "interno", label: "Interno" },
+  { value: "externo", label: "Externo" },
+];
 import { alertWarning } from "@/shared";
 import { useState } from "react";
 import { CalendarDays } from "lucide-react";
@@ -7,8 +12,9 @@ export default function CreateLoans2({ formData, onNext, onBack }) {
 
   const [fields, setFields] = useState({
     file:               formData?.file               ?? "",
+    loanType:           formData?.loanType           ?? "interno",
     amount:             formData?.amount             ?? "",
-    departureDates:     formData?.departureDates     ?? new Date().toISOString().split("T")[0],
+    departureDates:     formData?.departureDates     ?? (() => { const _d = new Date(); return `${_d.getFullYear()}-${String(_d.getMonth()+1).padStart(2,"0")}-${String(_d.getDate()).padStart(2,"0")}`; })(),
     deliveryDates:      formData?.deliveryDates      ?? "",
     justificationForUse: formData?.justificationForUse ?? "",
   });
@@ -58,6 +64,15 @@ export default function CreateLoans2({ formData, onNext, onBack }) {
             value={fields.file}
             onChange={(e) => setFields((p) => ({ ...p, file: e.target.value }))}
             placeholder="Escribe la ficha o el grupo"
+            required
+          />
+
+          <Select
+            label="Tipo de préstamo"
+            name="loanType"
+            value={fields.loanType}
+            options={LOAN_TYPE_OPTIONS}
+            onChange={(e) => setFields((p) => ({ ...p, loanType: e.target.value }))}
             required
           />
 

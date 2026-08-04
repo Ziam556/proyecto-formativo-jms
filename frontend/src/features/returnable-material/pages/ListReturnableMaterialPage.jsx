@@ -3,7 +3,7 @@ import { getReturnableMaterials, toggleReturnableMaterial } from "../services/re
 import { normalizeReturnableMaterials } from "../utils/normalizeReturnableMaterial.js";
 import { translateStatesInList } from "@/features/consumable-material/utils/stateLabels.js";
 import { DataTable, StatsPills, ReportDropdown, BackButton, Input, Select, ClearFiltersButton, alertConfirm, alertSuccess, alertError } from "@/shared";
-import { getReturnableMaterialColumns } from "../table/returnableMaterialColumns";
+import { getReturnableMaterialColumns } from "../table/returnableMaterialColumns.jsx";
 import { returnableMaterialReportFields } from "../reports/config/returnableMaterialReportFields.js";
 import { generateReturnableMaterialReport } from "../reports/services/generateReturnableMaterialReport.js";
 

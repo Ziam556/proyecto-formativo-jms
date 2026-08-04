@@ -6,8 +6,9 @@ export const consumableStep1Schema = z.object({
     consumableMaterialId: z
         .string()
         .trim()
-        .min(1, "El ID es requerido")
-        .regex(/^[A-Za-z0-9-]+$/, "El ID solo puede contener letras, números y guiones"),
+        .regex(/^[A-Za-z0-9-]*$/, "El SN solo puede contener letras, números y guiones")
+        .optional()
+        .or(z.literal("")),
 
     materialPlate: z
         .string()
@@ -28,7 +29,8 @@ export const consumableStep1Schema = z.object({
     materialBrand: z
         .string()
         .trim()
-        .min(1, "La marca es requerida")
-        .regex(/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s.-]+$/, "La marca tiene caracteres no válidos"),
+        .regex(/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s.-]*$/, "La marca tiene caracteres no válidos")
+        .optional()
+        .or(z.literal("")),
 
 });

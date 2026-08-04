@@ -4,7 +4,7 @@ import ReturnableMaterialRowActions from "../components/ReturnableMaterialRowAct
 // { id, label, accessor, format?, renderCell?, noToggle? }
 
 const baseColumns = [
-  { id: "id",            label: "ID",                  accessor: "id"            },
+  { id: "id",            label: "SN",                  accessor: "id"            },
   { id: "plateSena",     label: "Placa Sena",           accessor: "plateSena"     },
   { id: "category",      label: "Categoría",            accessor: "category"      },
   { id: "elementName",   label: "Nombre del elemento",  accessor: "elementName"   },

@@ -13,6 +13,7 @@ export default function EditLoansPage() {
     ? {
         loansId:         String(loan.id),
         fichaGrupo:      loan.ficha       ?? "",
+        loanType:        loan.loanType    ?? "interno",
         cantidadConsumo: loan.amount      ?? "",
         fechaSalida:     loan.departureDateRaw ?? "",
         fechaEntrega:    loan.deliveryDateRaw  ?? "",
@@ -22,11 +23,12 @@ export default function EditLoansPage() {
     : {};
 
   const handleSave = async (data) => {
-    const { loansId, fichaGrupo, cantidadConsumo, fechaSalida, fechaEntrega, justificacion, usuarioSolicita } = data;
+    const { loansId, fichaGrupo, loanType, cantidadConsumo, fechaSalida, fechaEntrega, justificacion, usuarioSolicita } = data;
 
     try {
       await updateLoan(loansId, {
         fileGroup:      fichaGrupo      || null,
+        loanType:       loanType        || "interno",
         amount:         cantidadConsumo ? parseInt(cantidadConsumo) : null,
         departureDate:  fechaSalida
           ? new Date(fechaSalida).toISOString().split("T")[0]

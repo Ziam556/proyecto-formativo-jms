@@ -6,7 +6,8 @@ export const authRepository = {
         const query = `
             SELECT user_email, user_password AS password,
                    user_group, start_date, end_date,
-                   enabled AS is_enabled, login_attempts, locked_until
+                   enabled AS is_enabled, login_attempts, locked_until,
+                   must_change_password
             FROM public.users
             WHERE user_email = $1
             LIMIT 1;
@@ -84,6 +85,13 @@ export const authRepository = {
         await pool.query(
             `UPDATE public.users SET user_password = $1 WHERE user_email = $2`,
             [hashedPassword, userEmail]
+        );
+    },
+
+    async clearMustChangePassword(userEmail) {
+        await pool.query(
+            `UPDATE public.users SET must_change_password = false WHERE user_email = $1`,
+            [userEmail]
         );
     },
 }

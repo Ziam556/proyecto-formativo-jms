@@ -78,6 +78,24 @@ function MaterialesCell({ materiales = [] }) {
   );
 }
 
+// ── Chip de tipo de préstamo ─────────────────────────────────────────────────
+const LOAN_TYPE_STYLES = {
+  interno: { background: "#2563eb", color: "#fff" },
+  externo: { background: "#d97706", color: "#fff" },
+};
+
+function LoanTypeChip({ value }) {
+  const s = LOAN_TYPE_STYLES[value] || LOAN_TYPE_STYLES.interno;
+  return (
+    <span
+      className="rounded-full py-[2px] px-[10px] text-[0.75rem] font-semibold whitespace-nowrap inline-block"
+      style={{ background: s.background, color: s.color }}
+    >
+      {value === "externo" ? "Externo" : "Interno"}
+    </span>
+  );
+}
+
 // ── Chip de estado del préstamo ───────────────────────────────────────────────
 const STATUS_LABELS = {
   activo:    "Activo",
@@ -202,10 +220,17 @@ const baseLoansColumns = [
     width: "11%",
   },
   {
+    id: "loanType",
+    label: "Tipo",
+    accessor: "loanType",
+    width: "9%",
+    renderCell: (row) => <LoanTypeChip value={row.loanType} />,
+  },
+  {
     id: "status",
     label: "Estado",
     accessor: "status",
-    width: "11%",
+    width: "10%",
     renderCell: (row) => <StatusChip value={row.status} />,
   },
 ];

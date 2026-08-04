@@ -108,7 +108,7 @@ export default function ViewReturnableMaterial({ material: initialMaterial, onEd
                 className="flex flex-col px-4 py-2 cursor-pointer hover:bg-white/10 border-b border-white/10 last:border-0"
               >
                 <span className="text-white text-xs font-semibold">{m.material_element_name}</span>
-                <span className="text-white/50 text-[10px]">ID: {m.returnable_material_id} · {m.material_plate}</span>
+                <span className="text-white/50 text-[10px]">SN: {m.returnable_material_id} · {m.material_plate}</span>
               </li>
             ))}
           </ul>
@@ -167,7 +167,7 @@ export default function ViewReturnableMaterial({ material: initialMaterial, onEd
             <div className="flex-1 h-px bg-white/20" />
           </div>
           <div className="flex flex-wrap gap-4 mb-6">
-            <Field label="ID"         value={material.id} />
+            <Field label="SN"         value={material.id} />
             <Field label="Placa SENA" value={material.plateSena} />
             <Field label="Serial"     value={material.serial} />
             <Field label="Categoría"  value={material.category} />

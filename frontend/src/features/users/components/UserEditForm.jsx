@@ -41,7 +41,7 @@ function buildForm(u) {
         userDocumentNumber:     String(u.document    ?? ""),
         userAddress:            u.address            ?? "",
         userPassword:           "",
-        startDate:              u.startDate          ?? new Date().toISOString().split("T")[0],
+        startDate:              u.startDate          ?? (() => { const _d = new Date(); return `${_d.getFullYear()}-${String(_d.getMonth()+1).padStart(2,"0")}-${String(_d.getDate()).padStart(2,"0")}`; })(),
         endDate:                u.endDate            ?? "",
         userGroup:              u.group              ?? null,
     };

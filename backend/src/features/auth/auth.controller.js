@@ -66,4 +66,20 @@ export const authController = {
             res.status(400).json({ error: err.message });
         }
     },
+
+    // ── Cambio de contraseña obligatorio (primer ingreso) ────────────────────
+
+    async changeFirstPassword(req, res) {
+        try {
+            const { newPassword } = req.body;
+            if (!newPassword)
+                return res.status(400).json({ error: "La nueva contraseña es requerida" });
+
+            const email = req.user.email; // viene del middleware authenticateToken
+            await authService.changeFirstPassword(email, newPassword);
+            res.status(200).json({ message: "Contraseña actualizada. Ya puedes continuar." });
+        } catch (err) {
+            res.status(400).json({ error: err.message });
+        }
+    },
 }

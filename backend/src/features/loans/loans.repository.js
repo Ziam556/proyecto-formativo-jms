@@ -10,14 +10,15 @@ export const loansRepository = {
             justification,
             requestingUser,
             verificationCode,
+            loanType,
         } = loanData;
 
         const result = await pool.query(
             `INSERT INTO public.loans
-                (file_group, amount, departure_date, delivery_date, justification, requesting_user, verification_code)
-             VALUES ($1, $2, $3, $4, $5, $6, $7)
+                (file_group, amount, departure_date, delivery_date, justification, requesting_user, verification_code, loan_type)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
              RETURNING *`,
-            [fileGroup, amount, departureDate, deliveryDate, justification, requestingUser, verificationCode]
+            [fileGroup, amount, departureDate, deliveryDate, justification, requestingUser, verificationCode, loanType ?? "interno"]
         );
 
         return result.rows[0];
@@ -95,7 +96,7 @@ export const loansRepository = {
         return { ...loan.rows[0], items: items.rows };
     },
 
-    async update(loanId, { fileGroup, amount, departureDate, deliveryDate, justification, requestingUser }) {
+    async update(loanId, { fileGroup, amount, departureDate, deliveryDate, justification, requestingUser, loanType }) {
         const result = await pool.query(
             `UPDATE public.loans
              SET file_group      = COALESCE($1, file_group),
@@ -104,11 +105,12 @@ export const loansRepository = {
                  delivery_date   = COALESCE($4, delivery_date),
                  justification   = COALESCE($5, justification),
                  requesting_user = COALESCE($6, requesting_user),
+                 loan_type       = COALESCE($7, loan_type),
                  updated_at      = NOW()
-             WHERE loan_id = $7
+             WHERE loan_id = $8
              RETURNING *`,
             [fileGroup ?? null, amount ?? null, departureDate ?? null, deliveryDate ?? null,
-             justification ?? null, requestingUser ?? null, loanId]
+             justification ?? null, requestingUser ?? null, loanType ?? null, loanId]
         );
         return result.rows[0] ?? null;
     },

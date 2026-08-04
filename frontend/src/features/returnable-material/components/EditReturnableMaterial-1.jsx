@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Input, Button } from "@/shared";
+import { Input, Button, MultiUserSearchField } from "@/shared";
 import { returnableStep1Schema } from "../schemas/returnableStep1Schema";
 
 export default function EditReturnableMaterial1({ formData = {}, onNext, onCancel }) {
@@ -8,7 +8,7 @@ export default function EditReturnableMaterial1({ formData = {}, onNext, onCance
     materialPlate:           formData.materialPlate           || "",
     materialCategory:        formData.materialCategory        || "",
     materialElementName:     formData.materialElementName     || "",
-    materialStoryTeller:     formData.materialStoryTeller     || "",
+    materialStoryTeller:     formData.materialStoryTeller     || [],
   });
   const [errors, setErrors] = useState({});
 
@@ -35,13 +35,11 @@ export default function EditReturnableMaterial1({ formData = {}, onNext, onCance
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
       <Input labelVariant="light"
-        label="ID"
+        label="Serial Number (SN) (opcional)"
         name="returnableMaterialId"
         placeholder="Ej: HER-001"
         value={fields.returnableMaterialId}
-        onChange={() => {}}
-        readOnly
-        className="opacity-60 cursor-not-allowed"
+        onChange={handleChange}
         error={errors.returnableMaterialId}
       />
       <Input labelVariant="light"
@@ -62,12 +60,13 @@ export default function EditReturnableMaterial1({ formData = {}, onNext, onCance
         error={errors.materialElementName}
         required
       />
-      <Input labelVariant="light"
-        label="Cuentadante (Nombre y apellido)"
-        name="materialStoryTeller"
-        placeholder="Escribe el nombre del cuentadante"
+      <MultiUserSearchField
+        label="Cuentadante(s)"
         value={fields.materialStoryTeller}
-        onChange={handleChange}
+        onChange={(arr) => {
+          setFields((prev) => ({ ...prev, materialStoryTeller: arr }));
+          setErrors((prev) => ({ ...prev, materialStoryTeller: "" }));
+        }}
         error={errors.materialStoryTeller}
         required
       />

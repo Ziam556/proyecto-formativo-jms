@@ -7,8 +7,9 @@ export const returnableStep1Schema = z.object({
     returnableMaterialId: z
         .string()
         .trim()
-        .min(1, "El código es requerido")
-        .regex(/^[A-Za-z0-9-]+$/, "El código solo puede contener letras, números y guiones"),
+        .regex(/^[A-Za-z0-9-]*$/, "El SN solo puede contener letras, números y guiones")
+        .optional()
+        .or(z.literal("")),
 
     materialPlate: z
         .string()
@@ -30,15 +31,13 @@ export const returnableStep1Schema = z.object({
             "El nombre solo puede contener letras, números, espacios y puntuación básica"
         ),
 
-    // Cuentadante: SOLO nombre de persona (letras y espacios, sin números).
     materialStoryTeller: z
-        .string()
-        .trim()
-        .min(3, "El cuentadante debe tener mínimo 3 caracteres")
-        .max(80, "El nombre del cuentadante es demasiado largo")
-        .regex(
-            /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s.\-']+$/,
-            "El cuentadante debe ser un nombre válido, sin números"
-        ),
+        .array(
+            z.object({
+                name:     z.string().min(1),
+                document: z.string().min(1),
+            })
+        )
+        .min(1, "Selecciona al menos un cuentadante"),
 
 });

@@ -1,19 +1,21 @@
 import { Button, Input, UserSearchField } from "@/shared";
 import { alertWarning, alertConfirm, alertSuccess, alertError } from "@/shared";
 import { useState } from "react";
-import { User, Send, CheckCircle } from "lucide-react";
+import { User, Send, CheckCircle, UserCheck, UserX } from "lucide-react";
 import { sendVerificationCode, verifyLoanCode } from "../services/loanService";
 
 // Estado del flujo de verificación
 const FLOW = {
-  IDLE:     "idle",      // usuario seleccionado, aún no se envió código
-  SENDING:  "sending",   // enviando correo…
-  SENT:     "sent",      // código enviado, esperando que el admin lo ingrese
-  VERIFYING:"verifying", // validando código con el backend
-  VERIFIED: "verified",  // código correcto ✓
+  IDLE:     "idle",
+  SENDING:  "sending",
+  SENT:     "sent",
+  VERIFYING:"verifying",
+  VERIFIED: "verified",
 };
 
 export default function CreateLoans3({ onSave, onBack }) {
+
+  const [isRegistered, setIsRegistered] = useState(true); // checkbox
 
   const [fields, setFields] = useState({
     userName:         "",
@@ -25,10 +27,22 @@ export default function CreateLoans3({ onSave, onBack }) {
   const [flow,   setFlow]   = useState(FLOW.IDLE);
   const [errors, setErrors] = useState({});
 
+  // Al cambiar el toggle, resetear todo el estado del formulario
+  const handleToggleRegistered = (value) => {
+    setIsRegistered(value);
+    setFields({ userName: "", userDoc: "", userEmail: "", verificationCode: "" });
+    setFlow(FLOW.IDLE);
+    setErrors({});
+  };
+
   // ── Enviar código al correo del usuario ────────────────────────────────────
   const handleSendCode = async () => {
-    if (!fields.userDoc) {
+    if (isRegistered && !fields.userDoc) {
       setErrors((p) => ({ ...p, userDoc: "Selecciona un usuario primero" }));
+      return;
+    }
+    if (!isRegistered && !fields.userEmail) {
+      setErrors((p) => ({ ...p, userEmail: "Ingresa el correo del receptor" }));
       return;
     }
     if (!fields.userEmail) {
@@ -74,7 +88,8 @@ export default function CreateLoans3({ onSave, onBack }) {
   // ── Guardar préstamo ───────────────────────────────────────────────────────
   const handleSave = async () => {
     const newErrors = {};
-    if (!fields.userDoc) newErrors.userDoc = "Selecciona un usuario";
+    if (isRegistered && !fields.userDoc) newErrors.userDoc = "Selecciona un usuario";
+    if (!isRegistered && !fields.userEmail) newErrors.userEmail = "Ingresa el correo del receptor";
     if (flow !== FLOW.VERIFIED) newErrors.verificationCode = "Debes verificar el código antes de guardar";
 
     if (Object.keys(newErrors).length > 0) {
@@ -120,28 +135,85 @@ export default function CreateLoans3({ onSave, onBack }) {
           </div>
         </div>
 
-        {/* USUARIO */}
-        <div className="mb-5">
-          <UserSearchField
-            label="Usuario solicitante *"
-            value={fields.userDoc}
-            onChange={(doc) => {
-              setFields((p) => ({ ...p, userDoc: doc, verificationCode: "" }));
-              setErrors((p) => ({ ...p, userDoc: "" }));
-              setFlow(FLOW.IDLE); // resetear flujo si cambia de usuario
-            }}
-            onUserSelect={(u) => {
-              setFields((p) => ({
-                ...p,
-                userName:         u.user_name  ?? "",
-                userEmail:        u.user_email ?? "",
-                verificationCode: "",
-              }));
-              setFlow(FLOW.IDLE);
-            }}
-            error={errors.userDoc}
-          />
+        {/* TOGGLE ¿Registrado? */}
+        <div className="flex items-center gap-3 mb-5 bg-white/10 rounded-xl px-4 py-3">
+          <span className="text-white/80 text-sm flex-1">¿El usuario está registrado en el sistema?</span>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => handleToggleRegistered(true)}
+              className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold border transition-colors ${
+                isRegistered
+                  ? "bg-purple-600 border-purple-500 text-white"
+                  : "bg-transparent border-white/30 text-white/50"
+              }`}
+            >
+              <UserCheck size={13} /> Sí
+            </button>
+            <button
+              type="button"
+              onClick={() => handleToggleRegistered(false)}
+              className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold border transition-colors ${
+                !isRegistered
+                  ? "bg-orange-600 border-orange-500 text-white"
+                  : "bg-transparent border-white/30 text-white/50"
+              }`}
+            >
+              <UserX size={13} /> No
+            </button>
+          </div>
         </div>
+
+        {/* USUARIO REGISTRADO */}
+        {isRegistered && (
+          <div className="mb-5">
+            <UserSearchField
+              label="Usuario solicitante *"
+              value={fields.userDoc}
+              onChange={(doc) => {
+                setFields((p) => ({ ...p, userDoc: doc, verificationCode: "" }));
+                setErrors((p) => ({ ...p, userDoc: "" }));
+                setFlow(FLOW.IDLE);
+              }}
+              onUserSelect={(u) => {
+                setFields((p) => ({
+                  ...p,
+                  userName:         u.user_name  ?? "",
+                  userEmail:        u.user_email ?? "",
+                  verificationCode: "",
+                }));
+                setFlow(FLOW.IDLE);
+              }}
+              error={errors.userDoc}
+            />
+          </div>
+        )}
+
+        {/* USUARIO EXTERNO (no registrado) */}
+        {!isRegistered && (
+          <div className="flex flex-col gap-4 mb-5">
+            <Input
+              label="Correo electrónico del receptor *"
+              type="email"
+              placeholder="correo@ejemplo.com"
+              value={fields.userEmail}
+              onChange={(e) => {
+                setFields((p) => ({ ...p, userEmail: e.target.value, verificationCode: "" }));
+                setErrors((p) => ({ ...p, userEmail: "" }));
+                setFlow(FLOW.IDLE);
+              }}
+              error={errors.userEmail}
+              labelVariant="light"
+            />
+            <Input
+              label="Nombre del receptor (opcional)"
+              placeholder="Nombre completo"
+              value={fields.userName}
+              onChange={(e) => setFields((p) => ({ ...p, userName: e.target.value }))}
+              labelVariant="light"
+            />
+          </div>
+        )}
 
         {/* BOTÓN ENVIAR CÓDIGO */}
         {!codeVerified && (
@@ -150,7 +222,7 @@ export default function CreateLoans3({ onSave, onBack }) {
             size="md"
             className="w-full mb-5"
             onClick={handleSendCode}
-            disabled={sending || !fields.userDoc}
+            disabled={sending || (isRegistered ? !fields.userDoc : !fields.userEmail)}
           >
             <span className="inline-flex items-center gap-2">
               <Send size={15} />

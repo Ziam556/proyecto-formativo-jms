@@ -7,8 +7,9 @@ export const returnableStep2Schema = z.object({
     materialBrand: z
         .string()
         .trim()
-        .min(1, "La marca es requerida")
-        .regex(/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s.-]+$/, "La marca tiene caracteres no válidos"),
+        .regex(/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s.-]*$/, "La marca tiene caracteres no válidos")
+        .optional()
+        .or(z.literal("")),
 
     materialModel: z
         .string()
