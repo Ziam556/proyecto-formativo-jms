@@ -124,11 +124,11 @@ export default function ListWeLendAssetsPage() {
 
         {/* TITULO INTERNO */}
         <div className="mb-5">
-          <h2 className="text-black flex items-center gap-2 text-[1.1rem] font-bold mb-1">
+          <h2 className="text-white flex items-center gap-2 text-[1.1rem] font-bold mb-1">
             <ClipboardList size={26} />
-            Préstamos Activos
+            Préstamos activos
           </h2>
-          <p className="text-black/80 text-sm">
+          <p className="text-white/80 text-sm">
             Listado de todos los préstamos registrados en el sistema.
           </p>
         </div>

@@ -7,8 +7,8 @@ import { normalizeReturnableMaterial } from "../utils/normalizeReturnableMateria
 
 const STATE_CLASS = {
   Disponible:      "bg-green-600",
-  "No Disponible": "bg-yellow-600",
-  Prestamo:        "bg-blue-600",
+  "No disponible": "bg-yellow-600",
+  "En préstamo":   "bg-blue-600",
   Baja:            "bg-red-600",
   Traslado:        "bg-purple-600",
   Mantenimiento:   "bg-gray-500",
@@ -204,6 +204,7 @@ export default function ViewReturnableMaterial({ material: initialMaterial, onEd
           <div className="flex flex-wrap gap-4 mb-6">
             <Field label="Cuentadante" value={material.accountHolder} />
             <Field label="Ubicación"   value={material.location} />
+            <Field label="Inventario"  value={material.inventory} />
           </div>
 
           {/* DESCRIPCIÓN */}
@@ -217,6 +218,30 @@ export default function ViewReturnableMaterial({ material: initialMaterial, onEd
               <Field label="Dimensiones" value={material.dimensions} />
             )}
           </div>
+
+          {/* COTIZACIONES */}
+          {material.quotations?.length > 0 && (
+            <div className="mb-6">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-white font-semibold">COTIZACIONES</span>
+                <div className="flex-1 h-px bg-white/20" />
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {material.quotations.map((url, i) => (
+                  <a
+                    key={i}
+                    href={`http://localhost:4000/${url}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-semibold transition"
+                  >
+                    <FileText size={16} />
+                    Cotización {i + 1}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* FICHA TÉCNICA */}
           {material.technicalSheet && (

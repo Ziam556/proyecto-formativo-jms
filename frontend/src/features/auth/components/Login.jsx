@@ -38,11 +38,22 @@ export default function LoginForm() {
     const [errors, setErrors] = useState({});
     const [serverError, setServerError] = useState("");
 
-    // Al montar la página de login (incluso por retroceso del navegador),
-    // limpiar sesión para que "adelante" no permita re-entrar sin autenticarse.
+    // Al montar la página de login o cuando el navegador la restaura desde bfcache,
+    // limpiar la sesión para que el botón "adelante" no permita re-entrar sin autenticarse.
     useEffect(() => {
-        sessionStorage.removeItem("token");
-        localStorage.removeItem("jms_active_user");
+        const clearSession = () => {
+            sessionStorage.removeItem("token");
+            sessionStorage.removeItem("must_change_password");
+            localStorage.removeItem("jms_active_user");
+        };
+
+        clearSession(); // limpieza en montaje normal
+
+        // Bug 2 fix — bfcache: el useEffect no se vuelve a ejecutar cuando el navegador
+        // restaura la página desde el caché; el evento pageshow sí se dispara.
+        const handlePageShow = (e) => { if (e.persisted) clearSession(); };
+        window.addEventListener("pageshow", handlePageShow);
+        return () => window.removeEventListener("pageshow", handlePageShow);
     }, []);
 
     const handleChange = (e) => {
@@ -88,10 +99,10 @@ export default function LoginForm() {
                 setActiveSession(formData.userEmail.trim());
             }
             if (data.mustChangePassword) {
-                sessionStorage.setItem("must_change_password", "true");
-                navigate("/auth/change-password");
+                sessionStorage.setItem("must_change_password", "true"); // legacy — la verificación real viene del JWT
+                navigate("/auth/change-password", { replace: true }); // replace: no dejar /auth en el historial
             } else {
-                navigate("/dashboard/home");
+                navigate("/dashboard/home", { replace: true });
             }
         } catch (error) {
             setServerError(error.message);

@@ -97,7 +97,7 @@ export default function CreateGroupPage() {
                 </div>
 
                 <h2 className="text-center text-white text-[1.1rem] sm:text-[1.3rem] font-bold mb-7">
-                    Crear Grupo
+                    Crear grupo
                 </h2>
 
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">

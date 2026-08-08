@@ -73,4 +73,8 @@ export const notificationsService = {
   async markAllRead(email) {
     return notificationsRepository.markAllRead(email);
   },
+
+  async getRecentLoans() {
+    return notificationsRepository.getRecentLoans(5);
+  },
 };

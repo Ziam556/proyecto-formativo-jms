@@ -59,7 +59,8 @@ export default function CreateLoans3({ onSave, onBack }) {
       setFlow(FLOW.SENT);
       await alertSuccess(
         "Código enviado",
-        `Se envió un código de verificación al correo ${fields.userEmail}. Pídele al usuario que te lo diga.`
+        `Se envió un código de verificación al correo ${fields.userEmail}. Pídele al usuario que te lo diga.`,
+        7000
       );
     } catch (err) {
       setFlow(FLOW.IDLE);
@@ -135,9 +136,18 @@ export default function CreateLoans3({ onSave, onBack }) {
           </div>
         </div>
 
+        {/* INSTRUCCIÓN */}
+        <div className="flex items-start gap-2 bg-cyan-900/30 border border-cyan-400/20 rounded-xl px-4 py-3 mb-5">
+          <span className="text-cyan-300 text-lg leading-none mt-[1px]">ℹ</span>
+          <p className="text-cyan-200 text-xs leading-relaxed">
+            Ingresa el usuario que va a solicitar el préstamo. Se le enviará un código de verificación
+            a su correo para confirmar la solicitud antes de guardar.
+          </p>
+        </div>
+
         {/* TOGGLE ¿Registrado? */}
-        <div className="flex items-center gap-3 mb-5 bg-white/10 rounded-xl px-4 py-3">
-          <span className="text-white/80 text-sm flex-1">¿El usuario está registrado en el sistema?</span>
+        <div className="flex items-center gap-3 mb-5 bg-black/30 rounded-xl px-4 py-3">
+          <span className="text-white text-sm flex-1">¿El usuario está registrado en el sistema?</span>
           <div className="flex gap-2">
             <button
               type="button"

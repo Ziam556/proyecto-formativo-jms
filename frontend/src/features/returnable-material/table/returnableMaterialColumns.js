@@ -8,7 +8,7 @@ import ReturnableMaterialRowActions from "../components/ReturnableMaterialRowAct
 
 const baseColumns = [
   { id: "id",             label: "SN",                  accessor: "id" },
-  { id: "plateSena",      label: "Placa Sena",          accessor: "plateSena" },
+  { id: "plateSena",      label: "Placa SENA",          accessor: "plateSena" },
   { id: "category",       label: "Categoría",           accessor: "category" },
   { id: "elementName",    label: "Nombre del elemento", accessor: "elementName" },
   { id: "brand",          label: "Marca",               accessor: "brand" },

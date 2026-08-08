@@ -64,10 +64,13 @@ export function generateCode() {
     return String(Math.floor(100000 + Math.random() * 900000)); // 6 dígitos
 }
 
+const MAX_ATTEMPTS = 6;
+
 export function saveCode(email, code) {
     store.set(email.toLowerCase(), {
         code,
         expiresAt: Date.now() + EXPIRY_MS,
+        attempts:  0,
     });
     persistStore(store);
 }
@@ -84,8 +87,22 @@ export function validateCode(email, code) {
         return { valid: false, reason: "El código expiró. Solicita uno nuevo." };
     }
 
+    if (entry.attempts >= MAX_ATTEMPTS) {
+        store.delete(key);
+        persistStore(store);
+        return { valid: false, reason: "Demasiados intentos fallidos. Solicita un nuevo código." };
+    }
+
     if (entry.code !== String(code).trim()) {
-        return { valid: false, reason: "El código ingresado no es correcto." };
+        entry.attempts += 1;
+        persistStore(store);
+        const remaining = MAX_ATTEMPTS - entry.attempts;
+        return {
+            valid:  false,
+            reason: remaining > 0
+                ? `El código ingresado no es correcto. Te quedan ${remaining} intento(s).`
+                : "Demasiados intentos fallidos. Solicita un nuevo código.",
+        };
     }
 
     // Código válido y de un solo uso → eliminar

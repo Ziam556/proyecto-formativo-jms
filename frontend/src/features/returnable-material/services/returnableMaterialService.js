@@ -17,14 +17,16 @@ export async function getReturnableMaterialById(id) {
   return response.json();
 }
 
-export async function updateReturnableMaterial(id, data, imageFiles, technicalSheetFile) {
+export async function updateReturnableMaterial(id, data, imageFiles, technicalSheetFile, quotationFiles = []) {
   const formData = new FormData();
 
   const fields = [
     "materialPlate", "materialCategory", "materialElementName",
-    "materialBrand", "materialModel", "materialSerial", "materialPurchaseDate",
+    "materialBrand", "materialModel", "materialSerial",
+    "materialPurchaseDate", "materialEntryDate",
     "materialState", "materialDescription", "materialLocation",
-    "materialWidth", "materialLength", "materialDepth", "isEnabled",
+    "materialWidth", "materialLength", "materialDepth",
+    "materialInventory", "isEnabled",
   ];
 
   fields.forEach((key) => {
@@ -41,6 +43,8 @@ export async function updateReturnableMaterial(id, data, imageFiles, technicalSh
   const imgFiles = Array.isArray(imageFiles) ? imageFiles : (imageFiles ? [imageFiles] : []);
   imgFiles.forEach((f) => formData.append("materialImage", f));
   if (technicalSheetFile) formData.append("materialTechnicalSheet", technicalSheetFile);
+  if (data.keepQuotations !== undefined) formData.append("keepQuotations", data.keepQuotations);
+  quotationFiles.forEach((f) => formData.append("materialQuotation", f));
 
   const response = await fetch(`${API_URL}/${id}`, {
     method: "PUT",
@@ -63,14 +67,16 @@ export async function toggleReturnableMaterial(id) {
   return result;
 }
 
-export async function createReturnableMaterial(data, imageFiles, technicalSheetFile) {
+export async function createReturnableMaterial(data, imageFiles, technicalSheetFile, quotationFiles = []) {
   const formData = new FormData();
 
   const fields = [
     "returnableMaterialId", "materialPlate", "materialCategory", "materialElementName",
-    "materialBrand", "materialModel", "materialSerial", "materialPurchaseDate",
+    "materialBrand", "materialModel", "materialSerial",
+    "materialPurchaseDate", "materialEntryDate",
     "materialState", "materialDescription", "materialLocation",
     "materialWidth", "materialLength", "materialDepth",
+    "materialInventory",
   ];
 
   fields.forEach((key) => {
@@ -87,6 +93,7 @@ export async function createReturnableMaterial(data, imageFiles, technicalSheetF
   const imgFiles = Array.isArray(imageFiles) ? imageFiles : (imageFiles ? [imageFiles] : []);
   imgFiles.forEach((f) => formData.append("materialImage", f));
   if (technicalSheetFile) formData.append("materialTechnicalSheet", technicalSheetFile);
+  quotationFiles.forEach((f) => formData.append("materialQuotation", f));
 
   const response = await fetch(API_URL, {
     method: "POST",

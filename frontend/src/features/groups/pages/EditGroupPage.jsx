@@ -237,7 +237,7 @@ export default function EditGroupPage() {
                 <h2 className="text-center text-white text-[1.1rem] sm:text-[1.3rem] font-bold mb-7">
                     {activeUser
                         ? `Permiso individual — ${activeUser.user_name ?? activeUser.user_document_number}`
-                        : "Editar Grupo"}
+                        : "Editar grupo"}
                 </h2>
 
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">

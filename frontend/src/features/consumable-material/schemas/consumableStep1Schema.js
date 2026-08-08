@@ -26,10 +26,22 @@ export const consumableStep1Schema = z.object({
             "El nombre solo puede contener letras, números, espacios y puntuación básica"
         ),
 
+    materialCategory: z
+        .string()
+        .trim()
+        .optional()
+        .or(z.literal("")),
+
     materialBrand: z
         .string()
         .trim()
         .regex(/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s.-]*$/, "La marca tiene caracteres no válidos")
+        .optional()
+        .or(z.literal("")),
+
+    materialInventory: z
+        .string()
+        .trim()
         .optional()
         .or(z.literal("")),
 

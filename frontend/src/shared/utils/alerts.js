@@ -21,14 +21,14 @@ const THEME = {
 };
 
 // ─── Alerta de éxito ──────────────────────────────────────────────────────────
-export const alertSuccess = (title, text) =>
+export const alertSuccess = (title, text, timer = 2000) =>
     Swal.fire({
         icon:              "success",
         title,
         text,
         confirmButtonText: "Aceptar",
         showCloseButton:   true,
-        timer:             2000,
+        timer,
         timerProgressBar:  true,
         ...THEME,
     });
@@ -69,6 +69,19 @@ export const alertConfirm = (title, text) =>
         confirmButtonText: "Sí, confirmar",
         cancelButtonText:  "Cancelar",
         ...THEME,
+    });
+
+// ─── Modal de contacto / soporte ─────────────────────────────────────────────
+export const alertContact = () =>
+    Swal.fire({
+        title:             "¿Necesitas ayuda?",
+        html:              `Escríbenos a <a href="https://mail.google.com/mail/?view=cm&to=sc876858@gmail.com" target="_blank" rel="noopener noreferrer" style="color:#50E5F9;font-weight:600;">sc876858@gmail.com</a>`,
+        confirmButtonText: "Cerrar",
+        showCloseButton:   true,
+        background:        "#1e1230",
+        color:             "#ffffff",
+        confirmButtonColor:"#71277A",
+        iconColor:         "#50E5F9",
     });
 
 // ─── Confirmación de eliminación (botón rojo) ─────────────────────────────────

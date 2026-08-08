@@ -18,7 +18,7 @@ export default function ConsumableMaterialPage() {
       <div className="w-full max-w-[680px] rounded-[20px] overflow-hidden bg-gradient-to-r from-[#700D7C] via-[#88A3C7] to-[#50E5F9] shadow-2xl backdrop-blur-md px-6 sm:px-10 py-8 sm:py-12">
 
         <h2 className="text-white text-center text-[1.1rem] sm:text-xl font-bold mb-6 sm:mb-8">
-          Módulo de material consumo
+          Módulo de Material de Consumo
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

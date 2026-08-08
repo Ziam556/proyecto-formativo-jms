@@ -1,17 +1,20 @@
 import { useNavigate } from "react-router-dom"
-import { Cylinder, Users, FileSliders, ArrowLeft } from "lucide-react"
+import { Cylinder, Users, FileSliders, ArrowLeft, Tag, Archive } from "lucide-react"
 import { MenuButton, usePermissions } from "@/shared";
 
-const BRAND_PERMS = ["list_brand","create_brand","edit_brand","toggle_brand","delete_brand"];
+const BRAND_PERMS    = ["list_brand","create_brand","edit_brand","toggle_brand","delete_brand"];
+const CATEGORY_PERMS = ["list_category","create_category","edit_category","toggle_category","delete_category"];
 
 export default function ConfigPage() {
     const navigate = useNavigate();
     const { isAdmin, hasPermission } = usePermissions();
 
     const menuItems = [
-        hasPermission(BRAND_PERMS) && { label: "Marcas",            icon: Cylinder,    to: "/dashboard/config/brands" },
-        isAdmin                    && { label: "Grupos",             icon: Users,       to: "/dashboard/config/groups" },
-        isAdmin                    && { label: "Gestión de tareas",  icon: FileSliders, to: "/dashboard/config/tasks"  },
+        hasPermission(BRAND_PERMS)    && { label: "Marcas",             icon: Cylinder,    to: "/dashboard/config/brands" },
+        (isAdmin || hasPermission(CATEGORY_PERMS)) && { label: "Categorías", icon: Tag, to: "/dashboard/config/categories" },
+        isAdmin                       && { label: "Inventarios",         icon: Archive,     to: "/dashboard/config/inventories" },
+        isAdmin                       && { label: "Grupos",              icon: Users,       to: "/dashboard/config/groups" },
+        isAdmin                       && { label: "Gestión de tareas",   icon: FileSliders, to: "/dashboard/config/tasks"  },
     ].filter(Boolean);
 
     return (

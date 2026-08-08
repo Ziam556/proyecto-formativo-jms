@@ -30,6 +30,13 @@ export async function markNotificationRead(id) {
   return res.json();
 }
 
+/** Últimos 5 préstamos (solo admins) */
+export async function getRecentLoans() {
+  const res = await fetch(`${API_URL}/recent-loans`, { headers: getAuthHeaders() });
+  if (!res.ok) throw new Error("Error al obtener préstamos recientes");
+  return res.json();
+}
+
 /** Marcar todas como leídas */
 export async function markAllNotificationsRead() {
   const res = await fetch(`${API_URL}/read-all`, {

@@ -2,16 +2,19 @@ import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 
 import { getConsumableMaterials, toggleConsumableMaterial } from "../services/consumableMaterialService.js";
 import { normalizeConsumableMaterials } from "../utils/normalizeConsumableMaterial.js";
-import { translateStatesInList } from "../utils/stateLabels.js";
+import { translateStatesInList } from "@/shared/utils/stateLabels.js";
+import { getInventories } from "@/features/inventories/services/inventoryService.js";
 
 import {
   DataTable,
   StatsPills,
   ReportDropdown,
+  InventoryReportDropdown,
   BackButton,
   Input,
   Select,
   ClearFiltersButton,
+  BulkActionBar,
   alertConfirm,
   alertSuccess,
   alertError,
@@ -26,11 +29,12 @@ import { generateConsumableMaterialReport } from "../reports/services/generateCo
 // ─────────────────────────────────────────────
 const STATE_DOT = {
   Disponible: "#16a34a",
-  "No Disponible": "#d97706",
-  Prestamo: "#2563eb",
+  "No disponible": "#d97706",
+  "En préstamo": "#2563eb",
   Baja: "#ef4444",
   Traslado: "#9333ea",
   Mantenimiento: "#6b7280",
+  Deshabilitado: "#64748b",
 };
 
 export default function ListConsumableMaterialPage() {
@@ -45,6 +49,9 @@ export default function ListConsumableMaterialPage() {
     getConsumableMaterials()
       .then((rows) => normalizeConsumableMaterials(rows))
       .then((normalized) => translateStatesInList(normalized))
+      .then((translated) => translated.map((item) =>
+        item.enabled === false ? { ...item, state: "Deshabilitado" } : item
+      ))
       .then((translated) => {
         setConsumableMaterials(translated);
         setLoadError(null);
@@ -65,6 +72,7 @@ export default function ListConsumableMaterialPage() {
     elementName: "",
     accountHolder: "",
     state: "",
+    inventory: "",
   });
 
   const [rowSelection, setRowSelection] = useState({});
@@ -94,6 +102,12 @@ export default function ListConsumableMaterialPage() {
       if (
         filters.state &&
         item.state !== filters.state
+      )
+        return false;
+
+      if (
+        filters.inventory &&
+        item.inventory !== filters.inventory
       )
         return false;
 
@@ -138,14 +152,22 @@ export default function ListConsumableMaterialPage() {
 
   // 🧹 LIMPIAR FILTROS
   const clearFilters = () => {
-
-    setFilters({
-      elementName: "",
-      accountHolder: "",
-      state: "",
-    });
-
+    setFilters({ elementName: "", accountHolder: "", state: "", inventory: "" });
   };
+
+  // Inventarios registrados (para el dropdown de reportes)
+  const [inventoryNames, setInventoryNames] = useState([]);
+  useEffect(() => {
+    getInventories()
+      .then((invs) => setInventoryNames(invs.filter((i) => i.enabled).map((i) => i.name)))
+      .catch(() => {});
+  }, []);
+
+  // Opciones únicas de inventario
+  const uniqueInventories = useMemo(
+    () => [...new Set(consumableMaterials.map((r) => r.inventory).filter(Boolean))],
+    [consumableMaterials]
+  );
 
   // Selección masiva
   const selectedMaterials = useMemo(() =>
@@ -221,7 +243,7 @@ export default function ListConsumableMaterialPage() {
         <BackButton to="/dashboard/consumable-material" />
 
         <h1 className="text-white text-[1rem] sm:text-2xl font-bold">
-          Lista materiales consumo
+          Lista de materiales de consumo
         </h1>
 
       </div>
@@ -275,6 +297,18 @@ export default function ListConsumableMaterialPage() {
             />
           </div>
 
+          {/* INVENTARIO */}
+          <div className="flex flex-col gap-1 w-full sm:w-[320px]">
+            <label className="text-white text-[0.75rem] font-medium">Inventario</label>
+            <Select
+              name="inventory"
+              value={filters.inventory}
+              options={uniqueInventories.map((i) => ({ id: i, label: i }))}
+              onChange={(e) => setFilters((f) => ({ ...f, inventory: e.target.value }))}
+              placeholder="Selecciona el inventario"
+            />
+          </div>
+
           {/* Limpiar filtros + Reportes */}
           <ClearFiltersButton onClick={clearFilters} />
 
@@ -299,13 +333,43 @@ export default function ListConsumableMaterialPage() {
               }
             />
             <ReportDropdown
-              label="Generar reporte de material consumo seleccionado"
+              label="Generar reporte de material de consumo seleccionado"
               onPDF={() => generateSelectedReport("pdf")}
               onExcel={() => generateSelectedReport("excel")}
+            />
+            <InventoryReportDropdown
+              label="Reporte por inventario"
+              inventories={inventoryNames}
+              onPDF={(inv) =>
+                generateConsumableMaterialReport({
+                  format: "pdf",
+                  selectedFields: activeFields,
+                  scope: "inventory",
+                  filterInventory: inv,
+                  materials: consumableMaterials,
+                })
+              }
+              onExcel={(inv) =>
+                generateConsumableMaterialReport({
+                  format: "excel",
+                  selectedFields: activeFields,
+                  scope: "inventory",
+                  filterInventory: inv,
+                  materials: consumableMaterials,
+                })
+              }
             />
           </div>
 
         </div>
+
+        {/* BARRA ACCIÓN MASIVA */}
+        <BulkActionBar
+          count={selectedMaterials.length}
+          entityLabel="material(es)"
+          onEnable={() => handleBulkToggle(true)}
+          onDisable={() => handleBulkToggle(false)}
+        />
 
         {/* TABLA */}
         <div className="rounded-xl overflow-visible">
@@ -315,7 +379,7 @@ export default function ListConsumableMaterialPage() {
           ) : (
             <DataTable
               data={filtered}
-              columns={getConsumableMaterialColumns(loadMaterials, selectedMaterials, handleBulkToggle)}
+              columns={getConsumableMaterialColumns(loadMaterials)}
               rowSelection={rowSelection}
               onRowSelectionChange={setRowSelection}
               onReportColsChange={setReportCols}

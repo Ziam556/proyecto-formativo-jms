@@ -53,10 +53,14 @@ export default function MultiUserSearchField({
         if (!user) return;
         const next = [
             ...value,
-            { name: user.user_name, document: String(user.user_document_number) },
+            {
+                name:     user.user_name,
+                document: String(user.user_document_number),
+                userId:   user.user_id,          // ← necesario para la tabla junction
+            },
         ];
         onChange(next);
-        setPickerValue(""); // reset el picker para el siguiente
+        setPickerValue("");
     };
 
     const handleRemove = (doc) => {

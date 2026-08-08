@@ -65,11 +65,14 @@ export const authService = {
         // Obtener permisos efectivos (grupo + individuales) para incluirlos en el token
         const permissions = await accessRepository.getUserPermissions(user.user_email);
 
+        const mustChangePassword = user.must_change_password ?? false;
+
         const token = jwt.sign(
             {
-                email:       user.user_email,
-                userGroup:   user.user_group,
-                permissions, // codenames: ["create_user", "list_loan", ...]
+                email:             user.user_email,
+                userGroup:         user.user_group,
+                permissions,       // codenames: ["create_user", "list_loan", ...]
+                mustChangePassword,// flag en el token para que ProtectedRoute lo lea sin depender de sessionStorage
             },
             process.env.JWT_SECRET,
             { expiresIn: process.env.JWT_EXPIRES },
@@ -77,7 +80,7 @@ export const authService = {
 
         return {
             token,
-            mustChangePassword: user.must_change_password ?? false,
+            mustChangePassword,
             user: {
                 email: user.user_email,
             },
@@ -90,6 +93,23 @@ export const authService = {
         const hashed = await bcrypt.hash(newPassword, 10);
         await authRepository.updatePassword(email, hashed);
         await authRepository.clearMustChangePassword(email);
+
+        // Devolver un token nuevo sin el flag mustChangePassword
+        const user        = await authRepository.findByEmail(email);
+        const permissions = await accessRepository.getUserPermissions(email);
+
+        const newToken = jwt.sign(
+            {
+                email,
+                userGroup:         user.user_group,
+                permissions,
+                mustChangePassword: false,
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: process.env.JWT_EXPIRES },
+        );
+
+        return { token: newToken };
     },
 
     // ── Forgot password ──────────────────────────────────────────────────────

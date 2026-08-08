@@ -1,50 +1,42 @@
-import { useEffect, useState, useMemo } from "react";
-import { Input, Button, BackButton, DataTable, DatePicker, Textarea, Select, alertWarning, alertConfirm, alertError } from "@/shared";
+import { useState, useEffect } from "react";
+import { Input, Button, BackButton, DatePicker, Textarea, Select, alertWarning, alertConfirm } from "@/shared";
 
 const LOAN_TYPE_OPTIONS = [
   { value: "interno", label: "Interno" },
   { value: "externo", label: "Externo" },
 ];
-import { loansColumns } from "../table/loansColumns";
-import { getMaterialsForLoan } from "../services/loanService";
 
-export default function EditLoans({ formData = {}, onSave, onCancel }) {
+const TYPE_COLOR = {
+  Devolutivo: { bg: "rgba(139,0,139,0.25)", color: "#e9b8ff", border: "rgba(200,100,255,0.3)" },
+  Consumo:    { bg: "rgba(6,182,212,0.18)", color: "#a5f3fc", border: "rgba(6,182,212,0.3)"  },
+};
 
-  const [materials, setMaterials] = useState([]);
-  const [filters]                 = useState({ elementName: "", materialsTypes: "" });
-  const [rowSelection, setRowSelection] = useState({});
+export default function EditLoans({ formData = {}, loading = false, onSave, onCancel }) {
+
+  const loanMaterials = formData?.materiales || [];
 
   const [fields, setFields] = useState({
     loansId:         formData?.loansId         || "",
     fichaGrupo:      formData?.fichaGrupo      || "",
     loanType:        formData?.loanType        || "interno",
-    cantidadConsumo: formData?.cantidadConsumo || "",
     fechaSalida:     formData?.fechaSalida     || "",
-    fechaEntrega:    formData?.fechaEntrega    || "",
     justificacion:   formData?.justificacion   || "",
     usuarioSolicita: formData?.usuarioSolicita || "",
   });
 
   const [errors, setErrors] = useState({});
 
+  // Sync fields when formData prop updates (after async fetch in parent)
   useEffect(() => {
-    getMaterialsForLoan()
-      .then(setMaterials)
-      .catch(() => alertError("Error", "No se pudieron cargar los materiales."));
-  }, []);
-
-  const filtered = useMemo(() => {
-    return materials.filter((item) => {
-      if (
-        filters.elementName &&
-        !item.material.toLowerCase().includes(filters.elementName.toLowerCase())
-      )
-        return false;
-      if (filters.materialsTypes && item.materialtype !== filters.materialsTypes)
-        return false;
-      return true;
+    setFields({
+      loansId:         formData?.loansId         || "",
+      fichaGrupo:      formData?.fichaGrupo      || "",
+      loanType:        formData?.loanType        || "interno",
+      fechaSalida:     formData?.fechaSalida     || "",
+      justificacion:   formData?.justificacion   || "",
+      usuarioSolicita: formData?.usuarioSolicita || "",
     });
-  }, [filters, materials]);
+  }, [formData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,7 +46,6 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
 
   const handleSave = async () => {
     const newErrors = {};
-    if (!fields.fichaGrupo)      newErrors.fichaGrupo      = "La ficha es requerida";
     if (!fields.fechaSalida)     newErrors.fechaSalida     = "La fecha de salida es requerida";
     if (!fields.usuarioSolicita) newErrors.usuarioSolicita = "El usuario es requerido";
     if (!fields.justificacion)   newErrors.justificacion   = "La justificación es requerida";
@@ -85,7 +76,10 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
         {/* HEADER */}
         <div className="flex items-center gap-3 mb-6">
           <BackButton to="/dashboard/loans" />
-          <h1 className="text-white text-2xl font-bold">Editar Préstamo</h1>
+          <h1 className="text-white text-2xl font-bold">Editar préstamo</h1>
+          {loading && (
+            <span className="text-white/40 text-xs animate-pulse">actualizando…</span>
+          )}
         </div>
 
         {/* ID */}
@@ -102,23 +96,36 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
 
         <div className="mt-4 w-full h-px bg-white/20" />
 
-        {/* MATERIALES */}
+        {/* MATERIALES DEL PRÉSTAMO */}
         <div className="flex items-center gap-3 mt-5">
-          <span className="text-white font-semibold">MATERIALES A PRESTAR</span>
+          <span className="text-white font-semibold">MATERIALES DEL PRÉSTAMO</span>
           <div className="flex-1 h-px bg-white/20" />
         </div>
 
-        <div className="mt-5">
-          {materials.length === 0 ? (
-            <p className="text-white/50 text-sm py-4">Cargando materiales…</p>
+        <div className="mt-4 flex flex-col gap-2">
+          {loanMaterials.length === 0 ? (
+            <p className="text-white/50 text-sm py-3">Sin materiales registrados.</p>
           ) : (
-            <DataTable
-              data={filtered}
-              columns={loansColumns}
-              rowSelection={rowSelection}
-              onRowSelectionChange={setRowSelection}
-              initialPageSize={5}
-            />
+            loanMaterials.map((m, i) => {
+              const s = TYPE_COLOR[m.type] || TYPE_COLOR.Devolutivo;
+              return (
+                <div key={i} className="flex flex-wrap items-center gap-3 px-4 py-2.5 rounded-xl bg-white/6 border border-white/12">
+                  <span
+                    style={{ background: s.bg, color: s.color, border: `1px solid ${s.border}` }}
+                    className="text-[10px] font-semibold px-2 py-[2px] rounded-full whitespace-nowrap"
+                  >
+                    {m.type}
+                  </span>
+                  <span className="text-white text-sm flex-1">{m.name}</span>
+                  {m.type === "Consumo" && m.amount != null && (
+                    <span className="text-white/50 text-xs">Cant: {m.amount}</span>
+                  )}
+                  {m.type === "Devolutivo" && m.deliveryDateFmt && m.deliveryDateFmt !== "—" && (
+                    <span className="text-white/50 text-xs">Entrega: {m.deliveryDateFmt}</span>
+                  )}
+                </div>
+              );
+            })
           )}
         </div>
 
@@ -132,11 +139,10 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
             <Input
-              label="Ficha / Grupo Aprendices *"
+              label="Ficha / Grupo aprendices"
               name="fichaGrupo"
               value={fields.fichaGrupo}
               onChange={handleChange}
-              error={errors.fichaGrupo}
             />
 
             <Select
@@ -148,28 +154,12 @@ export default function EditLoans({ formData = {}, onSave, onCancel }) {
               required
             />
 
-            <Input
-              label="Cantidad (Consumo)"
-              name="cantidadConsumo"
-              type="number"
-              value={fields.cantidadConsumo}
-              onChange={handleChange}
-              error={errors.cantidadConsumo}
-            />
-
             <DatePicker
-              label="Fecha Salida *"
+              label="Fecha de salida *"
               name="fechaSalida"
               value={fields.fechaSalida}
               onChange={handleChange}
               error={errors.fechaSalida}
-            />
-
-            <DatePicker
-              label="Fecha Entrega (Devolutivo)"
-              name="fechaEntrega"
-              value={fields.fechaEntrega}
-              onChange={handleChange}
             />
 
           </div>

@@ -60,22 +60,36 @@ export default function CreateLoansPage() {
     const finalData = { ...formData, ...data };
     setSaving(true);
 
-    const items = (finalData.selectedMaterials || []).map((m) => ({
-      materialName: m.material,
-      materialType: m.materialtype,
-      amount:       m.amount ?? 1,
-      materialId:   m.materialId ?? null,   // ID numérico para gestión de inventario
-    }));
+    // Construir ítems con cantidad y fecha de entrega individuales
+    const itemDetails = finalData.itemDetails ?? {};
+    const items = (finalData.selectedMaterials || []).map((m, i) => {
+      const key     = String(i);
+      const details = itemDetails[key] ?? {};
+      return {
+        materialName: m.material,
+        materialType: m.materialtype,
+        amount:       m.materialtype === "M.C"
+          ? (parseInt(details.amount) || 1)
+          : null,
+        deliveryDate: m.materialtype === "M.D" && details.deliveryDate
+          ? new Date(details.deliveryDate).toISOString().split("T")[0]
+          : null,
+        materialId:   m.materialId ?? null,
+      };
+    });
+
+    // Calcular total consumibles para el campo general (informativo)
+    const totalConsumable = items
+      .filter((it) => it.materialType === "M.C")
+      .reduce((acc, it) => acc + (it.amount ?? 0), 0);
 
     const body = {
       fileGroup:        finalData.file            || null,
-      amount:           finalData.amount          ? parseInt(finalData.amount) : null,
+      amount:           totalConsumable || null,
       departureDate:    finalData.departureDates
         ? new Date(finalData.departureDates).toISOString().split("T")[0]
         : null,
-      deliveryDate:     finalData.deliveryDates
-        ? new Date(finalData.deliveryDates).toISOString().split("T")[0]
-        : null,
+      deliveryDate:     null,   // ahora se maneja por ítem en loan_items
       justification:     finalData.justificationForUse || null,
       requestingUser:    finalData.user,
       notificationEmail: finalData.notificationEmail  || null,
@@ -273,10 +287,10 @@ export default function CreateLoansPage() {
                     <p
                       className={`text-sm ${
                         isCurrent
-                          ? "font-bold text-black"
+                          ? "font-bold text-white"
                           : isCompleted
                           ? "font-semibold text-green-300"
-                          : "font-normal text-black/60"
+                          : "font-normal text-white/50"
                       }`}
                     >
                       {step.title}

@@ -8,7 +8,8 @@ export function generateConsumableMaterialReport({
   scope,
   selectedIds,
   filterState,
-  materials, // antes: import { consumableMaterials } from "../../data/ConsumableMaterials"
+  filterInventory,
+  materials,
 }) {
 
   const { headers, rows } = buildConsumableMaterialReportDataset({
@@ -17,6 +18,7 @@ export function generateConsumableMaterialReport({
     scope,
     selectedIds,
     filterState,
+    filterInventory,
   });
 
   if (!rows.length) {

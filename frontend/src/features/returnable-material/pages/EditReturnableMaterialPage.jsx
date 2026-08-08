@@ -20,19 +20,36 @@ function toWizardFields(row) {
         returnableMaterialId:    row.returnable_material_id,
         materialPlate:           row.material_plate            || "",
         materialCategory:        row.material_category         || "",
+        materialInventory:       row.material_inventory        || "",
         materialElementName:     row.material_element_name     || "",
         materialBrand:           row.material_brand            || "",
         materialModel:           row.material_model            || "",
         materialSerial:          row.material_serial           || "",
         materialImage:           [],
+        materialPurchaseDate: row.material_purchase_date
+          ? new Date(row.material_purchase_date).toISOString().split("T")[0]
+          : "",
+        materialEntryDate: row.material_entry_date
+          ? new Date(row.material_entry_date).toISOString().split("T")[0]
+          : "",
         materialStoryTeller: (() => {
-            try { return JSON.parse(row.material_story_teller || "[]"); }
-            catch { return row.material_story_teller ? [{ name: row.material_story_teller, document: "" }] : []; }
+            const holders = Array.isArray(row.accountholders)
+                ? row.accountholders
+                : (() => { try { return JSON.parse(row.accountholders || "[]"); } catch { return []; } })();
+            return holders.map((h) => ({
+                name:     h.user_name           || "",
+                document: String(h.user_document_number || ""),
+                userId:   h.user_id,
+            }));
         })(),
         isEnabled:                  row.enabled                   ?? true,
         materialState:              row.material_state            || "",
         materialTechnicalSheet:     [],
         materialTechnicalSheetUrl:  row.material_technical_sheet  || null,
+        materialQuotationUrls: (() => {
+            if (!row.material_quotations) return [];
+            try { return JSON.parse(row.material_quotations); } catch { return []; }
+        })(),
         materialDescription:     row.material_description      || "",
         materialLocation:        row.material_location         || "",
         materialWidth:           row.material_width            || "",
@@ -94,6 +111,7 @@ export default function EditReturnableMaterialPage() {
         const payload = {
             materialPlate:        finalData.materialPlate,
             materialCategory:     finalData.materialCategory,
+            materialInventory:    finalData.materialInventory || null,
             materialElementName:  finalData.materialElementName,
             materialBrand:        finalData.materialBrand,
             materialModel:        finalData.materialModel,
@@ -105,6 +123,8 @@ export default function EditReturnableMaterialPage() {
             materialWidth:        finalData.materialWidth,
             materialLength:       finalData.materialLength,
             materialDepth:        finalData.materialDepth,
+            materialPurchaseDate: finalData.materialPurchaseDate || null,
+            materialEntryDate:    finalData.materialEntryDate    || null,
             isEnabled:            finalData.isEnabled ?? true,
         };
 
@@ -116,8 +136,11 @@ export default function EditReturnableMaterialPage() {
             ? finalData.materialTechnicalSheet[0]
             : finalData.materialTechnicalSheet;
 
+        const quotationFiles  = Array.isArray(finalData.materialQuotations) ? finalData.materialQuotations : [];
+        payload.keepQuotations = JSON.stringify(finalData.existingQuotationUrls || []);
+
         try {
-            await updateReturnableMaterial(finalData.returnableMaterialId, payload, imageFile, sheetFile);
+            await updateReturnableMaterial(finalData.returnableMaterialId, payload, imageFile, sheetFile, quotationFiles);
             alertSuccess("Material actualizado", "El material devolutivo se actualizó correctamente.");
             loadMaterials();
             setFormData({});
@@ -137,7 +160,7 @@ export default function EditReturnableMaterialPage() {
     ];
 
     return (
-        <div className="px-4 sm:px-16 py-6 sm:py-10 min-h-[calc(100vh-72px)] flex flex-col justify-center">
+        <div className="px-4 sm:px-16 py-3 sm:py-4 min-h-full flex flex-col justify-center">
 
             <h1 className="text-white text-sm font-semibold mb-4">
                 Editar material devolutivo
@@ -147,7 +170,7 @@ export default function EditReturnableMaterialPage() {
                 <p className="text-red-400 text-sm mb-2">No se pudieron cargar los materiales: {loadError}</p>
             )}
 
-            <div className="flex flex-col sm:flex-row bg-white/10 rounded-2xl overflow-hidden">
+            <div className="flex flex-col sm:flex-row bg-white/10 rounded-2xl">
 
                 {/* ── STEPPER ── */}
                 <WizardStepper
@@ -157,7 +180,7 @@ export default function EditReturnableMaterialPage() {
                 />
 
                 {/* ── CONTENIDO ── */}
-                <div className="flex-1 bg-white/10 rounded-2xl m-3 py-8 px-4 sm:px-10 transition-all duration-300 flex flex-col items-center justify-center gap-6">
+                <div className="flex-1 bg-white/10 rounded-2xl m-3 py-4 sm:py-5 px-4 sm:px-10 transition-all duration-300 flex flex-col items-center justify-center gap-6">
                     <h2 className="text-white text-center text-[1rem] font-medium m-0">
                         Edite la información correspondiente
                     </h2>

@@ -25,4 +25,10 @@ export const consumableStep3Schema = z.object({
         .min(1, "La ubicación es requerida")
         .max(150, "La ubicación no puede superar 150 caracteres"),
 
+    entryDate: z
+        .string()
+        .min(1, "La fecha de ingreso es requerida")
+        .refine((v) => !isNaN(Date.parse(v)), "La fecha de ingreso no es válida")
+        .refine((v) => new Date(v) <= new Date(), "La fecha de ingreso no puede ser futura"),
+
 });

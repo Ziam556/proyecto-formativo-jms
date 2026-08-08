@@ -76,8 +76,8 @@ export const authController = {
                 return res.status(400).json({ error: "La nueva contraseña es requerida" });
 
             const email = req.user.email; // viene del middleware authenticateToken
-            await authService.changeFirstPassword(email, newPassword);
-            res.status(200).json({ message: "Contraseña actualizada. Ya puedes continuar." });
+            const { token } = await authService.changeFirstPassword(email, newPassword);
+            res.status(200).json({ message: "Contraseña actualizada. Ya puedes continuar.", token });
         } catch (err) {
             res.status(400).json({ error: err.message });
         }

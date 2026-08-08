@@ -14,10 +14,15 @@ export const consumableMaterialController = {
         ? `uploads/consumable/${sheetFile.filename}`
         : null;
 
+      const quotationFiles = req.files?.materialQuotation ?? [];
+      const quotationPaths = quotationFiles.map((f) => `uploads/consumable/${f.filename}`);
+      const materialQuotations = quotationPaths.length ? JSON.stringify(quotationPaths) : null;
+
       const material = await consumableMaterialService.createConsumableMaterial({
         ...req.body,
         materialImage: imagePaths,
         materialTechnicalSheet,
+        materialQuotations,
       });
 
       res.status(201).json({
@@ -65,10 +70,20 @@ export const consumableMaterialController = {
           ? ""          // vacío → el repo pondrá NULL
           : undefined;  // undefined → el repo usará COALESCE para no tocar el valor
 
+      // Cotizaciones: kept existing + new uploads
+      const keptQuotations = req.body.keepQuotations
+        ? JSON.parse(req.body.keepQuotations)
+        : [];
+      const newQuotationPaths = (req.files?.materialQuotation ?? [])
+        .map((f) => `uploads/consumable/${f.filename}`);
+      const allQuotations = [...keptQuotations, ...newQuotationPaths];
+      const materialQuotations = allQuotations.length ? JSON.stringify(allQuotations) : null;
+
       const material = await consumableMaterialService.update(req.params.id, {
         ...req.body,
         materialImage: imagePaths,
         materialTechnicalSheet,
+        materialQuotations,
         isEnabled: req.body.isEnabled === "true" || req.body.isEnabled === true,
       });
 

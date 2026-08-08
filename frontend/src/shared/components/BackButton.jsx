@@ -5,9 +5,17 @@ import { ArrowLeft } from "lucide-react";
 // Flecha de regreso para encabezados de página.
 // Usa IconButton internamente, así no hay que repetir estilos.
 // Si recibe "to" navega a esa ruta, si no, va a la página anterior con navigate(-1).
+//
+// Variantes:
+//   variant="light"  → ícono blanco, hover: fondo blanco + ícono negro   (por defecto, para fondos oscuros/gradiente)
+//   variant="dark"   → ícono negro,  hover: fondo neutral-200 + ícono negro (para fondos claros/blancos)
 
-// dark=true → flecha negra (para fondos claros como UserProfilePage)
-export default function BackButton({ to, onClick, dark = false }) {
+const VARIANTS = {
+    light: "text-white hover:bg-white hover:text-black shrink-0",
+    dark:  "text-black hover:bg-neutral-200 hover:text-black shrink-0",
+};
+
+export default function BackButton({ to, onClick, variant = "light" }) {
     const navigate = useNavigate();
 
     const handleClick = () => {
@@ -23,11 +31,7 @@ export default function BackButton({ to, onClick, dark = false }) {
             variant="icon"
             hitSize={48}
             iconSize={22}
-            className={
-                dark
-                    ? "text-black hover:bg-neutral-200 hover:text-black shrink-0"
-                    : "text-white hover:bg-white hover:text-black shrink-0"
-            }
+            className={VARIANTS[variant] ?? VARIANTS.light}
         >
             <ArrowLeft size={22} />
         </IconButton>

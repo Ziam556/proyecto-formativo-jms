@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, FileInput, Input, Switch, MultiUserSearchField } from "@/shared";
+import { Button, FileInput, Input, MultiUserSearchField } from "@/shared";
 import { consumableStep2Schema } from "../schemas/consumableStep2Schema";
 
 export default function EditConsumableMaterial2({
@@ -7,8 +7,6 @@ export default function EditConsumableMaterial2({
     onNext,
     onBack,
 }) {
-    const [isEnabled, setIsEnabled] = useState(formData?.isEnabled ?? true);
-
     const [fields, setFields] = useState({
         materialImage:       formData?.materialImage       || [],
         materialStoryTeller: formData?.materialStoryTeller || [],
@@ -48,7 +46,7 @@ export default function EditConsumableMaterial2({
             return;
         }
 
-        onNext({ ...fields, isEnabled });
+        onNext({ ...fields });
     };
 
     return (
@@ -117,19 +115,6 @@ export default function EditConsumableMaterial2({
                 className="opacity-75 cursor-not-allowed"
                 error={errors.materialTotalValue}
             />
-
-            {/* SWITCH HABILITAR / DESHABILITAR */}
-            <div className="flex flex-col gap-1 justify-end">
-                <label className="text-sm font-medium text-white">
-                    Estado del material
-                </label>
-                <div className="flex items-center gap-3 h-12">
-                    <Switch checked={isEnabled} onChange={setIsEnabled} />
-                    <span className="text-sm font-semibold text-white">
-                        {isEnabled ? "Habilitado" : "Deshabilitado"}
-                    </span>
-                </div>
-            </div>
 
             {/* BOTONES */}
             <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-4">

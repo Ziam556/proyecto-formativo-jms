@@ -3,6 +3,7 @@ export function buildConsumableMaterialReportDataset({
   selectedFields,
   scope,
   filterState,
+  filterInventory,
   selectedIds = [],
 }) {
 
@@ -11,6 +12,12 @@ export function buildConsumableMaterialReportDataset({
   if (scope === "state" && filterState) {
     filteredMaterials = filteredMaterials.filter(
       (material) => material.state === filterState
+    );
+  }
+
+  if (scope === "inventory" && filterInventory) {
+    filteredMaterials = filteredMaterials.filter(
+      (material) => material.inventory === filterInventory
     );
   }
 

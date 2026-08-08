@@ -52,7 +52,7 @@ export default function EditUserPage() {
         : users.slice(0, 10);
 
     return (
-        <div className="min-h-[calc(100vh-72px)] flex flex-col box-border py-5 px-3 sm:px-6 items-center justify-center">
+        <div className="min-h-full flex flex-col box-border py-3 px-3 sm:px-6 items-center justify-center">
 
             <div className="w-full max-w-[1280px] flex flex-col lg:flex-row gap-4 items-start">
 

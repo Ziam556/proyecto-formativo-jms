@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Input, Button, FileInput, BrandSearchField } from "@/shared";
+import { Input, Button, FileInput, BrandSearchField, DatePicker } from "@/shared";
 import { returnableStep2Schema } from "../schemas/returnableStep2Schema";
 
 export default function CreateReturnable2({ formData, onNext, onBack }) {
@@ -8,6 +8,8 @@ export default function CreateReturnable2({ formData, onNext, onBack }) {
     materialModel:        formData.materialModel        || "",
     materialSerial:       formData.materialSerial       || "",
     materialImage:        formData.materialImage        || [],
+    materialPurchaseDate: formData.materialPurchaseDate || "",
+    materialEntryDate:    formData.materialEntryDate    || "",
   });
   const [errors, setErrors] = useState({});
 
@@ -18,17 +20,12 @@ export default function CreateReturnable2({ formData, onNext, onBack }) {
   };
 
   const handleNext = () => {
-    // El schema usa "purchaseDate" como nombre genérico; lo mapeamos al campo real del componente.
-    const { MaterialPurchaseDate, ...rest } = fields;
-    const result = returnableStep2Schema.safeParse({
-      ...rest,
-      purchaseDate: MaterialPurchaseDate,
-    });
+    const result = returnableStep2Schema.safeParse(fields);
 
     if (!result.success) {
       const newErrors = {};
       result.error.issues.forEach((issue) => {
-        const field = issue.path[0] === "purchaseDate" ? "MaterialPurchaseDate" : issue.path[0];
+        const field = issue.path[0];
         if (field && !newErrors[field]) newErrors[field] = issue.message;
       });
       setErrors(newErrors);
@@ -82,6 +79,24 @@ export default function CreateReturnable2({ formData, onNext, onBack }) {
         )}
       </div>
 
+      <DatePicker labelVariant="light"
+        label="Fecha de compra (opcional)"
+        name="materialPurchaseDate"
+        value={fields.materialPurchaseDate}
+        onChange={handleChange}
+        error={errors.materialPurchaseDate}
+        maxDate={new Date()}
+      />
+
+      <DatePicker labelVariant="light"
+        label="Fecha de ingreso"
+        name="materialEntryDate"
+        value={fields.materialEntryDate}
+        onChange={handleChange}
+        error={errors.materialEntryDate}
+        maxDate={new Date()}
+        required
+      />
 
       <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-2">
         <Button variant="secondary" size="sm" onClick={onBack}>Atrás</Button>

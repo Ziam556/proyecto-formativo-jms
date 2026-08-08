@@ -5,7 +5,7 @@ export const consumableMaterialReportFields = [
   },
   { key: 
     "plateSena", 
-    label: "Placa Sena", 
+    label: "Placa SENA", 
     default: true 
   },
   { key: "elementName", 
@@ -40,9 +40,12 @@ export const consumableMaterialReportFields = [
     label: "Cuentadante", 
     default: true 
   },
-  { key: "location", 
-    label: "Ubicación", 
-    default: false 
+  { key: "location",
+    label: "Ubicación",
+    default: false
   },
-
+  { key: "inventory",
+    label: "Inventario",
+    default: false
+  },
 ];

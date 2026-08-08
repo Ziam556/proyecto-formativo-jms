@@ -123,7 +123,7 @@ export default function UserSearchSelect({
 
             {/* Dropdown */}
             {open && (
-                <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-[10px] shadow-lg overflow-hidden">
+                <div className="absolute z-[9999] w-full mt-1 bg-white border border-gray-200 rounded-[10px] shadow-lg overflow-hidden">
                     <div
                         className="overflow-y-auto"
                         style={{ maxHeight: "220px" }}
@@ -146,6 +146,11 @@ export default function UserSearchSelect({
                                     <span className="text-[0.74rem] text-gray-400">
                                         Doc: {u.user_document_number}
                                     </span>
+                                    {u.user_email && (
+                                        <span className="text-[0.72rem] text-gray-400 truncate">
+                                            {u.user_email}
+                                        </span>
+                                    )}
                                 </div>
                             ))
                         )}

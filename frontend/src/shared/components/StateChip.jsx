@@ -1,11 +1,12 @@
 // Etiqueta de color para representar el estado de un elemento.
 const DEFAULT_CLASSES = {
     Disponible:      "bg-green-600 text-white",
-    "No Disponible": "bg-[rgba(217,217,217,0.9)] text-[#FDC300]",
-    Prestamo:        "bg-blue-600 text-white",
+    "No disponible": "bg-[rgba(217,217,217,0.9)] text-[#FDC300]",
+    "En préstamo":   "bg-blue-600 text-white",
     Baja:            "bg-[#878787] text-white",
     Traslado:        "bg-purple-600 text-white",
     Mantenimiento:   "bg-[#878787] text-white",
+    Deshabilitado:   "bg-[#64748b] text-white",
 };
 
 export default function StateChip({ value, customClasses = {} }) {

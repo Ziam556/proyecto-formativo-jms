@@ -12,7 +12,6 @@ import {
   Pencil,
   LogOut,
   CalendarDays,
-  HeadphonesIcon,
 } from "lucide-react";
 
 const API_BASE = "http://localhost:4000";
@@ -66,16 +65,16 @@ export default function UserProfilePage() {
   }, []);
 
   return (
-    <div className="min-h-[calc(100vh-72px)] flex flex-col box-border py-6 px-4 sm:px-10 gap-3 items-center justify-center">
+    <div className="min-h-full flex flex-col box-border py-3 px-4 sm:px-10 gap-3 items-center justify-center">
 
       {/* ── Contenedor exterior (capa 1) ── */}
-      <div className="w-full max-w-[860px] rounded-2xl bg-[linear-gradient(135deg,#700D7C_0%,#88A3C7_50%,#50E5F9_100%)] shadow-[0_8px_40px_rgba(0,0,0,0.3)] relative pt-10 px-6 sm:px-10 pb-8">
+      <div className="w-full max-w-[860px] rounded-2xl bg-[linear-gradient(135deg,#700D7C_0%,#88A3C7_50%,#50E5F9_100%)] shadow-[0_8px_40px_rgba(0,0,0,0.3)] relative pt-7 px-6 sm:px-10 pb-5">
 
         {/* Flecha regresar */}
-        <BackButton dark />
+        <BackButton variant="light" />
 
         {/* ── Contenedor interior (capa 2) ── */}
-        <div className="w-full rounded-xl bg-[rgba(255,255,255,0.31)] py-8 px-6 sm:px-10">
+        <div className="w-full rounded-xl bg-[rgba(255,255,255,0.31)] py-5 px-6 sm:px-10">
 
           {/* Estado de carga */}
           {loading && (
@@ -91,7 +90,7 @@ export default function UserProfilePage() {
           {!loading && user && (
             <>
               {/* Encabezado: avatar + nombre */}
-              <div className="flex flex-col items-start gap-2 mb-8">
+              <div className="flex flex-col items-start gap-2 mb-4">
                 <div className="relative w-fit">
                   <ProfileAvatar
                     src={user.user_image ? `${API_BASE}/${user.user_image}` : null}
@@ -102,25 +101,32 @@ export default function UserProfilePage() {
               </div>
 
               {/* Campos de información */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-5 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-4 mb-4">
                 <InfoRow icon={User}        value={user.user_email} />
                 <InfoRow icon={CreditCard}  value={`${user.user_document_type ?? ""} ${user.user_document_number ?? ""}`.trim()} />
                 <InfoRow icon={Mail}        value={user.user_email_institutional} />
 
-                <InfoRow icon={Phone}       value={user.user_phone} />
-                <InfoRow icon={Mail}        value={user.user_email} />
+                <InfoRow icon={Phone}       value={
+                  (Array.isArray(user.phones) ? user.phones : [])
+                    .find((p) => p.is_primary)?.phone_number
+                  || (Array.isArray(user.phones) ? user.phones[0]?.phone_number : null)
+                } />
+                <InfoRow icon={Phone}       value={
+                  (Array.isArray(user.phones) ? user.phones : [])
+                    .find((p) => !p.is_primary)?.phone_number
+                } />
                 <InfoRow icon={ShieldCheck} value={user.user_group ? `@${user.user_group}` : "—"} />
 
                 <InfoRow icon={MapPin}      value={user.user_address} />
               </div>
 
-              <hr className="border-black/20 mb-6" />
+              <hr className="border-black/20 mb-3" />
 
               {/* Botones de acción (2 × 2) */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                 <ActionBtn icon={Lock}     label="Cambiar contraseña" onClick={() => {}} />
                 <ActionBtn icon={Settings} label="Configuración"      onClick={() => navigate("/dashboard/config")} />
-                <ActionBtn icon={Pencil}   label="Editar Perfil"      onClick={() => navigate("/dashboard/userpage/edit", { state: { user } })} />
+                <ActionBtn icon={Pencil}   label="Editar perfil"      onClick={() => navigate("/dashboard/userpage/edit", { state: { user } })} />
                 <ActionBtn icon={LogOut}   label="Cerrar sesión"      onClick={() => handleLogout(navigate)} danger />
               </div>
 
@@ -136,21 +142,6 @@ export default function UserProfilePage() {
                 </div>
               </div>
 
-              {/* Soporte */}
-              <div className="flex items-center justify-center gap-2 mt-5 text-black/60 text-[0.8rem]">
-                <HeadphonesIcon size={15} />
-                <span>
-                  ¿Necesitas ayuda? Escríbenos a{" "}
-                  <a
-                    href="https://mail.google.com/mail/?view=cm&to=sc876858@gmail.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold text-black/80 hover:underline"
-                  >
-                    sc876858@gmail.com
-                  </a>
-                </span>
-              </div>
             </>
           )}
 

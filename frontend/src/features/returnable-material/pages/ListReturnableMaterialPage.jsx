@@ -1,8 +1,9 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { getReturnableMaterials, toggleReturnableMaterial } from "../services/returnableMaterialService.js";
 import { normalizeReturnableMaterials } from "../utils/normalizeReturnableMaterial.js";
-import { translateStatesInList } from "@/features/consumable-material/utils/stateLabels.js";
-import { DataTable, StatsPills, ReportDropdown, BackButton, Input, Select, ClearFiltersButton, alertConfirm, alertSuccess, alertError } from "@/shared";
+import { translateStatesInList } from "@/shared/utils/stateLabels.js";
+import { getInventories } from "@/features/inventories/services/inventoryService.js";
+import { DataTable, StatsPills, ReportDropdown, InventoryReportDropdown, BackButton, Input, Select, ClearFiltersButton, BulkActionBar, alertConfirm, alertSuccess, alertError } from "@/shared";
 import { getReturnableMaterialColumns } from "../table/returnableMaterialColumns.jsx";
 import { returnableMaterialReportFields } from "../reports/config/returnableMaterialReportFields.js";
 import { generateReturnableMaterialReport } from "../reports/services/generateReturnableMaterialReport.js";
@@ -15,6 +16,7 @@ const STATE_DOT = {
   Baja:             "#ef4444",
   Traslado:         "#9333ea",
   Mantenimiento:    "#6b7280",
+  Deshabilitado:    "#64748b",
 };
 
 
@@ -31,6 +33,9 @@ export default function ListReturnableMaterialPage() {
     getReturnableMaterials()
       .then((rows) => normalizeReturnableMaterials(rows))
       .then((normalized) => translateStatesInList(normalized))
+      .then((translated) => translated.map((item) =>
+        item.enabled === false ? { ...item, state: "Deshabilitado" } : item
+      ))
       .then((translated) => {
         setReturnableMaterials(translated);
         setLoadError(null);
@@ -47,6 +52,7 @@ export default function ListReturnableMaterialPage() {
     accountHolder: "",
     state: "",
     serial: "",
+    inventory: "",
   });
 
   const [rowSelection, setRowSelection] = useState({});
@@ -59,6 +65,7 @@ export default function ListReturnableMaterialPage() {
       if (filters.accountHolder && !item.accountHolder?.toLowerCase().includes(filters.accountHolder.toLowerCase())) return false;
       if (filters.state         && item.state !== filters.state)                                                    return false;
       if (filters.serial        && !String(item.serial).includes(filters.serial))                                  return false;
+      if (filters.inventory     && item.inventory !== filters.inventory)                                           return false;
       return true;
     });
   }, [filters, returnableMaterials]);
@@ -79,7 +86,21 @@ export default function ListReturnableMaterialPage() {
   );
 
   const clearFilters = () =>
-    setFilters({ elementName: "", accountHolder: "", state: "", serial: "" });
+    setFilters({ elementName: "", accountHolder: "", state: "", serial: "", inventory: "" });
+
+  // Inventarios registrados (para el dropdown de reportes)
+  const [inventoryNames, setInventoryNames] = useState([]);
+  useEffect(() => {
+    getInventories()
+      .then((invs) => setInventoryNames(invs.filter((i) => i.enabled).map((i) => i.name)))
+      .catch(() => {});
+  }, []);
+
+  // Opciones únicas de inventario
+  const uniqueInventories = useMemo(
+    () => [...new Set(returnableMaterials.map((r) => r.inventory).filter(Boolean))],
+    [returnableMaterials]
+  );
 
   // Selección masiva
   const selectedMaterials = useMemo(() =>
@@ -150,7 +171,7 @@ export default function ListReturnableMaterialPage() {
       <div className="flex items-center gap-3 mb-4">
         <BackButton to="/dashboard/returnable-material" />
         <h1 className="text-white text-[1rem] sm:text-[1.2rem] font-bold m-0">
-          Lista materiales devolutivo
+          Lista de materiales devolutivos
         </h1>
       </div>
 
@@ -214,6 +235,18 @@ export default function ListReturnableMaterialPage() {
           />
         </div>
 
+        {/* INVENTARIO */}
+        <div className="flex flex-col gap-1 w-full sm:w-[320px]">
+          <label className="text-white text-[0.75rem] font-medium">Inventario</label>
+          <Select
+            name="inventory"
+            value={filters.inventory}
+            options={uniqueInventories.map((i) => ({ id: i, label: i }))}
+            onChange={(e) => setFilters((f) => ({ ...f, inventory: e.target.value }))}
+            placeholder="Selecciona el inventario"
+          />
+        </div>
+
         {/* Limpiar filtros + Reportes */}
         <div className="flex flex-wrap gap-[10px] items-end w-full sm:w-auto">
 
@@ -244,11 +277,41 @@ export default function ListReturnableMaterialPage() {
               onPDF={() => generateSelectedReport("pdf")}
               onExcel={() => generateSelectedReport("excel")}
             />
+            <InventoryReportDropdown
+              label="Reporte por inventario"
+              inventories={inventoryNames}
+              onPDF={(inv) =>
+                generateReturnableMaterialReport({
+                  format: "pdf",
+                  selectedFields: activeFields,
+                  scope: "inventory",
+                  filterInventory: inv,
+                  materials: returnableMaterials,
+                })
+              }
+              onExcel={(inv) =>
+                generateReturnableMaterialReport({
+                  format: "excel",
+                  selectedFields: activeFields,
+                  scope: "inventory",
+                  filterInventory: inv,
+                  materials: returnableMaterials,
+                })
+              }
+            />
           </div>
 
         </div>
 
       </div>
+
+      {/* BARRA ACCIÓN MASIVA */}
+      <BulkActionBar
+        count={selectedMaterials.length}
+        entityLabel="material(es)"
+        onEnable={() => handleBulkToggle(true)}
+        onDisable={() => handleBulkToggle(false)}
+      />
 
       {/* Tabla */}
       {loading ? (
@@ -256,7 +319,7 @@ export default function ListReturnableMaterialPage() {
       ) : (
         <DataTable
           data={filtered}
-          columns={getReturnableMaterialColumns(loadMaterials, selectedMaterials, handleBulkToggle)}
+          columns={getReturnableMaterialColumns(loadMaterials)}
           rowSelection={rowSelection}
           onRowSelectionChange={setRowSelection}
           onReportColsChange={setReportCols}

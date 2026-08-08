@@ -27,8 +27,6 @@ export const userRepository = {
         user_email,
         user_email_verification,
         user_email_institutional,
-        user_phone,
-        user_secondary_phone,
         user_document_type,
         user_document_number,
         user_address,
@@ -37,9 +35,9 @@ export const userRepository = {
         end_date,
         user_group,
         user_image,
-      must_change_password
+        must_change_password
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
       RETURNING user_id, user_email;
     `;
 
@@ -48,17 +46,15 @@ export const userRepository = {
       userEmail,              // $2
       userEmailVerification,  // $3
       userEmailInstitutional, // $4
-      userPhone,              // $5
-      userSecondaryPhone,     // $6
-      userDocumentType,       // $7
-      userDocumentNumber,     // $8
-      userAddress,            // $9
-      userPassword,           // $10
-      startDate,              // $11
-      endDate,                // $12
-      userGroup,              // $13
-      userImage,              // $14
-      true,                   // $15  must_change_password — siempre true al crear
+      userDocumentType,       // $5
+      userDocumentNumber,     // $6
+      userAddress,            // $7
+      userPassword,           // $8
+      startDate,              // $9
+      endDate,                // $10
+      userGroup,              // $11
+      userImage,              // $12
+      true,                   // $13  must_change_password — siempre true al crear
     ];
 
     const result = await pool.query(query, values);
@@ -69,21 +65,28 @@ export const userRepository = {
   async findByEmail(email) {
     const result = await pool.query(
       `SELECT
-         user_name,
-         user_email,
-         user_email_verification,
-         user_email_institutional,
-         user_phone,
-         user_secondary_phone,
-         user_document_type,
-         user_document_number,
-         user_address,
-         user_group,
-         user_image,
-         start_date,
-         end_date
-       FROM public.users
-       WHERE user_email = $1`,
+         u.user_id,
+         u.user_name,
+         u.user_email,
+         u.user_email_verification,
+         u.user_email_institutional,
+         u.user_document_type,
+         u.user_document_number,
+         u.user_address,
+         u.user_group,
+         u.user_image,
+         u.start_date,
+         u.end_date,
+         COALESCE(
+           json_agg(
+             json_build_object('phone_number', up.phone_number, 'is_primary', up.is_primary)
+           ) FILTER (WHERE up.phone_number IS NOT NULL),
+           '[]'::json
+         ) AS phones
+       FROM public.users u
+       LEFT JOIN public.user_phones up ON up.user_id = u.user_id
+       WHERE u.user_email = $1
+       GROUP BY u.user_id`,
       [email]
     );
     return result.rows[0] ?? null;
@@ -92,21 +95,28 @@ export const userRepository = {
   async findAll() {
     const result = await pool.query(
       `SELECT
-         user_name,
-         user_email,
-         user_email_institutional,
-         user_phone,
-         user_secondary_phone,
-         user_document_type,
-         user_document_number,
-         user_address,
-         user_group,
-         user_image,
-         start_date,
-         end_date,
-         enabled
-       FROM public.users
-       ORDER BY user_name ASC`
+         u.user_id,
+         u.user_name,
+         u.user_email,
+         u.user_email_institutional,
+         u.user_document_type,
+         u.user_document_number,
+         u.user_address,
+         u.user_group,
+         u.user_image,
+         u.start_date,
+         u.end_date,
+         u.enabled,
+         COALESCE(
+           json_agg(
+             json_build_object('phone_number', up.phone_number, 'is_primary', up.is_primary)
+           ) FILTER (WHERE up.phone_number IS NOT NULL),
+           '[]'::json
+         ) AS phones
+       FROM public.users u
+       LEFT JOIN public.user_phones up ON up.user_id = u.user_id
+       GROUP BY u.user_id
+       ORDER BY u.user_name ASC`
     );
     return result.rows;
   },
@@ -210,8 +220,6 @@ export const userRepository = {
       userEmail,
       userEmailVerification,
       userEmailInstitutional,
-      userPhone,
-      userSecondaryPhone,
       userDocumentType,
       userDocumentNumber,
       userAddress,
@@ -223,41 +231,35 @@ export const userRepository = {
       isEnabled,
     } = data;
 
-    // Construimos el SET dinámicamente para no pisar campos no enviados
     const sets = [
-      "user_name               = $2",
-      "user_email              = $3",
-      "user_email_verification = $4",
-      "user_email_institutional= $5",
-      "user_phone              = $6",
-      "user_secondary_phone    = $7",
-      "user_document_type      = $8",
-      "user_document_number    = $9",
-      "user_address            = $10",
-      "start_date              = $11",
-      "end_date                = $12",
-      "user_group              = $13",
-      "enabled                 = $14",
+      "user_name                = $2",
+      "user_email               = $3",
+      "user_email_verification  = $4",
+      "user_email_institutional = $5",
+      "user_document_type       = $6",
+      "user_document_number     = $7",
+      "user_address             = $8",
+      "start_date               = $9",
+      "end_date                 = $10",
+      "user_group               = $11",
+      "enabled                  = $12",
     ];
 
     const values = [
-      documentNumber,        // $1 WHERE
-      userName,              // $2
-      userEmail,             // $3
-      userEmailVerification, // $4
+      documentNumber,                 // $1 WHERE
+      userName,                       // $2
+      userEmail,                      // $3
+      userEmailVerification,          // $4
       userEmailInstitutional || null, // $5
-      userPhone,             // $6
-      userSecondaryPhone || null,     // $7
-      userDocumentType,      // $8
-      userDocumentNumber,    // $9
-      userAddress,           // $10
-      startDate,             // $11
-      endDate,               // $12
-      userGroup || null,     // $13
-      isEnabled ?? true,     // $14
+      userDocumentType,               // $6
+      userDocumentNumber,             // $7
+      userAddress,                    // $8
+      startDate,                      // $9
+      endDate,                        // $10
+      userGroup || null,              // $11
+      isEnabled ?? true,              // $12
     ];
 
-    // Password y imagen solo se actualizan si vienen
     if (userPassword) {
       sets.push(`user_password = $${values.length + 1}`);
       values.push(userPassword);
@@ -276,6 +278,19 @@ export const userRepository = {
 
     const result = await pool.query(query, values);
     return result.rows[0] ?? null;
+  },
+
+  // ── Sincroniza los teléfonos de un usuario (DELETE + INSERT) ────────────
+  async syncPhones(userId, phones) {
+    await pool.query(`DELETE FROM public.user_phones WHERE user_id = $1`, [userId]);
+    for (const phone of phones) {
+      if (!phone.phoneNumber || phone.phoneNumber.trim() === "") continue;
+      await pool.query(
+        `INSERT INTO public.user_phones (user_id, phone_number, is_primary)
+         VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+        [userId, phone.phoneNumber.trim(), phone.isPrimary ?? false]
+      );
+    }
   },
 
   async toggleUser(id) {

@@ -5,6 +5,7 @@ export function buildReturnableMaterialReportDataset({
   selectedIds = [],
   filterSerial,
   filterState,
+  filterInventory,
 }) {
   let filtered = [...materials];
 
@@ -20,6 +21,10 @@ export function buildReturnableMaterialReportDataset({
 
   if (scope === "state" && filterState) {
     filtered = filtered.filter((m) => m.state === filterState);
+  }
+
+  if (scope === "inventory" && filterInventory) {
+    filtered = filtered.filter((m) => m.inventory === filterInventory);
   }
 
   const headers = selectedFields.map((f) => f.label);

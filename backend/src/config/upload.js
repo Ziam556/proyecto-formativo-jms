@@ -26,8 +26,12 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     if (file.fieldname === "userImage") {
       cb(null, path.join(__dirname, "../../uploads/profiles"));
-    } else if (file.fieldname === "materialTechnicalSheet") {
-      cb(null, path.join(__dirname, "../../uploads/returnable"));
+    } else if (
+      file.fieldname === "materialTechnicalSheet" ||
+      file.fieldname === "materialQuotation"
+    ) {
+      const sub = req.baseUrl.includes("returnable") ? "returnable" : "consumable";
+      cb(null, path.join(__dirname, `../../uploads/${sub}`));
     } else {
       // materialImage de cualquier feature
       const sub = req.baseUrl.includes("returnable") ? "returnable" : "consumable";
@@ -45,6 +49,10 @@ const fileFilter = (req, file, cb) => {
   if (file.fieldname === "materialTechnicalSheet") {
     if (DOCUMENT_TYPES.includes(file.mimetype)) return cb(null, true);
     return cb(new Error("La ficha técnica debe ser PDF, PNG o Excel"), false);
+  }
+  if (file.fieldname === "materialQuotation") {
+    if (file.mimetype === "application/pdf") return cb(null, true);
+    return cb(new Error("Las cotizaciones deben ser archivos PDF"), false);
   }
   // Imágenes (userImage, materialImage)
   if (IMAGE_TYPES.includes(file.mimetype)) return cb(null, true);

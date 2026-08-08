@@ -1,7 +1,6 @@
 import { z } from "zod";
 
-// Paso 2 — Marca, Modelo, Serial, Imagen, Fecha de compra.
-// Marca: texto y números permitidos (ej: "3M", "HP"). Modelo/Serial son opcionales, sin formato estricto.
+// Paso 2 — Marca, Modelo, Serial, Imagen, Fecha de compra, Fecha de ingreso.
 export const returnableStep2Schema = z.object({
 
     materialBrand: z
@@ -37,5 +36,17 @@ export const returnableStep2Schema = z.object({
         .array(z.any())
         .min(1, "La imagen es requerida"),
 
+    materialPurchaseDate: z
+        .string()
+        .refine((v) => !v || !isNaN(Date.parse(v)), "La fecha de compra no es válida")
+        .refine((v) => !v || new Date(v) <= new Date(), "La fecha de compra no puede ser futura")
+        .optional()
+        .or(z.literal("")),
+
+    materialEntryDate: z
+        .string()
+        .min(1, "La fecha de ingreso es requerida")
+        .refine((v) => !isNaN(Date.parse(v)), "La fecha de ingreso no es válida")
+        .refine((v) => new Date(v) <= new Date(), "La fecha de ingreso no puede ser futura"),
 
 });

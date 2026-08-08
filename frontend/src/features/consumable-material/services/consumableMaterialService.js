@@ -7,14 +7,16 @@ function getAuthHeaders() {
   };
 }
 
-export async function createConsumableMaterial(data, imageFiles, sheetFile = null) {
+export async function createConsumableMaterial(data, imageFiles, sheetFile = null, quotationFiles = []) {
   const formData = new FormData();
 
   const fields = [
     "consumableMaterialId",
     "materialPlate",
     "materialElementName",
+    "materialCategory",
     "materialBrand",
+    "materialEntryDate",
     "materialAmount",
     "materialUnitValue",
     "materialTotalValue",
@@ -22,6 +24,7 @@ export async function createConsumableMaterial(data, imageFiles, sheetFile = nul
     "materialDescription",
     "materialPurchaseDate",
     "materialLocation",
+    "materialInventory",
   ];
 
   fields.forEach((key) => {
@@ -39,6 +42,7 @@ export async function createConsumableMaterial(data, imageFiles, sheetFile = nul
   files.forEach((f) => formData.append("materialImage", f));
 
   if (sheetFile) formData.append("materialTechnicalSheet", sheetFile);
+  quotationFiles.forEach((f) => formData.append("materialQuotation", f));
 
   const response = await fetch(API_URL, {
     method: "POST",
@@ -70,13 +74,15 @@ export async function getConsumableMaterialById(id) {
 }
 
 // Actualizar material de consumo. Misma forma de armar FormData que create.
-export async function updateConsumableMaterial(id, data, imageFiles, sheetFile = null) {
+export async function updateConsumableMaterial(id, data, imageFiles, sheetFile = null, quotationFiles = []) {
   const formData = new FormData();
 
   const fields = [
     "materialPlate",
     "materialElementName",
+    "materialCategory",
     "materialBrand",
+    "materialEntryDate",
     "materialAmount",
     "materialUnitValue",
     "materialTotalValue",
@@ -84,6 +90,7 @@ export async function updateConsumableMaterial(id, data, imageFiles, sheetFile =
     "materialDescription",
     "materialPurchaseDate",
     "materialLocation",
+    "materialInventory",
     "isEnabled",
     "removeSheet",
   ];
@@ -103,6 +110,8 @@ export async function updateConsumableMaterial(id, data, imageFiles, sheetFile =
   files.forEach((f) => formData.append("materialImage", f));
 
   if (sheetFile) formData.append("materialTechnicalSheet", sheetFile);
+  if (data.keepQuotations !== undefined) formData.append("keepQuotations", data.keepQuotations);
+  quotationFiles.forEach((f) => formData.append("materialQuotation", f));
 
   const response = await fetch(`${API_URL}/${id}`, {
     method: "PUT",

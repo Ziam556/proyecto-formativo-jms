@@ -3,18 +3,8 @@ import { useState, useEffect } from "react";
 import { Input, Button, Select, MultiUserSearchField } from "@/shared";
 import { returnableStep1Schema } from "../schemas/returnableStep1Schema";
 import { getReturnableMaterials } from "../services/returnableMaterialService";
-
-const CATEGORY_OPTIONS = [
-  { value: "Herramienta",          label: "Herramienta" },
-  { value: "Maquinaria y equipos", label: "Maquinaria y equipos" },
-  { value: "Muebles y enseres",    label: "Muebles y enseres" },
-];
-
-const PREFIX_MAP = {
-  "Herramienta":          "HER",
-  "Maquinaria y equipos": "MAQ",
-  "Muebles y enseres":    "MUE",
-};
+import { getCategories } from "@/features/categories/services/categoryService";
+import { getInventories } from "@/features/inventories/services/inventoryService";
 
 function generateNextId(existingIds, prefix) {
   const nums = existingIds
@@ -26,18 +16,42 @@ function generateNextId(existingIds, prefix) {
 }
 
 export default function CreateReturnable1({ formData, onNext, onCancel }) {
+  const [categoryOptions, setCategoryOptions]   = useState([]);
+  const [inventoryOptions, setInventoryOptions] = useState([]);
+  // Map name → prefix for ID generation
+  const [prefixMap, setPrefixMap] = useState({});
+
   const [fields, setFields] = useState({
     returnableMaterialId: formData.returnableMaterialId || "",
     materialPlate:        formData.materialPlate        || "",
     materialCategory:     formData.materialCategory     || "",
     materialElementName:  formData.materialElementName  || "",
     materialStoryTeller:  formData.materialStoryTeller  || [],
+    materialInventory:    formData.materialInventory    || "",
   });
-  const [errors, setErrors]       = useState({});
+  const [errors, setErrors]           = useState({});
   const [existingIds, setExistingIds] = useState([]);
 
-  // Cargar IDs existentes al montar
+  // Cargar categorías e IDs existentes al montar
   useEffect(() => {
+    getCategories()
+      .then((cats) => {
+        const enabled = cats.filter((c) => c.enabled);
+        setCategoryOptions(enabled.map((c) => ({ id: c.name, label: c.name })));
+        const map = {};
+        enabled.forEach((c) => { map[c.name] = c.prefix || ""; });
+        setPrefixMap(map);
+      })
+      .catch(() => {});
+    getInventories()
+      .then((invs) =>
+        setInventoryOptions(
+          invs
+            .filter((i) => i.enabled)
+            .map((i) => ({ id: i.name, label: i.name }))
+        )
+      )
+      .catch(() => {});
     getReturnableMaterials()
       .then((rows) => setExistingIds(rows.map((r) => r.returnable_material_id)))
       .catch(() => {});
@@ -46,11 +60,11 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
   // Re-generar ID cada vez que cambia la categoría o los IDs existentes
   useEffect(() => {
     if (!fields.materialCategory) return;
-    const prefix = PREFIX_MAP[fields.materialCategory];
+    const prefix = prefixMap[fields.materialCategory];
     if (!prefix) return;
     const nextId = generateNextId(existingIds, prefix);
     setFields((prev) => ({ ...prev, returnableMaterialId: nextId }));
-  }, [fields.materialCategory, existingIds]);
+  }, [fields.materialCategory, existingIds, prefixMap]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -75,7 +89,7 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
   return (
     <div className="grid grid-cols-[320px_320px] gap-6 mx-auto">
       <Input labelVariant="light"
-        label="Serial Number (SN) (opcional)"
+        label="Número de serie (SN) (opcional)"
         name="returnableMaterialId"
         placeholder="Ej: HER-001"
         value={fields.returnableMaterialId}
@@ -95,7 +109,7 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
         label="Categoría"
         name="materialCategory"
         value={fields.materialCategory}
-        options={CATEGORY_OPTIONS}
+        options={categoryOptions}
         onChange={handleChange}
         error={errors.materialCategory}
         placeholder="Selecciona una categoría"
@@ -119,6 +133,15 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
         }}
         error={errors.materialStoryTeller}
         required
+      />
+      <Select labelVariant="light"
+        label="Nombre de inventario (opcional)"
+        name="materialInventory"
+        value={fields.materialInventory}
+        options={inventoryOptions}
+        onChange={handleChange}
+        error={errors.materialInventory}
+        placeholder="Selecciona un inventario"
       />
       <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4">
         <Button variant="secondary" size="sm" onClick={onCancel}>Cancelar</Button>

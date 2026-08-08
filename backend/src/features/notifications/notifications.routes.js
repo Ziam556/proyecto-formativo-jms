@@ -8,6 +8,7 @@ router.use(authenticateToken);
 
 router.get("/",                    notificationsController.getMyNotifications);
 router.get("/unread-count",        notificationsController.getUnreadCount);
+router.get("/recent-loans",        notificationsController.getRecentLoans);
 router.put("/read-all",            notificationsController.markAllRead);
 router.put("/:id/read",            notificationsController.markRead);
 

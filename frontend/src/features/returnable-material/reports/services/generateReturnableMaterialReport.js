@@ -2,7 +2,7 @@ import { buildReturnableMaterialReportDataset } from "../utils/buildReturnableMa
 import { generateReturnableMaterialExcelReport } from "./generateReturnableMaterialExcelReport";
 import { generateReturnableMaterialPdfReport } from "./generateReturnableMaterialPdfReport";
 
-export function generateReturnableMaterialReport({ format, selectedFields, scope, materials = [], selectedIds, filterSerial, filterState }) {
+export function generateReturnableMaterialReport({ format, selectedFields, scope, materials = [], selectedIds, filterSerial, filterState, filterInventory }) {
   const { headers, rows } = buildReturnableMaterialReportDataset({
     materials,
     selectedFields,
@@ -10,6 +10,7 @@ export function generateReturnableMaterialReport({ format, selectedFields, scope
     selectedIds,
     filterSerial,
     filterState,
+    filterInventory,
   });
 
   if (!rows.length) {

@@ -167,7 +167,7 @@ function AccionesCell({ row, onRefresh }) {
           </DropdownItem>
 
           {!yaDevuelto && !cancelado && (
-            <DropdownItem onClick={() => navigate("/dashboard/loans/edit", { state: { loan: row } })}>
+            <DropdownItem onClick={() => navigate(`/dashboard/loans/edit?id=${row.id}`, { state: { loan: row } })}>
               Editar
             </DropdownItem>
           )}
@@ -209,13 +209,13 @@ const baseLoansColumns = [
   },
   {
     id: "departureDate",
-    label: "Fecha Salida",
+    label: "Fecha de salida",
     accessor: "departureDate",
     width: "11%",
   },
   {
     id: "deliveryDate",
-    label: "Fecha Entrega",
+    label: "Fecha de entrega",
     accessor: "deliveryDate",
     width: "11%",
   },

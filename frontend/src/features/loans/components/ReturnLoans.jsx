@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { BackButton, Button, Input, IconButton, alertWarning, alertError, alertConfirm, alertSuccess } from "@/shared";
 import { getLoanById, registerLoanReturn } from "../services/loanService";
+import { useNavigate } from "react-router-dom";
 
 const TAG_STYLES = {
   Devolutivo: { bg: "rgba(139,0,139,0.3)",  color: "#e9b8ff", border: "rgba(200,100,255,0.25)" },
@@ -39,6 +40,7 @@ function StatePill({ label, active, color, onClick }) {
 }
 
 export default function ReturnLoans({ loan: initialLoan }) {
+  const navigate = useNavigate();
   const [searchId, setSearchId] = useState(
     initialLoan ? String(initialLoan.id) : ""
   );
@@ -46,7 +48,6 @@ export default function ReturnLoans({ loan: initialLoan }) {
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading]   = useState(false);
   const [toReturn, setToReturn] = useState([]);
-  const [success, setSuccess]   = useState(false);
   const [saving, setSaving]     = useState(false);
 
   // Si llegamos con un préstamo desde otra pantalla (ej. "Devolver" en la lista),
@@ -74,7 +75,6 @@ export default function ReturnLoans({ loan: initialLoan }) {
     setLoading(true);
     setNotFound(false);
     setToReturn([]);
-    setSuccess(false);
     try {
       const found = await getLoanById(id);
       setLoan(found);
@@ -142,12 +142,7 @@ export default function ReturnLoans({ loan: initialLoan }) {
 
       await alertSuccess("¡Devolución registrada!", "Los materiales se marcaron como devueltos correctamente.");
 
-      setSuccess(true);
-      setToReturn([]);
-
-      // Refrescar el préstamo para reflejar qué materiales ya quedaron devueltos
-      const refreshed = await getLoanById(loan.id);
-      setLoan(refreshed);
+      navigate("/dashboard/loans");
     } catch (err) {
       await alertError("Error al guardar", err.message || "Ocurrió un error inesperado.");
     } finally {
@@ -162,7 +157,7 @@ export default function ReturnLoans({ loan: initialLoan }) {
         {/* HEADER */}
         <div className="flex items-center gap-3 mb-5">
           <BackButton to="/dashboard/loans" />
-          <h1 className="text-white text-xl font-bold">Registrar Devolución</h1>
+          <h1 className="text-white text-xl font-bold">Registrar devolución</h1>
         </div>
 
         {/* BUSCADOR */}
@@ -189,12 +184,6 @@ export default function ReturnLoans({ loan: initialLoan }) {
           <p className="text-red-400 text-sm mb-4">
             No se encontró ningún préstamo con ese ID.
           </p>
-        )}
-
-        {success && (
-          <div className="bg-green-500/20 border border-green-400/30 rounded-lg px-4 py-3 text-green-300 text-sm mb-4">
-            ✓ Devolución registrada exitosamente.
-          </div>
         )}
 
         {/* CHIPS INFO */}

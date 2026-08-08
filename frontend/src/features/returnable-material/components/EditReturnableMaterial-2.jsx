@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { z } from "zod";
-import { Input, Button, FileInput, BrandSearchField } from "@/shared";
+import { Input, Button, FileInput, BrandSearchField, DatePicker } from "@/shared";
 import { returnableStep2Schema } from "../schemas/returnableStep2Schema";
 
 // En edición la imagen es opcional (ya existe en el servidor)
@@ -14,6 +14,8 @@ export default function EditReturnableMaterial2({ formData = {}, onNext, onBack 
     materialModel:        formData.materialModel        || "",
     materialSerial:       formData.materialSerial       || "",
     materialImage:        formData.materialImage        || [],
+    materialPurchaseDate: formData.materialPurchaseDate || "",
+    materialEntryDate:    formData.materialEntryDate    || "",
   });
   const [errors, setErrors] = useState({});
 
@@ -24,16 +26,12 @@ export default function EditReturnableMaterial2({ formData = {}, onNext, onBack 
   };
 
   const handleNext = () => {
-    const { materialPurchaseDate, ...rest } = fields;
-    const result = editStep2Schema.safeParse({
-      ...rest,
-      purchaseDate: materialPurchaseDate,
-    });
+    const result = editStep2Schema.safeParse(fields);
 
     if (!result.success) {
       const newErrors = {};
       result.error.issues.forEach((issue) => {
-        const field = issue.path[0] === "purchaseDate" ? "materialPurchaseDate" : issue.path[0];
+        const field = issue.path[0];
         if (field && !newErrors[field]) newErrors[field] = issue.message;
       });
       setErrors(newErrors);
@@ -70,7 +68,7 @@ export default function EditReturnableMaterial2({ formData = {}, onNext, onBack 
 
       <div className="flex flex-col gap-1">
         <label className="text-sm font-medium text-white">
-          Imagen <span className="text-red-400">*</span>
+          Imagen <span className="text-xs text-white/50 font-normal ml-1">(dejar vacío para mantener la actual)</span>
         </label>
         <FileInput
           value={fields.materialImage}
@@ -85,6 +83,25 @@ export default function EditReturnableMaterial2({ formData = {}, onNext, onBack 
           <span className="text-red-500 text-xs">{errors.materialImage}</span>
         )}
       </div>
+
+      <DatePicker labelVariant="light"
+        label="Fecha de compra (opcional)"
+        name="materialPurchaseDate"
+        value={fields.materialPurchaseDate}
+        onChange={handleChange}
+        error={errors.materialPurchaseDate}
+        maxDate={new Date()}
+      />
+
+      <DatePicker labelVariant="light"
+        label="Fecha de ingreso"
+        name="materialEntryDate"
+        value={fields.materialEntryDate}
+        onChange={handleChange}
+        error={errors.materialEntryDate}
+        maxDate={new Date()}
+        required
+      />
 
       <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-4">
         <Button variant="secondary" size="sm" onClick={onBack}>Atrás</Button>
