@@ -8,6 +8,8 @@ import { GroupsListPage, CreateGroupPage, EditGroupPage, AddUsersToGroupPage } f
 import { ReturnableMaterialPage, ListReturnableMaterialPage, CreateReturnableMaterialPage, EditReturnableMaterialPage, ViewReturnableMaterialPage } from "@/features/returnable-material";
 import { ConsumableMaterialPage, ListConsumableMaterialPage, CreateConsumableMaterialPage, ViewConsumableMaterialPage, EditConsumableMaterialPage } from "@/features/consumable-material";
 import { BrandsPage, CreateBrandPage } from "@/features/brands";
+import { CategoriesPage, CreateCategoryPage } from "@/features/categories";
+import { InventoriesPage, CreateInventoryPage } from "@/features/inventories";
 import { LoansPage, CreateLoansPage, ListWeLendAssetsPage, ViewLoansPage, EditLoansPage, ReturnLoansPage } from "@/features/loans";
 import { TasksPage, MisTareasPage } from "@/features/tasks";
 
@@ -77,6 +79,12 @@ const router = createBrowserRouter([
             // Marcas: accesible con permiso de marcas (o admin)
             { path: "brands",        element: p(["list_brand","create_brand","edit_brand","toggle_brand","delete_brand"], <BrandsPage />) },
             { path: "config/brands", element: p(["list_brand","create_brand","edit_brand","toggle_brand","delete_brand"], <CreateBrandPage />) },
+            // Categorías: admin
+            { path: "categories",          element: adm(<CategoriesPage />) },
+            { path: "config/categories",   element: adm(<CreateCategoryPage />) },
+            // Inventarios: admin
+            { path: "inventories",         element: adm(<InventoriesPage />) },
+            { path: "config/inventories",  element: adm(<CreateInventoryPage />) },
             // Hub de configuración: admin O permisos de marcas
             { path: "config", element: p(["list_brand","create_brand","edit_brand","toggle_brand","delete_brand"], <ConfigPage />) },
             // Solo Administrador

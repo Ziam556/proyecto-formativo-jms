@@ -13,6 +13,8 @@ const STATE_OPTIONS = [
 ];
 
 const MAX_SHEET_MB = 3;
+const MAX_QUOTATION_MB = 3;
+const MAX_QUOTATIONS = 3;
 
 export default function CreateReturnable4({ formData, onSave, onBack }) {
   const isMuebles = formData.materialCategory === "Muebles y enseres";
@@ -25,8 +27,31 @@ export default function CreateReturnable4({ formData, onSave, onBack }) {
     materialWidth:          formData.materialWidth          || "",
     materialLength:         formData.materialLength         || "",
     materialDepth:          formData.materialDepth          || "",
+    materialQuotations:     formData.materialQuotations     || [],
   });
   const [errors, setErrors] = useState({});
+
+  const handleQuotationAdd = (files) => {
+    if (!files.length) return;
+    const file = files[0];
+    if (file.type !== "application/pdf") {
+      setErrors((prev) => ({ ...prev, materialQuotations: "Solo se permiten archivos PDF" }));
+      return;
+    }
+    if (file.size > MAX_QUOTATION_MB * 1024 * 1024) {
+      setErrors((prev) => ({ ...prev, materialQuotations: `El archivo supera los ${MAX_QUOTATION_MB}MB` }));
+      return;
+    }
+    setFields((prev) => ({ ...prev, materialQuotations: [...prev.materialQuotations, file] }));
+    setErrors((prev) => ({ ...prev, materialQuotations: "" }));
+  };
+
+  const handleQuotationRemove = (idx) => {
+    setFields((prev) => ({
+      ...prev,
+      materialQuotations: prev.materialQuotations.filter((_, i) => i !== idx),
+    }));
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,12 +79,19 @@ export default function CreateReturnable4({ formData, onSave, onBack }) {
     const schema = buildReturnableStep4Schema(isMuebles);
     const result = schema.safeParse(fields);
 
+    const newErrors = {};
     if (!result.success) {
-      const newErrors = {};
       result.error.issues.forEach((issue) => {
         const field = issue.path[0];
         if (field && !newErrors[field]) newErrors[field] = issue.message;
       });
+    }
+
+    if (!fields.materialQuotations || fields.materialQuotations.length === 0) {
+      newErrors.materialQuotations = "Debe subir al menos 1 cotización (PDF, máx 3MB cada una)";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       alertWarning("Campos incompletos", "Por favor completa todos los campos requeridos antes de guardar.");
       return;
@@ -117,6 +149,33 @@ export default function CreateReturnable4({ formData, onSave, onBack }) {
 
         {errors.materialTechnicalSheet && (
           <span className="text-red-500 text-xs">{errors.materialTechnicalSheet}</span>
+        )}
+      </div>
+
+      {/* COTIZACIONES — 1 a 3 PDFs, requeridas */}
+      <div className="flex flex-col gap-2 col-span-2">
+        <label className="text-sm font-semibold text-white">
+          Cotizaciones <span className="text-red-400">*</span>
+          <span className="text-xs text-white/50 ml-1 font-normal">(1–3 PDFs · máx 3MB c/u)</span>
+        </label>
+
+        {fields.materialQuotations.map((file, idx) => (
+          <div key={idx} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-xs text-white/80">
+            <FileText size={14} className="shrink-0 text-emerald-400" />
+            <span className="truncate flex-1">{file.name}</span>
+            <button type="button" onClick={() => handleQuotationRemove(idx)}
+              className="shrink-0 text-red-400 hover:text-red-300 font-semibold px-1">
+              Eliminar
+            </button>
+          </div>
+        ))}
+
+        {fields.materialQuotations.length < MAX_QUOTATIONS && (
+          <FileInput value={[]} onChange={handleQuotationAdd} accept="application/pdf" multiple={false} />
+        )}
+
+        {errors.materialQuotations && (
+          <span className="text-red-500 text-xs">{errors.materialQuotations}</span>
         )}
       </div>
 

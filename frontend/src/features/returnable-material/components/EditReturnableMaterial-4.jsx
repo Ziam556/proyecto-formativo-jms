@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { z } from "zod";
-import { Input, Textarea, Button, Select, FileInput, Switch, alertWarning, alertError  } from "@/shared";
+import { Input, Textarea, Button, Select, FileInput, alertWarning, alertError  } from "@/shared";
 import { buildReturnableStep4Schema } from "../schemas/returnableStep4Schema";
 import { FileText } from "lucide-react";
 
@@ -26,13 +26,21 @@ const STATE_OPTIONS = [
 ];
 
 const MAX_SHEET_MB = 3;
+const MAX_QUOTATION_MB = 3;
+const MAX_QUOTATIONS = 3;
 
 export default function EditReturnableMaterial4({ formData = {}, onSave, onBack }) {
   const isMuebles = formData.materialCategory === "Muebles y enseres";
   const currentSheetUrl = formData.materialTechnicalSheetUrl || null;
 
-  const [isEnabled, setIsEnabled]   = useState(formData?.isEnabled ?? true);
   const [sheetRemoved, setSheetRemoved] = useState(false);
+
+  // Cotizaciones existentes en el servidor
+  const [existingQuotationUrls, setExistingQuotationUrls] = useState(
+    formData.materialQuotationUrls || []
+  );
+  // Nuevos archivos a subir
+  const [newQuotations, setNewQuotations] = useState([]);
 
   const [fields, setFields] = useState({
     materialState:          formData.materialState          || "",
@@ -44,6 +52,29 @@ export default function EditReturnableMaterial4({ formData = {}, onSave, onBack 
     materialDepth:          formData.materialDepth          || "",
   });
   const [errors, setErrors] = useState({});
+
+  const totalQuotations = existingQuotationUrls.length + newQuotations.length;
+
+  const handleQuotationAdd = (files) => {
+    if (!files.length) return;
+    const file = files[0];
+    if (file.type !== "application/pdf") {
+      setErrors((prev) => ({ ...prev, quotations: "Solo se permiten archivos PDF" }));
+      return;
+    }
+    if (file.size > MAX_QUOTATION_MB * 1024 * 1024) {
+      setErrors((prev) => ({ ...prev, quotations: `El archivo supera los ${MAX_QUOTATION_MB}MB` }));
+      return;
+    }
+    setNewQuotations((prev) => [...prev, file]);
+    setErrors((prev) => ({ ...prev, quotations: "" }));
+  };
+
+  const handleExistingQuotationRemove = (url) =>
+    setExistingQuotationUrls((prev) => prev.filter((u) => u !== url));
+
+  const handleNewQuotationRemove = (idx) =>
+    setNewQuotations((prev) => prev.filter((_, i) => i !== idx));
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -82,7 +113,7 @@ export default function EditReturnableMaterial4({ formData = {}, onSave, onBack 
       return;
     }
     try {
-            onSave({ ...fields, isEnabled });
+            onSave({ ...fields, existingQuotationUrls, materialQuotations: newQuotations });
         } catch (err) {
             console.error("Error al guardar material:", err);
             alertError("Error al guardar", err.message || "Ocurrió un error inesperado. Intenta de nuevo.");
@@ -153,6 +184,40 @@ export default function EditReturnableMaterial4({ formData = {}, onSave, onBack 
         )}
       </div>
 
+      {/* COTIZACIONES */}
+      <div className="flex flex-col gap-2 col-span-2">
+        <label className="text-sm font-semibold text-white">
+          Cotizaciones
+          <span className="text-xs text-white/50 ml-1 font-normal">(1–3 PDFs · máx 3MB c/u)</span>
+        </label>
+
+        {existingQuotationUrls.map((url, idx) => (
+          <div key={url} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-xs text-white/80">
+            <FileText size={14} className="shrink-0 text-emerald-400" />
+            <span className="truncate flex-1">Cotización {idx + 1} — {url.split("/").pop()}</span>
+            <button type="button" onClick={() => handleExistingQuotationRemove(url)}
+              className="shrink-0 text-red-400 hover:text-red-300 font-semibold px-1">Eliminar</button>
+          </div>
+        ))}
+
+        {newQuotations.map((file, idx) => (
+          <div key={idx} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 border border-emerald-400/30 text-xs text-white/80">
+            <FileText size={14} className="shrink-0 text-emerald-400" />
+            <span className="truncate flex-1">{file.name} <span className="text-emerald-400">(nuevo)</span></span>
+            <button type="button" onClick={() => handleNewQuotationRemove(idx)}
+              className="shrink-0 text-red-400 hover:text-red-300 font-semibold px-1">Eliminar</button>
+          </div>
+        ))}
+
+        {totalQuotations < MAX_QUOTATIONS && (
+          <FileInput value={[]} onChange={handleQuotationAdd} accept="application/pdf" multiple={false} />
+        )}
+
+        {errors.quotations && (
+          <span className="text-red-500 text-xs">{errors.quotations}</span>
+        )}
+      </div>
+
       <Textarea
         label="Descripción"
         name="materialDescription"
@@ -168,19 +233,6 @@ export default function EditReturnableMaterial4({ formData = {}, onSave, onBack 
         value={fields.materialLocation}
         onChange={handleChange}
       />
-
-      {/* SWITCH HABILITAR / DESHABILITAR */}
-      <div className="flex flex-col gap-1 justify-end">
-        <label className="text-sm font-medium text-white">
-          Estado del material
-        </label>
-        <div className="flex items-center gap-3 h-12">
-          <Switch checked={isEnabled} onChange={setIsEnabled} />
-          <span className="text-sm font-semibold text-white">
-            {isEnabled ? "Habilitado" : "Deshabilitado"}
-          </span>
-        </div>
-      </div>
 
       {isMuebles && (
         <>

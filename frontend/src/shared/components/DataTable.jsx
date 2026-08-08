@@ -97,11 +97,15 @@ export default function DataTable({
                 if (col.format === "currency") return formatCurrency(value);
                 if (col.format === "state")    return <StateChip value={value} />;
                 if (col.format === "date")     return formatDate(value);
-                if (col.format === "link")     return (
-                    <a href="#" className="text-[#93c5fd] underline text-[0.82rem]">
-                        Ver ficha
-                    </a>
-                );
+                if (col.format === "link") {
+                    if (!value) return <span className="text-[0.78rem] text-[#9ca3af]">—</span>;
+                    const href = value.startsWith("http") ? value : `http://localhost:4000/${value}`;
+                    return (
+                        <a href={href} target="_blank" rel="noreferrer" className="text-[#93c5fd] underline text-[0.82rem]">
+                            Ver ficha
+                        </a>
+                    );
+                }
                 return value ?? "—";
             },
         };
@@ -177,7 +181,7 @@ export default function DataTable({
             </div>
 
             <div className="flex items-center justify-center gap-3 mt-4 text-[#e2e8f0] text-[0.85rem]">
-                <span>Page</span>
+                <span>Página</span>
                 <select
                     value={pageSize}
                     onChange={(e) => table.setPageSize(Number(e.target.value))}

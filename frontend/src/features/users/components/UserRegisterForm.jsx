@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Eye, EyeOff } from "lucide-react";
 import { GroupOverlay, SecondaryPhoneOverlay } from "./UserOverlays";
 import {
     Input, Button, Select, DatePicker, AvatarUpload,
@@ -13,6 +13,14 @@ import { useNavigate } from "react-router-dom";
 
 const _d = new Date();
 const TODAY = `${_d.getFullYear()}-${String(_d.getMonth() + 1).padStart(2, "0")}-${String(_d.getDate()).padStart(2, "0")}`;
+
+// Genera contraseña automática: iniciales del nombre en mayúscula + número de documento + "*"
+// Ej: "Sebastian Castaño Aguirre" + "1089602525" → "SCA1089602525*"
+const generatePassword = (name = "", doc = "") => {
+    const initials = name.trim().split(/\s+/).filter(Boolean).map((w) => w[0].toUpperCase()).join("");
+    if (!initials && !doc) return "";
+    return `${initials}${doc}*`;
+};
 
 // ─── Estado vacío del formulario ──────────────────────────────────────────────
 const EMPTY_FORM = {
@@ -41,8 +49,10 @@ export default function UserRegisterForm({ onCancel }) {
     const [groups, setGroups]               = useState([]);
     const [formData, setFormData]           = useState({ ...EMPTY_FORM });
     const [errors, setErrors]               = useState({});
-    const [showGroupModal, setShowGroupModal] = useState(false);
-    const [showPhoneModal, setShowPhoneModal] = useState(false);
+    const [showGroupModal, setShowGroupModal]   = useState(false);
+    const [showPhoneModal, setShowPhoneModal]   = useState(false);
+    const [showPassword,   setShowPassword]     = useState(false);
+    const [dataConsent,    setDataConsent]      = useState(false);
 
     useEffect(() => {
         getDocumentTypes().then(setDocumentTypes);
@@ -50,6 +60,14 @@ export default function UserRegisterForm({ onCancel }) {
             .then((data) => setGroups(data.map((g) => ({ id: g.group_name, name: g.group_name, enabled: true }))))
             .catch(() => setGroups([]));
     }, []);
+
+    // Auto-genera la contraseña cada vez que cambia el nombre o el número de documento
+    useEffect(() => {
+        setFormData((prev) => ({
+            ...prev,
+            userPassword: generatePassword(prev.userName, prev.userDocumentNumber),
+        }));
+    }, [formData.userName, formData.userDocumentNumber]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -109,6 +127,15 @@ export default function UserRegisterForm({ onCancel }) {
         if (Object.keys(emptyErrors).length > 0) {
             setErrors(emptyErrors);
             alertWarning("Campos incompletos", "Por favor completa todos los campos requeridos antes de guardar.");
+            return;
+        }
+
+        // ── Consentimiento de datos personales ───────────────────────────────
+        if (!dataConsent) {
+            alertWarning(
+                "Autorización requerida",
+                "Debes confirmar que el titular ha sido informado sobre el tratamiento de sus datos personales y ha dado su autorización."
+            );
             return;
         }
 
@@ -199,9 +226,52 @@ export default function UserRegisterForm({ onCancel }) {
                         <Input labelVariant="dark" label="Correo institucional (opcional)" name="userEmailInstitutional" type="email" placeholder="Ingrese su correo institucional" value={formData.userEmailInstitutional} onChange={handleChange} error={errors.userEmailInstitutional} />
 
                         <DatePicker labelVariant="dark" label="Fecha inicio (automática)" name="startDate" value={formData.startDate} onChange={() => {}} disabled />
-                        <Input labelVariant="dark" label="Contraseña" name="userPassword" type="password" placeholder="Ingrese su contraseña" value={formData.userPassword} onChange={handleChange} error={errors.userPassword} required />
+                        {/* ── Contraseña auto-generada con ojo ── */}
+                        <div className="relative">
+                            <Input
+                                labelVariant="dark"
+                                label="Contraseña (auto-generada)"
+                                name="userPassword"
+                                type={showPassword ? "text" : "password"}
+                                value={formData.userPassword}
+                                onChange={() => {}}
+                                readOnly
+                                className="pr-10 cursor-default"
+                                error={errors.userPassword}
+                                required
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword((v) => !v)}
+                                className={`absolute right-[10px] ${errors.userPassword ? "bottom-[26px]" : "bottom-[13px]"} bg-transparent border-0 p-0 cursor-pointer flex items-center justify-center z-[3]`}
+                                tabIndex={-1}
+                                aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                            >
+                                {showPassword
+                                    ? <EyeOff size={18} color="#444" strokeWidth={2.2} />
+                                    : <Eye    size={18} color="#444" strokeWidth={2.2} />}
+                            </button>
+                        </div>
 
                         <DatePicker labelVariant="dark" label="Fecha finalización" name="endDate" placeholder="Fecha finalización" value={formData.endDate} onChange={handleChange} error={errors.endDate} />
+
+                        {/* ── Autorización tratamiento de datos — ocupa toda la fila ── */}
+                        <div className="sm:col-span-2 flex items-start gap-3 bg-black/10 border border-black/20 rounded-xl px-4 py-3 mt-1">
+                            <input
+                                id="dataConsent"
+                                type="checkbox"
+                                checked={dataConsent}
+                                onChange={(e) => setDataConsent(e.target.checked)}
+                                className="mt-[3px] w-4 h-4 shrink-0 accent-purple-700 cursor-pointer"
+                            />
+                            <label htmlFor="dataConsent" className="text-[0.78rem] text-black/80 leading-snug cursor-pointer select-none">
+                                Confirmo que el titular de los datos ha sido <strong>informado</strong> sobre la recolección y tratamiento de su información personal
+                                (nombre, documento, correo, teléfono, dirección) con fines de gestión de inventario del SENA,
+                                y ha dado su <strong>autorización expresa</strong> de conformidad con la{" "}
+                                <span className="font-semibold text-black">Ley 1581 de 2012</span> y el Decreto 1377 de 2013.
+                                <span className="text-red-500 ml-1">*</span>
+                            </label>
+                        </div>
 
                         {/* FIX: celda propia (misma fila/columna que un input) con ambos botones lado a lado */}
                         <div className="flex items-end justify-between gap-3">

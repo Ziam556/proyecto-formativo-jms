@@ -4,18 +4,12 @@ import { EllipsisVertical } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toggleUser } from "../services/userService";
 
-export default function UserRowActions({ user, onRefresh, selectedCount = 0, isSelected = false, onBulkToggle }) {
+export default function UserRowActions({ user, onRefresh }) {
   const navigate = useNavigate();
   const [isEnabled, setIsEnabled] = useState(user.enabled ?? true);
 
   const handleToggle = async () => {
     const targetEnabled = !isEnabled;
-
-    // Modo masivo: hay más de una fila seleccionada y esta está incluida
-    if (selectedCount > 1 && isSelected) {
-      if (onBulkToggle) onBulkToggle(targetEnabled);
-      return;
-    }
 
     // Modo individual
     const accion = isEnabled ? "deshabilitar" : "habilitar";

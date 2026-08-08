@@ -13,6 +13,15 @@ const baseColumns = [
     { id: "group",        label: "Grupo",                accessor: "group"        },
     { id: "startDate",    label: "Fecha de inicio",      accessor: "startDate",   format: "date" },
     { id: "endDate",      label: "Fecha de finalización",accessor: "endDate",     format: "date" },
+    {
+        id: "status",
+        label: "Estado",
+        renderCell: (user) => (
+            <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${user.enabled !== false ? "bg-green-700 text-white" : "bg-cyan-700 text-white"}`}>
+                {user.enabled !== false ? "Habilitado" : "Deshabilitado"}
+            </span>
+        ),
+    },
 ];
 
 export const userColumns = [
@@ -20,7 +29,7 @@ export const userColumns = [
     { id: "actions", label: "Acciones", noToggle: true, renderCell: (user) => <UserRowActions user={user} /> },
 ];
 
-export function getUserColumns(onRefresh, selectedUsers = [], onBulkToggle) {
+export function getUserColumns(onRefresh) {
     return [
         ...baseColumns,
         {
@@ -28,13 +37,7 @@ export function getUserColumns(onRefresh, selectedUsers = [], onBulkToggle) {
             label:      "Acciones",
             noToggle:   true,
             renderCell: (user) => (
-                <UserRowActions
-                    user={user}
-                    onRefresh={onRefresh}
-                    selectedCount={selectedUsers.length}
-                    isSelected={selectedUsers.some((u) => u.document === user.document)}
-                    onBulkToggle={onBulkToggle}
-                />
+                <UserRowActions user={user} onRefresh={onRefresh} />
             ),
         },
     ];

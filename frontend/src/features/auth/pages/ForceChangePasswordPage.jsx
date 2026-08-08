@@ -43,11 +43,12 @@ export default function ForceChangePasswordPage() {
     const navigate                = useNavigate();
     const [password, setPassword] = useState("");
     const [confirm, setConfirm]   = useState("");
-    const [showPass, setShowPass] = useState(false);
-    const [showConf, setShowConf] = useState(false);
-    const [errors, setErrors]     = useState({});
-    const [loading, setLoading]   = useState(false);
-    const [success, setSuccess]   = useState(false);
+    const [showPass, setShowPass]       = useState(false);
+    const [showConf, setShowConf]       = useState(false);
+    const [dataConsent, setDataConsent] = useState(false);
+    const [errors, setErrors]           = useState({});
+    const [loading, setLoading]         = useState(false);
+    const [success, setSuccess]         = useState(false);
 
     const passed = REQUIREMENTS.filter((r) => r.test(password));
 
@@ -57,14 +58,18 @@ export default function ForceChangePasswordPage() {
         else if (passed.length < REQUIREMENTS.length) errs.password = "La contraseña no cumple todos los requisitos";
         if (!confirm)                                 errs.confirm  = "Confirma tu contraseña";
         else if (password !== confirm)                errs.confirm  = "Las contraseñas no coinciden";
+        if (!dataConsent)                             errs.consent  = "Debes aceptar la política de tratamiento de datos para continuar";
         if (Object.keys(errs).length) { setErrors(errs); return; }
 
         try {
             setLoading(true);
-            await changeFirstPassword(password);
-            sessionStorage.removeItem("must_change_password");
+            const { token } = await changeFirstPassword(password);
+            // Reemplazar el token viejo (que tiene mustChangePassword:true)
+            // por el nuevo limpio que devuelve el backend
+            if (token) sessionStorage.setItem("token", token);
+            sessionStorage.removeItem("must_change_password"); // limpieza legacy
             setSuccess(true);
-            setTimeout(() => navigate("/dashboard/home"), 2000);
+            setTimeout(() => navigate("/dashboard/home", { replace: true }), 2000);
         } catch (err) {
             setErrors({ password: err.message });
         } finally {
@@ -169,6 +174,37 @@ export default function ForceChangePasswordPage() {
                             ? <EyeOff size={16} color="rgba(255,255,255,0.5)" />
                             : <Eye    size={16} color="rgba(255,255,255,0.5)" />}
                     </button>
+                </div>
+
+                {/* ── Tratamiento de datos personales ── */}
+                <div className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.12)] rounded-[12px] px-4 py-4 mb-4">
+                    <p className="text-[rgba(255,255,255,0.7)] text-[0.78rem] leading-relaxed mb-3">
+                        <span className="text-[#50E5F9] font-semibold">Política de tratamiento de datos personales</span>
+                        <br />
+                        El SENA recolecta y trata tu información personal (nombre, documento, correo, teléfono, dirección)
+                        con el fin de gestionar el acceso al sistema de inventario institucional. Tus datos serán tratados
+                        conforme a la <span className="font-semibold text-white">Ley 1581 de 2012</span> y el Decreto 1377 de 2013.
+                        Puedes ejercer tus derechos de acceso, corrección, supresión y revocación contactando al administrador del sistema.
+                    </p>
+                    <label className="flex items-start gap-3 cursor-pointer select-none">
+                        <input
+                            type="checkbox"
+                            checked={dataConsent}
+                            onChange={(e) => {
+                                setDataConsent(e.target.checked);
+                                setErrors((p) => ({ ...p, consent: "" }));
+                            }}
+                            className="mt-[2px] w-4 h-4 shrink-0 accent-purple-500 cursor-pointer"
+                        />
+                        <span className="text-[0.78rem] text-[rgba(255,255,255,0.8)] leading-snug">
+                            He leído y <strong className="text-white">autorizo</strong> el tratamiento de mis datos personales
+                            de acuerdo con la política descrita anteriormente.
+                            <span className="text-red-400 ml-1">*</span>
+                        </span>
+                    </label>
+                    {errors.consent && (
+                        <p className="text-red-400 text-[0.75rem] mt-2">{errors.consent}</p>
+                    )}
                 </div>
 
                 <Button variant="primary" size="md" onClick={handleSave} disabled={success || loading}>

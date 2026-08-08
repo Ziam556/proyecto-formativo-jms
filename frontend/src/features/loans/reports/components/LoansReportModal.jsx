@@ -304,12 +304,12 @@ export default function LoansReportModal({
                   value: "Disponible",
                 },
                 {
-                  label: "No Disponible",
-                  value: "No Disponible",
+                  label: "No disponible",
+                  value: "No disponible",
                 },
                 {
-                  label: "Prestamo",
-                  value: "Prestamo",
+                  label: "En préstamo",
+                  value: "En préstamo",
                 },
                 {
                   label: "Baja",

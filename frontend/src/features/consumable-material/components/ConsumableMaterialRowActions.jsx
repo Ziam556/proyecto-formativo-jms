@@ -7,18 +7,12 @@ import { EllipsisVertical } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toggleConsumableMaterial } from "../services/consumableMaterialService";
 
-export default function ConsumableMaterialRowActions({ material, onToggle, selectedCount = 0, isSelected = false, onBulkToggle }) {
+export default function ConsumableMaterialRowActions({ material, onToggle }) {
   const navigate = useNavigate();
   const [isEnabled, setIsEnabled] = useState(material.enabled ?? true);
 
   const handleToggle = async () => {
     const targetEnabled = !isEnabled;
-
-    // Modo masivo
-    if (selectedCount > 1 && isSelected) {
-      if (onBulkToggle) onBulkToggle(targetEnabled);
-      return;
-    }
 
     // Modo individual
     const action = isEnabled ? "deshabilitar" : "habilitar";

@@ -27,10 +27,10 @@ export const loansRepository = {
     async createItems(loanId, items) {
         if (!items.length) return;
 
-        // 5 columnas por ítem: material_name, material_type, amount,
-        // returnable_material_id, consumable_material_id
+        // 6 columnas por ítem: material_name, material_type, amount,
+        // returnable_material_id, consumable_material_id, delivery_date
         const values = items
-            .map((_, i) => `($1, $${i * 5 + 2}, $${i * 5 + 3}, $${i * 5 + 4}, $${i * 5 + 5}, $${i * 5 + 6})`)
+            .map((_, i) => `($1, $${i * 6 + 2}, $${i * 6 + 3}, $${i * 6 + 4}, $${i * 6 + 5}, $${i * 6 + 6}, $${i * 6 + 7})`)
             .join(", ");
 
         const params = [loanId];
@@ -40,15 +40,16 @@ export const loansRepository = {
             params.push(
                 item.materialName,
                 item.materialType,
-                item.amount,
+                item.amount ?? null,
                 isReturnable ? (item.materialId ?? null) : null,   // returnable_material_id
                 isConsumable ? (item.materialId ?? null) : null,   // consumable_material_id
+                item.deliveryDate ?? null,                          // delivery_date por ítem
             );
         });
 
         await pool.query(
             `INSERT INTO public.loan_items
-                (loan_id, material_name, material_type, amount, returnable_material_id, consumable_material_id)
+                (loan_id, material_name, material_type, amount, returnable_material_id, consumable_material_id, delivery_date)
              VALUES ${values}`,
             params
         );

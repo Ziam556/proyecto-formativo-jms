@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { IconButton, Dropdown, DropdownTrigger, DropdownContent, DropdownItem } from "@/shared";
+import { IconButton, Dropdown, DropdownTrigger, DropdownContent, DropdownItem, alertContact } from "@/shared";
 import logo from "@/assets/images/logo-1.png";
 import { CircleUserRound, Bell, House } from "lucide-react";
 import { handleLogout } from "@/features/auth/services/logoutService";
@@ -10,6 +10,7 @@ import {
   getUnreadCount,
   markNotificationRead,
   markAllNotificationsRead,
+  getRecentLoans,
 } from "@/features/notifications/services/notificationService";
 
 // ── Formato de tiempo relativo ────────────────────────────────────────────────
@@ -22,15 +23,23 @@ function timeAgo(dateStr) {
   return `Hace ${Math.floor(diff / 86400)} d`;
 }
 
+// ── Chip de estado de préstamo ────────────────────────────────────────────────
+
+const LOAN_STATUS_STYLES = {
+  activo:    "bg-blue-100 text-blue-700",
+  devuelto:  "bg-emerald-100 text-emerald-700",
+  cancelado: "bg-red-100 text-red-600",
+};
+
 // ── Panel de notificaciones ───────────────────────────────────────────────────
 
-function NotificationPanel({ notifications, onMarkAll, onMarkOne, onClose }) {
+function NotificationPanel({ notifications, recentLoans, onMarkAll, onMarkOne, onClose }) {
   const unread = notifications.filter((n) => !n.is_read).length;
 
   return (
     <div
-      className="absolute right-0 top-[calc(100%+8px)] w-[340px] bg-white rounded-[16px] shadow-[0_8px_40px_rgba(0,0,0,0.25)] overflow-hidden z-50 border border-gray-100"
-      style={{ maxHeight: "480px", display: "flex", flexDirection: "column" }}
+      className="absolute right-0 top-[calc(100%+8px)] w-[360px] bg-white rounded-[16px] shadow-[0_8px_40px_rgba(0,0,0,0.25)] overflow-hidden z-50 border border-gray-100"
+      style={{ maxHeight: "520px", display: "flex", flexDirection: "column" }}
     >
       {/* Cabecera */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
@@ -52,10 +61,12 @@ function NotificationPanel({ notifications, onMarkAll, onMarkOne, onClose }) {
         )}
       </div>
 
-      {/* Lista */}
+      {/* Lista scroll */}
       <div style={{ overflowY: "auto", flex: 1 }}>
+
+        {/* ── Notificaciones de tareas ── */}
         {notifications.length === 0 ? (
-          <p className="text-center text-gray-400 text-[0.85rem] py-8">
+          <p className="text-center text-gray-400 text-[0.85rem] py-6">
             Sin notificaciones
           </p>
         ) : (
@@ -66,11 +77,9 @@ function NotificationPanel({ notifications, onMarkAll, onMarkOne, onClose }) {
               className={`px-4 py-3 border-b border-gray-50 last:border-0 flex gap-3 cursor-default transition-colors
                 ${!n.is_read ? "bg-purple-50 hover:bg-purple-100" : "hover:bg-gray-50"}`}
             >
-              {/* Dot */}
               <div className="pt-[6px] shrink-0">
                 <div className={`w-2 h-2 rounded-full ${!n.is_read ? "bg-purple-500" : "bg-transparent"}`} />
               </div>
-              {/* Contenido */}
               <div className="flex-1 min-w-0">
                 <p className={`text-[0.83rem] leading-snug ${!n.is_read ? "font-semibold text-gray-900" : "font-medium text-gray-700"}`}>
                   {n.title}
@@ -87,6 +96,47 @@ function NotificationPanel({ notifications, onMarkAll, onMarkOne, onClose }) {
             </div>
           ))
         )}
+
+        {/* ── Sección últimos préstamos (solo admins) ── */}
+        {recentLoans && recentLoans.length > 0 && (
+          <>
+            <div className="px-4 py-2 bg-gray-50 border-y border-gray-100 flex items-center gap-2">
+              <span className="text-[0.72rem] font-bold text-gray-500 uppercase tracking-wider">
+                Últimos préstamos
+              </span>
+            </div>
+            {recentLoans.map((loan) => (
+              <div
+                key={loan.loan_id}
+                className="px-4 py-3 border-b border-gray-50 last:border-0 flex gap-3 hover:bg-gray-50 transition-colors"
+              >
+                {/* Dot decorativo */}
+                <div className="pt-[6px] shrink-0">
+                  <div className="w-2 h-2 rounded-full bg-cyan-400" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="text-[0.83rem] font-semibold text-gray-900 leading-snug truncate">
+                      {loan.requesting_user}
+                    </p>
+                    <span className={`text-[0.65rem] font-bold px-[6px] py-[2px] rounded-full shrink-0 ${LOAN_STATUS_STYLES[loan.loan_status] ?? "bg-gray-100 text-gray-600"}`}>
+                      {loan.loan_status}
+                    </span>
+                  </div>
+                  {loan.file_group && (
+                    <p className="text-[0.75rem] text-gray-500 mt-[2px] truncate">
+                      Ficha: {loan.file_group}
+                    </p>
+                  )}
+                  <p className="text-[0.7rem] text-gray-400 mt-[3px]">
+                    {timeAgo(loan.created_at)}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
+
       </div>
     </div>
   );
@@ -102,21 +152,23 @@ export default function Header() {
   const [showNotifs, setShowNotifs]       = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount]     = useState(0);
+  const [recentLoans, setRecentLoans]     = useState([]);
   const bellRef                           = useRef(null);
 
-  // Cargar notificaciones
+  // Cargar notificaciones (+ préstamos si es admin)
   const loadNotifs = useCallback(async () => {
     try {
-      const [notifs, count] = await Promise.all([
-        getMyNotifications(),
-        getUnreadCount(),
-      ]);
+      const promises = [getMyNotifications(), getUnreadCount()];
+      if (isAdmin) promises.push(getRecentLoans());
+
+      const [notifs, count, loans] = await Promise.all(promises);
       setNotifications(notifs);
       setUnreadCount(count);
+      if (isAdmin && loans) setRecentLoans(loans);
     } catch {
       // silencioso — puede que el token no esté listo aún
     }
-  }, []);
+  }, [isAdmin]);
 
   // Polling cada 30 segundos
   useEffect(() => {
@@ -190,6 +242,7 @@ export default function Header() {
             {showNotifs && (
               <NotificationPanel
                 notifications={notifications}
+                recentLoans={isAdmin ? recentLoans : []}
                 onMarkAll={handleMarkAll}
                 onMarkOne={handleMarkOne}
                 onClose={() => setShowNotifs(false)}
@@ -216,14 +269,6 @@ export default function Header() {
 
             <DropdownContent className="right-0 w-48">
               <DropdownItem>
-                <button
-                  onClick={() => handleLogout(navigate)}
-                  className="block w-full text-left"
-                >
-                  Cerrar sesión
-                </button>
-              </DropdownItem>
-              <DropdownItem>
                 <Link to="/dashboard/userpage/profile" className="block w-full">
                   Ver perfil
                 </Link>
@@ -240,6 +285,22 @@ export default function Header() {
                   </Link>
                 </DropdownItem>
               )}
+              <DropdownItem>
+                <button
+                  onClick={() => alertContact()}
+                  className="block w-full text-left"
+                >
+                  Contáctanos
+                </button>
+              </DropdownItem>
+              <DropdownItem>
+                <button
+                  onClick={() => handleLogout(navigate)}
+                  className="block w-full text-left"
+                >
+                  Cerrar sesión
+                </button>
+              </DropdownItem>
             </DropdownContent>
           </Dropdown>
         </div>

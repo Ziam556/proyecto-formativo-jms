@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BackButton, Button, Field, Input, alertWarning, alertError } from "@/shared";
 import { getLoanById } from "../services/loanService";
 
@@ -28,6 +28,18 @@ export default function ViewLoans({ loan: initialLoan, onCancel, onEdit }) {
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading]   = useState(false);
 
+  // Si solo se recibió el ID (sin datos completos), fetch automático al montar
+  useEffect(() => {
+    if (!initialLoan?.id) return;
+    const hasFullData = initialLoan.requestingUser != null || initialLoan.items != null || initialLoan.departureDate != null;
+    if (hasFullData) return;
+    setLoading(true);
+    getLoanById(initialLoan.id)
+      .then(setLoan)
+      .catch(() => setNotFound(true))
+      .finally(() => setLoading(false));
+  }, []);
+
   const handleSearch = async () => {
     const id = searchId.trim();
     if (!id) {
@@ -54,7 +66,7 @@ export default function ViewLoans({ loan: initialLoan, onCancel, onEdit }) {
       {/* HEADER */}
       <div className="flex items-center gap-3 mb-6">
         <BackButton to="/dashboard/loans" />
-        <h1 className="text-white text-2xl font-bold">Visualizar Préstamo</h1>
+        <h1 className="text-white text-2xl font-bold">Visualizar préstamo</h1>
       </div>
 
       {/* BUSCADOR POR ID */}
@@ -98,10 +110,16 @@ export default function ViewLoans({ loan: initialLoan, onCancel, onEdit }) {
             {loan.materiales?.map((m, i) => (
               <div
                 key={i}
-                className="flex items-center gap-3 bg-white/10 rounded-lg px-4 py-2"
+                className="flex flex-wrap items-center gap-3 bg-white/10 rounded-lg px-4 py-2"
               >
                 <TypeChip value={m.type} />
-                <span className="text-white font-medium">{m.name}</span>
+                <span className="text-white font-medium flex-1">{m.name}</span>
+                {m.type === "Consumo" && m.amount != null && (
+                  <span className="text-white/60 text-xs">Cant: {m.amount}</span>
+                )}
+                {m.type === "Devolutivo" && m.deliveryDateFmt && m.deliveryDateFmt !== "—" && (
+                  <span className="text-white/60 text-xs">Entrega: {m.deliveryDateFmt}</span>
+                )}
               </div>
             ))}
           </div>
@@ -117,7 +135,7 @@ export default function ViewLoans({ loan: initialLoan, onCancel, onEdit }) {
             <Field label="Tipo de préstamo" value={loan.loanType === "externo" ? "Externo" : "Interno"} />
             <Field label="Fecha salida"    value={loan.departureDate} />
             <Field label="Fecha entrega"   value={loan.deliveryDate} />
-            <Field label="Estado"          value={loan.status} />
+            <Field label="Estado"          value={{ activo: "Activo", devuelto: "Devuelto", cancelado: "Cancelado" }[loan.status] ?? loan.status} />
           </div>
 
           {/* USUARIO */}

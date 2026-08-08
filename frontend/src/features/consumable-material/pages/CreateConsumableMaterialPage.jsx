@@ -31,15 +31,21 @@ export default function CreateConsumableMaterialPage() {
             const purchaseDate = finalData.MaterialPurchaseDate
                 ? new Date(finalData.MaterialPurchaseDate).toISOString().split("T")[0]
                 : null;
+            const entryDate = finalData.materialEntryDate
+                ? new Date(finalData.materialEntryDate).toISOString().split("T")[0]
+                : null;
 
-            const payload = { ...finalData, materialPurchaseDate: purchaseDate };
+            const payload = { ...finalData, materialPurchaseDate: purchaseDate, materialEntryDate: entryDate };
 
-            const imageFiles = finalData.materialImage ?? [];
-            const sheetFile  = Array.isArray(finalData.materialTechnicalSheet)
+            const imageFiles      = finalData.materialImage ?? [];
+            const sheetFile       = Array.isArray(finalData.materialTechnicalSheet)
                 ? finalData.materialTechnicalSheet[0] ?? null
                 : finalData.materialTechnicalSheet ?? null;
+            const quotationFiles  = Array.isArray(finalData.materialQuotations)
+                ? finalData.materialQuotations
+                : [];
 
-            await createConsumableMaterial(payload, imageFiles, sheetFile);
+            await createConsumableMaterial(payload, imageFiles, sheetFile, quotationFiles);
 
             await alertSuccess("¡Material creado!", "El material de consumo se registró correctamente.");
             setFormData({});
@@ -58,13 +64,13 @@ export default function CreateConsumableMaterialPage() {
     ];
 
     return (
-        <div className="px-4 sm:px-16 py-6 sm:py-10 min-h-[calc(100vh-72px)] flex flex-col justify-center">
+        <div className="px-4 sm:px-16 py-3 sm:py-4 min-h-full flex flex-col justify-center">
 
             <h1 className="text-white text-sm font-semibold mb-4">
                 Registro material de consumo
             </h1>
 
-            <div className="flex flex-col sm:flex-row bg-white/10 rounded-2xl overflow-hidden">
+            <div className="flex flex-col sm:flex-row bg-white/10 rounded-2xl">
 
                 {/* ── STEPPER ── */}
                 <WizardStepper
@@ -74,7 +80,7 @@ export default function CreateConsumableMaterialPage() {
                 />
 
                 {/* ── CONTENIDO ── */}
-                <div className="flex-1 bg-white/10 rounded-2xl m-3 py-8 px-4 sm:px-12 transition-all duration-300 flex flex-col items-center justify-center gap-6">
+                <div className="flex-1 bg-white/10 rounded-2xl m-3 py-4 sm:py-5 px-4 sm:px-12 transition-all duration-300 flex flex-col items-center justify-center gap-6">
                     <h2 className="text-white text-center text-[1rem] font-medium m-0">
                         Ingrese la información correspondiente
                     </h2>

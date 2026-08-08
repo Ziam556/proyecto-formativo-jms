@@ -40,4 +40,10 @@ export const returnableStep1Schema = z.object({
         )
         .min(1, "Selecciona al menos un cuentadante"),
 
+    materialInventory: z
+        .string()
+        .trim()
+        .optional()
+        .or(z.literal("")),
+
 });

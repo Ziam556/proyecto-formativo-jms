@@ -143,8 +143,8 @@ export function DropdownItem({
             role="menuitem"
             onClick={handleClick}
             className={`
-                w-full text-left px-3 py-2 rounded-lg
-                hopver:bg-gray-500 focus:bg-gray-100
+                w-full text-left px-3 py-2 rounded-lg cursor-pointer
+                hover:bg-gray-500 focus:bg-gray-100
                 transition-colors
                 ${className}
             `}

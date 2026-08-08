@@ -6,7 +6,7 @@ import { handleLogout } from "@/features/auth/services/logoutService";
 // Módulos disponibles — aparece si el usuario tiene CUALQUIER permiso del módulo
 const ALL_MODULES = [
   {
-    label: "Gestion de Usuarios", icon: Users, to: "/dashboard/userpage",
+    label: "Gestión de usuarios", icon: Users, to: "/dashboard/userpage",
     permission: ["list_user", "create_user", "edit_user", "toggle_user", "report_user"],
   },
   {
@@ -14,11 +14,11 @@ const ALL_MODULES = [
     permission: ["list_returnable", "create_returnable", "edit_returnable", "view_returnable", "toggle_returnable", "report_returnable", "return_returnable"],
   },
   {
-    label: "Material Consumo", icon: ShoppingCart, to: "/dashboard/consumable-material",
+    label: "Material de Consumo", icon: ShoppingCart, to: "/dashboard/consumable-material",
     permission: ["list_consumable", "create_consumable", "edit_consumable", "view_consumable", "toggle_consumable", "report_consumable", "return_consumable"],
   },
   {
-    label: "Prestamo", icon: Handshake, to: "/dashboard/loans",
+    label: "Préstamo", icon: Handshake, to: "/dashboard/loans",
     permission: ["list_loan", "create_loan", "edit_loan", "view_loan", "report_loan", "return_returnable"],
   },
 ];

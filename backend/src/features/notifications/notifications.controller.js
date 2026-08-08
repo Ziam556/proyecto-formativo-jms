@@ -35,6 +35,20 @@ export const notificationsController = {
     }
   },
 
+  // GET /api/notifications/recent-loans  (solo admins)
+  async getRecentLoans(req, res) {
+    try {
+      if (req.user.userGroup !== "Administrador") {
+        return res.status(403).json({ error: "Acceso denegado" });
+      }
+      const loans = await notificationsService.getRecentLoans();
+      res.json(loans);
+    } catch (err) {
+      console.error("ERROR getRecentLoans:", err);
+      res.status(500).json({ error: err.message });
+    }
+  },
+
   // PUT /api/notifications/read-all
   async markAllRead(req, res) {
     try {

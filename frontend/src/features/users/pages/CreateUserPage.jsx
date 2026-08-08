@@ -6,7 +6,7 @@ export default function CreateUserPage() {
     const navigate = useNavigate();
 
     return (
-        <div className="min-h-[calc(100vh-72px)] flex flex-col box-border py-6 px-4 sm:px-10 gap-3 items-center justify-center">
+        <div className="min-h-full flex flex-col box-border py-3 px-4 sm:px-10 gap-3 items-center justify-center">
 
             {/* Título */}
             <h1 className="text-white text-[1.1rem] sm:text-[1.2rem] font-semibold m-0">

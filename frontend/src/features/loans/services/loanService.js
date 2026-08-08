@@ -71,6 +71,8 @@ export async function getLoanById(id) {
             name:             i.material_name,
             type:             i.material_type === "M.D" ? "Devolutivo" : "Consumo",
             amount:           i.amount,
+            deliveryDate:     i.delivery_date ? i.delivery_date.split("T")[0] : null,
+            deliveryDateFmt:  i.delivery_date ? new Date(i.delivery_date).toLocaleDateString("es-CO") : "—",
             returned:         Boolean(i.returned_at),
             returnedState:    i.item_state,
             returnedLeftover: i.leftover_amount,

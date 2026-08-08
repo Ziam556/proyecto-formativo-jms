@@ -2,7 +2,10 @@ import { Input, DataTable, Button, Select } from "@/shared";
 import { alertWarning } from "@/shared";
 import { useNavigate } from "react-router-dom";
 import { useState, useMemo } from "react";
-import materialsTypes from "../../../../data/selects/materialsTypes.json";
+const materialsTypes = [
+  { id: "M.D", label: "Material Devolutivo" },
+  { id: "M.C", label: "Material de Consumo" },
+];
 import { loansColumns } from "../table/loansColumns.js";
 import { ScanSearch, Info } from "lucide-react";
 
@@ -80,7 +83,7 @@ export default function CreateLoans1({ materials = [], formData, onNext }) {
       <div className="flex flex-wrap gap-4 mb-6">
         <div className="w-full sm:w-[200px]">
           <Input
-            label="Placa Sena"
+            label="Placa SENA"
             type="search"
             value={filters.materialPlate}
             onChange={(e) =>

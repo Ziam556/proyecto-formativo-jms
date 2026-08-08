@@ -58,6 +58,18 @@ export const notificationsRepository = {
     );
   },
 
+  // ── Últimos N préstamos (solo para admins) ────────────────────
+  async getRecentLoans(limit = 5) {
+    const result = await pool.query(
+      `SELECT loan_id, requesting_user, loan_status, file_group, amount, created_at
+       FROM public.loans
+       ORDER BY created_at DESC
+       LIMIT $1`,
+      [limit]
+    );
+    return result.rows;
+  },
+
   // ── Email de un usuario por doc ───────────────────────────────
   async getEmailByDoc(doc) {
     const result = await pool.query(

@@ -15,14 +15,16 @@ router.get("/:id", returnableMaterialController.getById);
 
 // POST /api/returnableMaterial → crear
 router.post("/", upload.fields([
-  { name: "materialImage", maxCount: 5 },
+  { name: "materialImage",          maxCount: 5 },
   { name: "materialTechnicalSheet", maxCount: 1 },
+  { name: "materialQuotation",      maxCount: 3 },
 ]), returnableMaterialController.create);
 
 // PUT /api/returnableMaterial/:id → actualizar
 router.put("/:id", upload.fields([
-  { name: "materialImage", maxCount: 5 },
+  { name: "materialImage",          maxCount: 5 },
   { name: "materialTechnicalSheet", maxCount: 1 },
+  { name: "materialQuotation",      maxCount: 3 },
 ]), returnableMaterialController.update);
 
 // PATCH  /api/returnableMaterial/:id/toggle → habilitar/deshabilitar

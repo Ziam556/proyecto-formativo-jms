@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { getUsers, toggleUser } from "../services/userService.js";
 import { normalizeUsers } from "../utils/normalizeUser.js";
-import { ClearFiltersButton, DataTable, StatsPills, ReportDropdown, BackButton, Input, Select, alertConfirm, alertSuccess, alertError } from "@/shared";
+import { ClearFiltersButton, DataTable, StatsPills, ReportDropdown, BackButton, Input, Select, BulkActionBar, alertConfirm, alertSuccess, alertError } from "@/shared";
 import { getUserColumns } from "../table/userColumns.jsx";
 import { userReportFields } from "../reports/config/userReportFields.js";
 import { generateUserReport } from "../reports/services/generateUserReport.js";
@@ -115,8 +115,8 @@ export default function ListUserPage() {
     );
 
     const columns = useMemo(
-        () => getUserColumns(loadUsers, selectedUsers, handleBulkToggle),
-        [loadUsers, selectedUsers, handleBulkToggle]
+        () => getUserColumns(loadUsers),
+        [loadUsers]
     );
 
     const handleAllReport = (format) => {
@@ -225,6 +225,14 @@ export default function ListUserPage() {
                 </div>
 
             </div>
+
+            {/* BARRA ACCIÓN MASIVA */}
+            <BulkActionBar
+                count={selectedUsers.length}
+                entityLabel="usuario(s)"
+                onEnable={() => handleBulkToggle(true)}
+                onDisable={() => handleBulkToggle(false)}
+            />
 
             {/* Tabla */}
             {loading ? (

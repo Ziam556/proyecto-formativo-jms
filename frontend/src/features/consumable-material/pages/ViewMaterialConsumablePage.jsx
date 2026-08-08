@@ -173,7 +173,7 @@ export default function ViewConsumableMaterial({ material: initialMaterial, onCa
           </div>
           <div className="flex flex-wrap gap-4 mb-6">
             <Field label="SN"         value={material.id} />
-            <Field label="Placa Sena" value={material.plateSena} />
+            <Field label="Placa SENA" value={material.plateSena} />
           </div>
 
           {/* PRODUCTO */}

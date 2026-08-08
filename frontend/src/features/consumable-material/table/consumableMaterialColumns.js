@@ -8,7 +8,7 @@ import ConsumableMaterialRowActions from "../components/ConsumableMaterialRowAct
 
 export const consumableMaterialColumns = [
   { id: "id",             label: "SN",                  accessor: "id" },
-  { id: "plateSena",      label: "Placa Sena",          accessor: "plateSena" },
+  { id: "plateSena",      label: "Placa SENA",          accessor: "plateSena" },
   { id: "elementName",    label: "Nombre del elemento", accessor: "elementName" },
   { id: "brand",          label: "Marca",               accessor: "brand" },
   { id: "purchaseDate",   label: "Fecha de compra",     accessor: "purchaseDate",  format: "date" },

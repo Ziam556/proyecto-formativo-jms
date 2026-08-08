@@ -23,7 +23,7 @@ export default function ClearFiltersButton({ onClick }) {
                 box-border"
         >
             <SlidersHorizontal size={15} />
-            Limpiar Filtros
+            Limpiar filtros
         </button>
     );
 }

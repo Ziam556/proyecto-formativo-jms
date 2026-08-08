@@ -31,10 +31,14 @@ export { default as Textarea } from "./components/Textarea"
 export { default as ActionBtn } from "./components/ActionBtn"
 export { default as Field } from "./components/Field"
 export { default as Modal } from "./components/Modal";
-export { alertSuccess, alertError, alertWarning, alertConfirm, alertDeleteConfirm } from "./utils/alerts";
+export { alertSuccess, alertError, alertWarning, alertConfirm, alertDeleteConfirm, alertContact } from "./utils/alerts";
 export { default as AvatarUpload } from "./components/AvatarUpload"
 export { default as UserSearchSelect } from "./components/UserSearchSelect"
 export { default as UserSearchField } from "./components/UserSearchField"
 export { default as MultiUserSearchField } from "./components/MultiUserSearchField"
 export { default as StepRing } from "./components/StepRing"
 export { default as WizardStepper } from "./components/WizardStepper"
+export { default as CategoryTable } from "./components/CategoryTable"
+export { default as InventoryTable } from "./components/InventoryTable"
+export { default as InventoryReportDropdown } from "./components/InventoryReportDropdown"
+export { default as BulkActionBar } from "./components/BulkActionBar"

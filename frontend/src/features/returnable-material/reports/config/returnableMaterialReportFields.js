@@ -5,7 +5,7 @@ export const returnableMaterialReportFields = [
   },
   { key: 
     "plateSena", 
-    label: "Placa Sena", 
+    label: "Placa SENA", 
     default: true 
   },
   { key: "category", 
@@ -40,8 +40,12 @@ export const returnableMaterialReportFields = [
     label: "Ubicación", 
     default: false 
   },
-  { key: "dimensions", 
-    label: "Dimensiones", 
-    default: false 
+  { key: "dimensions",
+    label: "Dimensiones",
+    default: false
+  },
+  { key: "inventory",
+    label: "Inventario",
+    default: false
   },
 ];

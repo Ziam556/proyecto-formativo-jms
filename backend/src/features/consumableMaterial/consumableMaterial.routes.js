@@ -15,14 +15,16 @@ router.get("/:id", consumableMaterialController.getById);
 
 // POST   /consumableMaterial         → crear
 router.post("/", upload.fields([
-  { name: "materialImage",         maxCount: 5 },
+  { name: "materialImage",          maxCount: 5 },
   { name: "materialTechnicalSheet", maxCount: 1 },
+  { name: "materialQuotation",      maxCount: 3 },
 ]), consumableMaterialController.create);
 
 // PUT    /consumableMaterial/:id     → actualizar
 router.put("/:id", upload.fields([
-  { name: "materialImage",         maxCount: 5 },
+  { name: "materialImage",          maxCount: 5 },
   { name: "materialTechnicalSheet", maxCount: 1 },
+  { name: "materialQuotation",      maxCount: 3 },
 ]), consumableMaterialController.update);
 
 // PATCH  /consumableMaterial/:id/toggle → habilitar/deshabilitar

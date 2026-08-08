@@ -94,9 +94,9 @@ const applyRefinements = (schema) =>
             }
         );
 
-// ── Esquema creación: password requerido ──────────────────────────────────
+// ── Esquema creación: contraseña auto-generada, solo se valida que no esté vacía ──
 export const userSchema = applyRefinements(
-    z.object({ ...commonFields, userPassword: passwordSchema })
+    z.object({ ...commonFields, userPassword: z.string().min(1, "La contraseña es requerida") })
 );
 
 // ── Esquema edición: password vacío = sin cambio, o validación completa ───

@@ -1,21 +1,34 @@
+function parsePhones(raw) {
+  if (!raw) return [];
+  try {
+    return typeof raw === "string" ? JSON.parse(raw) : raw;
+  } catch {
+    return [];
+  }
+}
+
 export function normalizeUser(row) {
+  const phones = parsePhones(row.phones);
+  const primaryPhone   = phones.find((p) => p.is_primary)   ?? phones[0]   ?? null;
+  const secondaryPhone = phones.find((p) => !p.is_primary)  ?? null;
+
   return {
-    id:                row.user_document_number,
-    name:              row.user_name              || "",
-    email:             row.user_email             || "",
+    id:                 row.user_document_number,
+    name:               row.user_name              || "",
+    email:              row.user_email             || "",
     emailInstitutional: row.user_email_institutional || "",
-    phone:             row.user_phone             || "",
-    secondaryPhone:    row.user_secondary_phone   || "",
-    documentType:      row.user_document_type     || "",
-    document:          row.user_document_number   || "",
-    address:           row.user_address           || "",
-    group:             row.user_group             || "",
-    image:             row.user_image             || null,
-    enabled:           row.enabled               ?? true,
-    startDate:         row.start_date
+    phone:              primaryPhone?.phone_number   || "",
+    secondaryPhone:     secondaryPhone?.phone_number || "",
+    documentType:       row.user_document_type     || "",
+    document:           row.user_document_number   || "",
+    address:            row.user_address           || "",
+    group:              row.user_group             || "",
+    image:              row.user_image             || null,
+    enabled:            row.enabled               ?? true,
+    startDate:          row.start_date
       ? new Date(row.start_date).toISOString().split("T")[0]
       : null,
-    endDate:           row.end_date
+    endDate:            row.end_date
       ? new Date(row.end_date).toISOString().split("T")[0]
       : null,
   };

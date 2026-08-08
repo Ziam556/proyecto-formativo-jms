@@ -3,6 +3,7 @@ import { pool } from "../../config/db.js";
 
 export const authRepository = {
     async findByEmail(userEmail) {
+        // Permite login con correo personal O correo institucional
         const query = `
             SELECT user_email, user_password AS password,
                    user_group, start_date, end_date,
@@ -10,6 +11,7 @@ export const authRepository = {
                    must_change_password
             FROM public.users
             WHERE user_email = $1
+               OR user_email_institutional = $1
             LIMIT 1;
         `;
 
@@ -22,7 +24,7 @@ export const authRepository = {
         await pool.query(
             `UPDATE public.users
              SET login_attempts = login_attempts + 1
-             WHERE user_email = $1`,
+             WHERE user_email = $1 OR user_email_institutional = $1`,
             [userEmail]
         );
     },
@@ -31,7 +33,7 @@ export const authRepository = {
         await pool.query(
             `UPDATE public.users
              SET locked_until = $2, login_attempts = 0
-             WHERE user_email = $1`,
+             WHERE user_email = $1 OR user_email_institutional = $1`,
             [userEmail, lockedUntil]
         );
     },
@@ -40,7 +42,7 @@ export const authRepository = {
         await pool.query(
             `UPDATE public.users
              SET login_attempts = 0, locked_until = NULL
-             WHERE user_email = $1`,
+             WHERE user_email = $1 OR user_email_institutional = $1`,
             [userEmail]
         );
     },
@@ -90,7 +92,8 @@ export const authRepository = {
 
     async clearMustChangePassword(userEmail) {
         await pool.query(
-            `UPDATE public.users SET must_change_password = false WHERE user_email = $1`,
+            `UPDATE public.users SET must_change_password = false
+             WHERE user_email = $1 OR user_email_institutional = $1`,
             [userEmail]
         );
     },

@@ -12,10 +12,15 @@ export const returnableMaterialController = {
         ? `uploads/returnable/${req.files.materialTechnicalSheet[0].filename}`
         : null;
 
+      const quotationPaths = (req.files?.materialQuotation ?? [])
+        .map((f) => `uploads/returnable/${f.filename}`);
+      const materialQuotations = quotationPaths.length ? JSON.stringify(quotationPaths) : null;
+
       const material = await returnableMaterialService.createReturnableMaterial({
         ...req.body,
         materialImage: imagePaths,
         materialTechnicalSheet: technicalSheetPath,
+        materialQuotations,
       });
 
       res.status(201).json({
@@ -59,10 +64,19 @@ export const returnableMaterialController = {
         ? `uploads/returnable/${req.files.materialTechnicalSheet[0].filename}`
         : null;
 
+      const keptQuotations = req.body.keepQuotations
+        ? JSON.parse(req.body.keepQuotations)
+        : [];
+      const newQuotationPaths = (req.files?.materialQuotation ?? [])
+        .map((f) => `uploads/returnable/${f.filename}`);
+      const allQuotations = [...keptQuotations, ...newQuotationPaths];
+      const materialQuotations = allQuotations.length ? JSON.stringify(allQuotations) : null;
+
       const material = await returnableMaterialService.updateReturnableMaterial(req.params.id, {
         ...req.body,
         materialImage: imagePaths,
         materialTechnicalSheet: technicalSheetPath,
+        materialQuotations,
         isEnabled: req.body.isEnabled === "true" || req.body.isEnabled === true,
       });
 

@@ -5,17 +5,18 @@ import ReturnableMaterialRowActions from "../components/ReturnableMaterialRowAct
 
 const baseColumns = [
   { id: "id",            label: "SN",                  accessor: "id"            },
-  { id: "plateSena",     label: "Placa Sena",           accessor: "plateSena"     },
+  { id: "plateSena",     label: "Placa SENA",           accessor: "plateSena"     },
   { id: "category",      label: "Categoría",            accessor: "category"      },
   { id: "elementName",   label: "Nombre del elemento",  accessor: "elementName"   },
   { id: "brand",         label: "Marca",                accessor: "brand"         },
   { id: "model",         label: "Modelo",               accessor: "model"         },
   { id: "serial",        label: "Serial",               accessor: "serial"        },
   { id: "state",         label: "Estado",               accessor: "state",        format: "state"    },
-  { id: "technicalSheet",label: "Ficha Técnica",        format: "link"            },
+  { id: "technicalSheet",label: "Ficha Técnica",        accessor: "technicalSheet", format: "link" },
   { id: "accountHolder", label: "Cuentadante",          accessor: "accountHolder" },
   { id: "location",      label: "Ubicación",            accessor: "location"      },
   { id: "dimensions",    label: "Dimensiones",          accessor: "dimensions"    },
+  { id: "inventory",    label: "Inventario",           accessor: "inventory"     },
 ];
 
 export const returnableMaterialColumns = [
@@ -28,7 +29,7 @@ export const returnableMaterialColumns = [
   },
 ];
 
-export function getReturnableMaterialColumns(onToggle, selectedMaterials = [], onBulkToggle) {
+export function getReturnableMaterialColumns(onToggle) {
   return [
     ...baseColumns,
     {
@@ -36,13 +37,7 @@ export function getReturnableMaterialColumns(onToggle, selectedMaterials = [], o
       label:    "Acciones",
       noToggle: true,
       renderCell: (material) => (
-        <ReturnableMaterialRowActions
-          material={material}
-          onToggle={onToggle}
-          selectedCount={selectedMaterials.length}
-          isSelected={selectedMaterials.some((m) => m.id === material.id)}
-          onBulkToggle={onBulkToggle}
-        />
+        <ReturnableMaterialRowActions material={material} onToggle={onToggle} />
       ),
     },
   ];

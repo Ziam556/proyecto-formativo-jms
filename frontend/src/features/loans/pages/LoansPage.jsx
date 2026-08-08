@@ -30,7 +30,7 @@ const menuItems = [
   },
 
   {
-    label: "Prestamos Activos",
+    label: "Préstamos activos",
     icon: List,
     to: "/dashboard/loans/list",
   },
@@ -48,7 +48,7 @@ export default function LoansPage() {
 
         {/* TITULO */}
         <h2 className="text-white text-center text-[1.1rem] sm:text-[1.3rem] font-bold mb-6 sm:mb-8">
-          Módulo de Prestamo
+          Módulo de Préstamo
         </h2>
 
         {/* BOTONES */}

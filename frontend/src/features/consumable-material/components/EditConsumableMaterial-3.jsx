@@ -5,6 +5,8 @@ import { getStateTypes } from "../services/selectService";
 import { consumableStep3Schema } from "../schemas/consumableStep3Schema";
 
 const MAX_SHEET_MB = 3;
+const MAX_QUOTATION_MB = 3;
+const MAX_QUOTATIONS = 3;
 
 function sheetFileName(url) {
   if (!url) return null;
@@ -16,15 +18,48 @@ export default function EditConsumableMaterial3({ formData, onSave, onBack }) {
   const currentSheetUrl = formData.materialTechnicalSheetUrl || null;
   const [sheetRemoved, setSheetRemoved] = useState(false);
 
+  // Cotizaciones existentes en el servidor
+  const [existingQuotationUrls, setExistingQuotationUrls] = useState(
+    formData.materialQuotationUrls || []
+  );
+  // Nuevos archivos a subir
+  const [newQuotations, setNewQuotations] = useState([]);
+
   const [fields, setFields] = useState({
     materialState:          formData.materialState          || "",
     materialDescription:    formData.materialDescription    || "",
     MaterialPurchaseDate:   formData.MaterialPurchaseDate   || "",
+    materialEntryDate:      formData.materialEntryDate      || "",
     materialLocation:       formData.materialLocation       || "",
     materialTechnicalSheet: formData.materialTechnicalSheet || [],
   });
 
   const [errors, setErrors] = useState({});
+
+  const totalQuotations = existingQuotationUrls.length + newQuotations.length;
+
+  const handleQuotationAdd = (files) => {
+    if (!files.length) return;
+    const file = files[0];
+    if (file.type !== "application/pdf") {
+      setErrors((prev) => ({ ...prev, quotations: "Solo se permiten archivos PDF" }));
+      return;
+    }
+    if (file.size > MAX_QUOTATION_MB * 1024 * 1024) {
+      setErrors((prev) => ({ ...prev, quotations: `El archivo supera los ${MAX_QUOTATION_MB}MB` }));
+      return;
+    }
+    setNewQuotations((prev) => [...prev, file]);
+    setErrors((prev) => ({ ...prev, quotations: "" }));
+  };
+
+  const handleExistingQuotationRemove = (url) => {
+    setExistingQuotationUrls((prev) => prev.filter((u) => u !== url));
+  };
+
+  const handleNewQuotationRemove = (idx) => {
+    setNewQuotations((prev) => prev.filter((_, i) => i !== idx));
+  };
 
   useEffect(() => {
     getStateTypes().then(setStates);
@@ -53,10 +88,11 @@ export default function EditConsumableMaterial3({ formData, onSave, onBack }) {
   };
 
   const handleSave = () => {
-    const { MaterialPurchaseDate, ...rest } = fields;
+    const { MaterialPurchaseDate, materialEntryDate, ...rest } = fields;
     const result = consumableStep3Schema.safeParse({
       ...rest,
       purchaseDate: MaterialPurchaseDate,
+      entryDate:    materialEntryDate,
     });
 
     if (!result.success) {
@@ -71,7 +107,12 @@ export default function EditConsumableMaterial3({ formData, onSave, onBack }) {
     }
 
     try {
-      onSave({ ...fields, sheetRemoved });
+      onSave({
+        ...fields,
+        sheetRemoved,
+        existingQuotationUrls,
+        materialQuotations: newQuotations,
+      });
     } catch (err) {
       console.error("Error al guardar material:", err);
       alertError("Error al guardar", err.message || "Ocurrió un error inesperado. Intenta de nuevo.");
@@ -106,6 +147,16 @@ export default function EditConsumableMaterial3({ formData, onSave, onBack }) {
         value={fields.MaterialPurchaseDate}
         onChange={handleChange}
         error={errors.MaterialPurchaseDate}
+        maxDate={new Date()}
+        required
+      />
+
+      <DatePicker labelVariant="light"
+        label="Fecha de ingreso"
+        name="materialEntryDate"
+        value={fields.materialEntryDate}
+        onChange={handleChange}
+        error={errors.materialEntryDate}
         maxDate={new Date()}
         required
       />
@@ -165,6 +216,58 @@ export default function EditConsumableMaterial3({ formData, onSave, onBack }) {
 
         {errors.materialTechnicalSheet && (
           <span className="text-red-500 text-xs">{errors.materialTechnicalSheet}</span>
+        )}
+      </div>
+
+      {/* COTIZACIONES */}
+      <div className="flex flex-col gap-2 col-span-2">
+        <label className="text-sm font-semibold text-white">
+          Cotizaciones
+          <span className="text-xs text-white/50 ml-1 font-normal">(1–3 PDFs · máx 3MB c/u)</span>
+        </label>
+
+        {/* Existentes en servidor */}
+        {existingQuotationUrls.map((url, idx) => (
+          <div key={url} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-xs text-white/80">
+            <FileText size={14} className="shrink-0 text-emerald-400" />
+            <span className="truncate flex-1">Cotización {idx + 1} — {url.split("/").pop()}</span>
+            <button
+              type="button"
+              onClick={() => handleExistingQuotationRemove(url)}
+              className="shrink-0 text-red-400 hover:text-red-300 font-semibold px-1"
+            >
+              Eliminar
+            </button>
+          </div>
+        ))}
+
+        {/* Nuevos archivos seleccionados */}
+        {newQuotations.map((file, idx) => (
+          <div key={idx} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 border border-emerald-400/30 text-xs text-white/80">
+            <FileText size={14} className="shrink-0 text-emerald-400" />
+            <span className="truncate flex-1">{file.name} <span className="text-emerald-400">(nuevo)</span></span>
+            <button
+              type="button"
+              onClick={() => handleNewQuotationRemove(idx)}
+              className="shrink-0 text-red-400 hover:text-red-300 font-semibold px-1"
+            >
+              Eliminar
+            </button>
+          </div>
+        ))}
+
+        {/* Input para agregar si hay < 3 en total */}
+        {totalQuotations < MAX_QUOTATIONS && (
+          <FileInput
+            value={[]}
+            onChange={handleQuotationAdd}
+            accept="application/pdf"
+            multiple={false}
+          />
+        )}
+
+        {errors.quotations && (
+          <span className="text-red-500 text-xs">{errors.quotations}</span>
         )}
       </div>
 

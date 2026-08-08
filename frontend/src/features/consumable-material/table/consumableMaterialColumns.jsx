@@ -5,7 +5,7 @@ import ConsumableMaterialRowActions from "../components/ConsumableMaterialRowAct
 
 const baseColumns = [
   { id: "id",            label: "SN",                  accessor: "id"            },
-  { id: "plateSena",     label: "Placa Sena",           accessor: "plateSena"     },
+  { id: "plateSena",     label: "Placa SENA",           accessor: "plateSena"     },
   { id: "elementName",   label: "Nombre del elemento",  accessor: "elementName"   },
   { id: "brand",         label: "Marca",                accessor: "brand"         },
   { id: "purchaseDate",  label: "Fecha de compra",      accessor: "purchaseDate",  format: "date" },
@@ -15,6 +15,7 @@ const baseColumns = [
   { id: "state",         label: "Estado",               accessor: "state",        format: "state"    },
   { id: "accountHolder", label: "Cuentadante",          accessor: "accountHolder" },
   { id: "location",      label: "Ubicación",            accessor: "location"      },
+  { id: "inventory",     label: "Inventario",           accessor: "inventory"     },
 ];
 
 // Columnas estáticas (sin callback de toggle)
@@ -29,7 +30,7 @@ export const consumableMaterialColumns = [
 ];
 
 // Factory que inyecta el callback onToggle para refrescar la lista
-export function getConsumableMaterialColumns(onToggle, selectedMaterials = [], onBulkToggle) {
+export function getConsumableMaterialColumns(onToggle) {
   return [
     ...baseColumns,
     {
@@ -37,13 +38,7 @@ export function getConsumableMaterialColumns(onToggle, selectedMaterials = [], o
       label:    "Acciones",
       noToggle: true,
       renderCell: (material) => (
-        <ConsumableMaterialRowActions
-          material={material}
-          onToggle={onToggle}
-          selectedCount={selectedMaterials.length}
-          isSelected={selectedMaterials.some((m) => m.id === material.id)}
-          onBulkToggle={onBulkToggle}
-        />
+        <ConsumableMaterialRowActions material={material} onToggle={onToggle} />
       ),
     },
   ];

@@ -13,6 +13,8 @@ import loansRoutes from "./features/loans/loans.routes.js";
 import catalogsRoutes from "./features/catalogs/catalogs.routes.js";
 import tasksRoutes from "./features/tasks/tasks.routes.js";
 import notificationsRoutes from "./features/notifications/notifications.routes.js";
+import categoriesRoutes from "./features/categories/categories.routes.js";
+import inventoriesRoutes from "./features/inventories/inventories.routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
@@ -41,6 +43,8 @@ app.use("/api/loans", loansRoutes);
 app.use("/api/catalogs", catalogsRoutes);
 app.use("/api/tasks", tasksRoutes);
 app.use("/api/notifications", notificationsRoutes);
+app.use("/api/categories",   categoriesRoutes);
+app.use("/api/inventories",  inventoriesRoutes);
 
 // Manejador de errores global — siempre devuelve JSON
 app.use((err, req, res, next) => {
