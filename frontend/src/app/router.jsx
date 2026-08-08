@@ -12,6 +12,7 @@ import { CategoriesPage, CreateCategoryPage } from "@/features/categories";
 import { InventoriesPage, CreateInventoryPage } from "@/features/inventories";
 import { LoansPage, CreateLoansPage, ListWeLendAssetsPage, ViewLoansPage, EditLoansPage, ReturnLoansPage } from "@/features/loans";
 import { TasksPage, MisTareasPage } from "@/features/tasks";
+import { QuotationsPage } from "@/features/quotations";
 
 // Helpers de rutas protegidas:
 // p(codename)  → requiere permiso específico del JWT (Administrador siempre pasa)
@@ -45,6 +46,7 @@ const router = createBrowserRouter([
             { path: "home",              element: <HomePage /> },
             { path: "userpage/profile",  element: <UserProfilePage /> },
             { path: "mis-tareas",        element: <MisTareasPage /> },
+            { path: "quotations",        element: <QuotationsPage /> },
 
             // ── Gestión de usuarios ───────────────────────────────────────────
             { path: "userpage",             element: p(["list_user","create_user","edit_user","toggle_user","report_user"], <UserPage />) },

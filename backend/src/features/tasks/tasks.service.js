@@ -45,7 +45,8 @@ export const tasksService = {
   // ── Mis tareas (por email del token) ─────────────────────────
   async getMyTasks(email) {
     const userDoc = await tasksRepository.getDocByEmail(email);
-    if (!userDoc) throw new Error("Usuario no encontrado");
+    // Si el usuario no tiene documento (ej. admin seedeado sin doc), devolver vacío
+    if (!userDoc) return [];
     return tasksRepository.findByUserDoc(userDoc);
   },
 

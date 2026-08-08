@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Users, Package, ShoppingCart, Handshake, ArrowLeft } from "lucide-react";
+import { Users, Package, ShoppingCart, Handshake, FileText, ArrowLeft } from "lucide-react";
 import { MenuButton, usePermissions } from "@/shared";
 import { handleLogout } from "@/features/auth/services/logoutService";
 
@@ -20,6 +20,10 @@ const ALL_MODULES = [
   {
     label: "Préstamo", icon: Handshake, to: "/dashboard/loans",
     permission: ["list_loan", "create_loan", "edit_loan", "view_loan", "report_loan", "return_returnable"],
+  },
+  {
+    label: "Cotizaciones", icon: FileText, to: "/dashboard/quotations",
+    permission: null, // visible para todos los usuarios autenticados
   },
 ];
 
