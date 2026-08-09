@@ -87,10 +87,6 @@ export default function CreateReturnable4({ formData, onSave, onBack }) {
       });
     }
 
-    if (!fields.materialQuotations || fields.materialQuotations.length === 0) {
-      newErrors.materialQuotations = "Debe subir al menos 1 cotización (PDF, máx 3MB cada una)";
-    }
-
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       alertWarning("Campos incompletos", "Por favor completa todos los campos requeridos antes de guardar.");
@@ -107,18 +103,8 @@ export default function CreateReturnable4({ formData, onSave, onBack }) {
 
   return (
     <div className="grid grid-cols-[320px_320px] gap-6">
-      <Select labelVariant="light"
-        label="Estado"
-        name="materialState"
-        value={fields.materialState}
-        options={STATE_OPTIONS}
-        onChange={handleChange}
-        error={errors.materialState}
-        placeholder="Selecciona un estado"
-        required
-      />
 
-      {/* Ficha técnica — Solo PDF, máx 3 MB */}
+      {/* Ficha técnica — fila 1 col 1 */}
       <div className="flex flex-col gap-1">
         <label className="text-sm font-medium text-text-primary">
           Ficha técnica <span className="text-red-400">*</span>
@@ -152,11 +138,11 @@ export default function CreateReturnable4({ formData, onSave, onBack }) {
         )}
       </div>
 
-      {/* COTIZACIONES — 1 a 3 PDFs, requeridas */}
-      <div className="flex flex-col gap-2 col-span-2">
+      {/* COTIZACIONES — fila 1 col 2, al lado de Ficha técnica */}
+      <div className="flex flex-col gap-2">
         <label className="text-sm font-semibold text-white">
-          Cotizaciones <span className="text-red-400">*</span>
-          <span className="text-xs text-white/50 ml-1 font-normal">(1–3 PDFs · máx 3MB c/u)</span>
+          Cotizaciones
+          <span className="text-xs text-white/50 ml-1 font-normal">(opcional · 1–3 PDFs · máx 3MB c/u)</span>
         </label>
 
         {fields.materialQuotations.map((file, idx) => (
@@ -178,6 +164,18 @@ export default function CreateReturnable4({ formData, onSave, onBack }) {
           <span className="text-red-500 text-xs">{errors.materialQuotations}</span>
         )}
       </div>
+
+      {/* Estado — fila 2 col 1 */}
+      <Select labelVariant="light"
+        label="Estado"
+        name="materialState"
+        value={fields.materialState}
+        options={STATE_OPTIONS}
+        onChange={handleChange}
+        error={errors.materialState}
+        placeholder="Selecciona un estado"
+        required
+      />
 
       <Input labelVariant="light"
         label="Ubicación (opcional)"

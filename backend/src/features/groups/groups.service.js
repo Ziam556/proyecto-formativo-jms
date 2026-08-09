@@ -46,6 +46,12 @@ export const groupsService = {
         return { removed: userIds.length };
     },
 
+    async toggle(groupId) {
+        const group = await groupsRepository.toggle(groupId);
+        if (!group) throw new Error("Grupo no encontrado");
+        return group;
+    },
+
     async delete(groupId) {
         // Los grupos predeterminados del sistema no se pueden eliminar
         const PROTECTED = ["Administrador", "Instructor", "Invitado"];

@@ -208,6 +208,9 @@ function MaterialSearchSelect({ materials, idField, value, onChange, loading }) 
                                     <span className="text-[0.84rem] font-medium text-white truncate block">
                                         {m.material_element_name}
                                     </span>
+                                    <span className="text-[0.72rem] text-white/45">
+                                        ID: {m[idField]}
+                                    </span>
                                 </div>
                             ))
                         )}

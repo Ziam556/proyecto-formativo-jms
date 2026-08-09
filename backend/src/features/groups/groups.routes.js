@@ -12,5 +12,6 @@ router.post("/:groupId/users", groupsController.addUsers);
 router.delete("/:groupId/users", groupsController.removeUsers);
 router.delete("/:groupId",       groupsController.delete);
 router.put("/:groupId",          groupsController.update);
+router.patch("/:groupId/toggle", groupsController.toggle);
 
 export default router;

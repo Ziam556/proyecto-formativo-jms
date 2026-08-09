@@ -73,6 +73,17 @@ export async function updateGroup(groupId, groupName, permissionCodenames) {
     return data;
 }
 
+export async function toggleGroup(groupId) {
+    const token    = sessionStorage.getItem("token");
+    const response = await fetch(`${API_URL}/${groupId}/toggle`, {
+        method:  "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Error al cambiar estado del grupo");
+    return data;
+}
+
 export async function deleteGroup(groupId) {
     const token    = sessionStorage.getItem("token");
     const response = await fetch(`/api/groups/${groupId}`, {
