@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
-import { Input, Button, Select, Textarea, DatePicker, UserSearchField, StatsPills, BackButton, alertSuccess, alertError, alertConfirm } from "@/shared";
+import { Input, Button, Select, Textarea, DatePicker, MultiUserSearchField, StatsPills, BackButton, alertSuccess, alertError, alertConfirm } from "@/shared";
 import { getGroups } from "@/features/groups/services/groupService";
 import { getTasks, createTask, verifyTask, getTaskById } from "../services/taskService";
+import { X } from "lucide-react";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -42,13 +43,13 @@ const STATUS_FILTER_OPTIONS = [
 ];
 
 const EMPTY_FORM = {
-  taskName:          "",
-  taskDescription:   "",
-  assignedType:      "user",
-  assignedUserDoc:   "",
-  assignedGroupName: "",
-  priority:          "media",
-  dueDate:           "",
+  taskName:        "",
+  taskDescription: "",
+  assignedType:    "user",
+  assignedUsers:   [],   // [{ name, document, userId }]
+  assignedGroups:  [],   // [{ group_id, group_name }]
+  priority:        "media",
+  dueDate:         "",
 };
 
 // ── Componente principal ──────────────────────────────────────────────────────
@@ -109,10 +110,10 @@ export default function TasksPage() {
 
   const validateForm = () => {
     const errors = {};
-    if (!form.taskName.trim())       errors.taskName = "El nombre es requerido";
+    if (!form.taskName.trim())        errors.taskName        = "El nombre es requerido";
     if (!form.taskDescription.trim()) errors.taskDescription = "La descripción es requerida";
-    if (form.assignedType === "user"  && !form.assignedUserDoc)   errors.assignedUserDoc   = "Selecciona un usuario";
-    if (form.assignedType === "group" && !form.assignedGroupName) errors.assignedGroupName = "Selecciona un grupo";
+    if (form.assignedType === "user"  && form.assignedUsers.length  === 0) errors.assignedUsers  = "Selecciona al menos un usuario";
+    if (form.assignedType === "group" && form.assignedGroups.length === 0) errors.assignedGroups = "Selecciona al menos un grupo";
     return errors;
   };
 
@@ -121,8 +122,15 @@ export default function TasksPage() {
     if (Object.keys(errors).length) { setFormErrors(errors); return; }
     try {
       setCreating(true);
-      await createTask(form);
-      await alertSuccess("¡Tarea creada!", `La tarea "${form.taskName}" fue creada correctamente.`);
+      // Crear una tarea por cada asignado
+      const assignees = form.assignedType === "user"
+        ? form.assignedUsers.map((u) => ({ assignedType: "user",  assignedUserDoc: u.document, assignedGroupName: "" }))
+        : form.assignedGroups.map((g) => ({ assignedType: "group", assignedUserDoc: "",          assignedGroupName: g.group_name }));
+
+      await Promise.all(assignees.map((a) => createTask({ ...form, ...a })));
+
+      const total = assignees.length;
+      await alertSuccess("¡Tarea(s) creada(s)!", `Se crearon ${total} tarea(s) "${form.taskName}" correctamente.`);
       setForm(EMPTY_FORM);
       setFormErrors({});
       loadTasks();
@@ -226,37 +234,69 @@ export default function TasksPage() {
                         name="assignedType"
                         value={type}
                         checked={form.assignedType === type}
-                        onChange={handleFormChange}
+                        onChange={(e) => {
+                          handleFormChange(e);
+                          setForm((prev) => ({ ...prev, assignedUsers: [], assignedGroups: [] }));
+                        }}
                         className="accent-[#50E5F9] w-4 h-4 cursor-pointer"
                       />
-                      {type === "user" ? "Usuario" : "Grupo"}
+                      {type === "user" ? "Usuario(s)" : "Grupo(s)"}
                     </label>
                   ))}
                 </div>
               </div>
 
-              {/* Buscador usuario o select grupo */}
+              {/* Multi-selector de usuarios */}
               {form.assignedType === "user" ? (
-                <UserSearchField
-                  label="Usuario"
-                  value={form.assignedUserDoc}
-                  onChange={(doc) => {
-                    setForm((prev) => ({ ...prev, assignedUserDoc: doc }));
-                    setFormErrors((prev) => ({ ...prev, assignedUserDoc: "" }));
+                <MultiUserSearchField
+                  label="Usuarios"
+                  value={form.assignedUsers}
+                  onChange={(arr) => {
+                    setForm((prev) => ({ ...prev, assignedUsers: arr }));
+                    setFormErrors((prev) => ({ ...prev, assignedUsers: "" }));
                   }}
-                  placeholder="Buscar por nombre o documento..."
-                  error={formErrors.assignedUserDoc}
+                  error={formErrors.assignedUsers}
                 />
               ) : (
-                <Select
-                  label="Grupo"
-                  name="assignedGroupName"
-                  value={form.assignedGroupName}
-                  options={groupOptions}
-                  onChange={handleFormChange}
-                  placeholder="Seleccionar grupo"
-                  error={formErrors.assignedGroupName}
-                />
+                /* Multi-selector de grupos */
+                <div className="flex flex-col gap-1">
+                  <label className="text-[12px] font-semibold text-white">
+                    Grupos {formErrors.assignedGroups && <span className="text-red-400 ml-1">*</span>}
+                  </label>
+                  <Select
+                    name="_groupPicker"
+                    value=""
+                    options={groupOptions.filter((g) => !form.assignedGroups.find((s) => s.group_name === g.value))}
+                    onChange={(e) => {
+                      const name = e.target.value;
+                      if (!name) return;
+                      const grp = groups.find((g) => g.group_name === name);
+                      if (!grp) return;
+                      setForm((prev) => ({ ...prev, assignedGroups: [...prev.assignedGroups, grp] }));
+                      setFormErrors((prev) => ({ ...prev, assignedGroups: "" }));
+                    }}
+                    placeholder="Agregar grupo..."
+                  />
+                  {form.assignedGroups.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-1">
+                      {form.assignedGroups.map((g) => (
+                        <span key={g.group_id} className="flex items-center gap-1 px-2 py-1 rounded-full bg-purple-600/80 text-white text-[0.75rem] font-medium">
+                          {g.group_name}
+                          <button
+                            type="button"
+                            onClick={() => setForm((prev) => ({ ...prev, assignedGroups: prev.assignedGroups.filter((x) => x.group_id !== g.group_id) }))}
+                            className="ml-1 text-white/70 hover:text-white leading-none"
+                          >
+                            <X size={12} />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {formErrors.assignedGroups && (
+                    <p className="text-red-400 text-[0.75rem]">{formErrors.assignedGroups}</p>
+                  )}
+                </div>
               )}
 
               {/* Fecha límite */}

@@ -3,9 +3,20 @@ import { pool } from "../../config/db.js";
 export const groupsRepository = {
     async getAll() {
         const result = await pool.query(
-            `SELECT group_id, group_name FROM groups ORDER BY group_name`
+            `SELECT group_id, group_name, enabled FROM groups ORDER BY group_name`
         );
         return result.rows;
+    },
+
+    async toggle(groupId) {
+        const result = await pool.query(
+            `UPDATE public.groups
+             SET enabled = NOT enabled, updated_at = NOW()
+             WHERE group_id = $1
+             RETURNING group_id, group_name, enabled`,
+            [groupId]
+        );
+        return result.rows[0] ?? null;
     },
 
     async findById(groupId) {

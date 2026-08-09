@@ -83,6 +83,16 @@ export const groupsController = {
         }
     },
 
+    async toggle(req, res) {
+        try {
+            const group = await groupsService.toggle(Number(req.params.groupId));
+            res.json(group);
+        } catch (err) {
+            const status = err.message.includes("no encontrado") ? 404 : 500;
+            res.status(status).json({ error: err.message });
+        }
+    },
+
     async delete(req, res) {
         try {
             const deleted = await groupsService.delete(Number(req.params.groupId));

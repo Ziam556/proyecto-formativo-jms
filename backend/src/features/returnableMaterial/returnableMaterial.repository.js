@@ -59,7 +59,7 @@ export const returnableMaterialRepository = {
 
     const values = [
       returnableMaterialId, materialPlate, materialCategory, materialElementName,
-      materialBrand, materialModel, materialSerial, materialImage,
+      materialBrand || null, materialModel || null, materialSerial || null, materialImage,
       materialPurchaseDate ?? null, materialAmount,
       materialUnitValue, materialTotalValue, materialState,
       materialTechnicalSheet, materialDescription, materialLocation,
@@ -244,7 +244,7 @@ export const returnableMaterialRepository = {
 
     const values = [
       materialPlate, materialCategory, materialElementName,
-      materialBrand, materialModel || null, materialSerial || null,
+      materialBrand || null, materialModel || null, materialSerial || null,
       materialImage || null, materialTechnicalSheet || null,
       materialAmount, materialUnitValue, materialTotalValue,
       materialState, materialDescription, materialLocation || null,

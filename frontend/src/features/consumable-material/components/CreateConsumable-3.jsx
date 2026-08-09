@@ -109,11 +109,6 @@ export default function CreateConsumable3({ formData, onSave, onBack }) {
             newErrors.materialTechnicalSheet = "La ficha técnica es requerida (PDF, máx 3MB)";
         }
 
-        // Validación de cotizaciones — mínimo 1, máximo 3
-        if (!fields.materialQuotations || fields.materialQuotations.length === 0) {
-            newErrors.materialQuotations = "Debe subir al menos 1 cotización (PDF, máx 3MB cada una)";
-        }
-
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
             alertWarning("Campos incompletos", "Por favor completa todos los campos requeridos antes de guardar.");
@@ -216,11 +211,11 @@ export default function CreateConsumable3({ formData, onSave, onBack }) {
                 )}
             </div>
 
-            {/* Cotizaciones — 1 a 3 PDFs, requeridas */}
+            {/* Cotizaciones — 1 a 3 PDFs, opcionales */}
             <div className="flex flex-col gap-2 col-span-2">
                 <label className="text-sm font-semibold text-white">
-                    Cotizaciones <span className="text-red-400">*</span>
-                    <span className="text-xs text-white/50 ml-1 font-normal">(1–3 PDFs · máx 3MB c/u)</span>
+                    Cotizaciones
+                    <span className="text-xs text-white/50 ml-1 font-normal">(opcional · 1–3 PDFs · máx 3MB c/u)</span>
                 </label>
 
                 {/* Lista de cotizaciones ya agregadas */}

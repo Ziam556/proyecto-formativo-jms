@@ -60,25 +60,6 @@ export default function CreateReturnable2({ formData, onNext, onBack }) {
         onChange={handleChange}
       />
 
-      {/* Imagen — solo PNG, JPG, SVG */}
-      <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium text-white">
-          Imagen <span className="text-red-400">*</span>
-        </label>
-        <FileInput
-          value={fields.materialImage}
-          onChange={(files) => {
-            setFields((prev) => ({ ...prev, materialImage: files }));
-            setErrors((prev) => ({ ...prev, materialImage: "" }));
-          }}
-          accept="image/png,image/jpeg,image/svg+xml"
-          multiple={true}
-        />
-        {errors.materialImage && (
-          <span className="text-red-500 text-xs">{errors.materialImage}</span>
-        )}
-      </div>
-
       <DatePicker labelVariant="light"
         label="Fecha de compra (opcional)"
         name="materialPurchaseDate"
@@ -97,6 +78,25 @@ export default function CreateReturnable2({ formData, onNext, onBack }) {
         maxDate={new Date()}
         required
       />
+
+      {/* Imagen — abajo a la izquierda */}
+      <div className="flex flex-col gap-1">
+        <label className="text-sm font-medium text-white">
+          Imagen <span className="text-red-400">*</span>
+        </label>
+        <FileInput
+          value={fields.materialImage}
+          onChange={(files) => {
+            setFields((prev) => ({ ...prev, materialImage: files }));
+            setErrors((prev) => ({ ...prev, materialImage: "" }));
+          }}
+          accept="image/png,image/jpeg,image/svg+xml"
+          multiple={true}
+        />
+        {errors.materialImage && (
+          <span className="text-red-500 text-xs">{errors.materialImage}</span>
+        )}
+      </div>
 
       <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-2">
         <Button variant="secondary" size="sm" onClick={onBack}>Atrás</Button>
