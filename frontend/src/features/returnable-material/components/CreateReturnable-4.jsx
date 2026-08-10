@@ -102,7 +102,7 @@ export default function CreateReturnable4({ formData, onSave, onBack }) {
   };
 
   return (
-    <div className="grid grid-cols-[320px_320px] gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-2xl mx-auto">
 
       {/* Ficha técnica — fila 1 col 1 */}
       <div className="flex flex-col gap-1">

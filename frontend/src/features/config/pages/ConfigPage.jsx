@@ -2,19 +2,22 @@ import { useNavigate } from "react-router-dom"
 import { Cylinder, Users, FileSliders, ArrowLeft, Tag, Archive } from "lucide-react"
 import { MenuButton, usePermissions } from "@/shared";
 
-const BRAND_PERMS    = ["list_brand","create_brand","edit_brand","toggle_brand","delete_brand"];
-const CATEGORY_PERMS = ["list_category","create_category","edit_category","toggle_category","delete_category"];
+const BRAND_PERMS     = ["list_brand",     "create_brand",     "edit_brand",     "toggle_brand",     "delete_brand"    ];
+const CATEGORY_PERMS  = ["list_category",  "create_category",  "edit_category",  "toggle_category",  "delete_category" ];
+const INVENTORY_PERMS = ["list_inventory", "create_inventory", "edit_inventory", "toggle_inventory", "delete_inventory"];
+const GROUP_PERMS     = ["list_group",     "create_group",     "edit_group",     "toggle_group",     "delete_group",     "add_users_group"];
+const TASK_PERMS      = ["list_task",      "create_task",      "view_task",      "complete_task",    "verify_task",      "delete_task"    ];
 
 export default function ConfigPage() {
     const navigate = useNavigate();
     const { isAdmin, hasPermission } = usePermissions();
 
     const menuItems = [
-        hasPermission(BRAND_PERMS)    && { label: "Marcas",             icon: Cylinder,    to: "/dashboard/config/brands" },
-        (isAdmin || hasPermission(CATEGORY_PERMS)) && { label: "Categorías", icon: Tag, to: "/dashboard/config/categories" },
-        isAdmin                       && { label: "Inventarios",         icon: Archive,     to: "/dashboard/config/inventories" },
-        isAdmin                       && { label: "Grupos",              icon: Users,       to: "/dashboard/config/groups" },
-        isAdmin                       && { label: "Gestión de tareas",   icon: FileSliders, to: "/dashboard/config/tasks"  },
+        hasPermission(BRAND_PERMS)                         && { label: "Marcas",           icon: Cylinder,    to: "/dashboard/config/brands"      },
+        (isAdmin || hasPermission(CATEGORY_PERMS))         && { label: "Categorías",        icon: Tag,         to: "/dashboard/config/categories"  },
+        (isAdmin || hasPermission(INVENTORY_PERMS))        && { label: "Inventarios",       icon: Archive,     to: "/dashboard/config/inventories" },
+        (isAdmin || hasPermission(GROUP_PERMS))            && { label: "Grupos",            icon: Users,       to: "/dashboard/config/groups"      },
+        (isAdmin || hasPermission(TASK_PERMS))             && { label: "Gestión de tareas", icon: FileSliders, to: "/dashboard/config/tasks"       },
     ].filter(Boolean);
 
     return (

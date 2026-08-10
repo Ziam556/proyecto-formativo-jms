@@ -1,4 +1,5 @@
 import { consumableMaterialService } from "./consumableMaterial.service.js";
+import { quotationsRepository } from "../quotations/quotations.repository.js";
 
 export const consumableMaterialController = {
 
@@ -14,16 +15,27 @@ export const consumableMaterialController = {
         ? `uploads/consumable/${sheetFile.filename}`
         : null;
 
-      const quotationFiles = req.files?.materialQuotation ?? [];
-      const quotationPaths = quotationFiles.map((f) => `uploads/consumable/${f.filename}`);
-      const materialQuotations = quotationPaths.length ? JSON.stringify(quotationPaths) : null;
-
       const material = await consumableMaterialService.createConsumableMaterial({
         ...req.body,
         materialImage: imagePaths,
         materialTechnicalSheet,
-        materialQuotations,
       });
+
+      // Insertar cotizaciones en la tabla separada
+      const quotationFiles = req.files?.materialQuotation ?? [];
+      if (quotationFiles.length > 0) {
+        await Promise.all(
+          quotationFiles.map((f) =>
+            quotationsRepository.add({
+              materialType:    "consumable",
+              materialId:      material.consumable_material_id,
+              filePath:        `uploads/consumable/${f.filename}`,
+              fileName:        f.originalname,
+              uploadedByEmail: req.user?.email ?? null,
+            })
+          )
+        );
+      }
 
       res.status(201).json({
         message: "Material consumible creado correctamente",
@@ -70,20 +82,10 @@ export const consumableMaterialController = {
           ? ""          // vacío → el repo pondrá NULL
           : undefined;  // undefined → el repo usará COALESCE para no tocar el valor
 
-      // Cotizaciones: kept existing + new uploads
-      const keptQuotations = req.body.keepQuotations
-        ? JSON.parse(req.body.keepQuotations)
-        : [];
-      const newQuotationPaths = (req.files?.materialQuotation ?? [])
-        .map((f) => `uploads/consumable/${f.filename}`);
-      const allQuotations = [...keptQuotations, ...newQuotationPaths];
-      const materialQuotations = allQuotations.length ? JSON.stringify(allQuotations) : null;
-
       const material = await consumableMaterialService.update(req.params.id, {
         ...req.body,
         materialImage: imagePaths,
         materialTechnicalSheet,
-        materialQuotations,
         isEnabled: req.body.isEnabled === "true" || req.body.isEnabled === true,
       });
 

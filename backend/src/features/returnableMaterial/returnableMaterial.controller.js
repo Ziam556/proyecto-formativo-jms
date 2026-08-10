@@ -1,4 +1,5 @@
 import { returnableMaterialService } from "./returnableMaterial.service.js";
+import { quotationsRepository } from "../quotations/quotations.repository.js";
 
 export const returnableMaterialController = {
 
@@ -12,16 +13,27 @@ export const returnableMaterialController = {
         ? `uploads/returnable/${req.files.materialTechnicalSheet[0].filename}`
         : null;
 
-      const quotationPaths = (req.files?.materialQuotation ?? [])
-        .map((f) => `uploads/returnable/${f.filename}`);
-      const materialQuotations = quotationPaths.length ? JSON.stringify(quotationPaths) : null;
-
       const material = await returnableMaterialService.createReturnableMaterial({
         ...req.body,
         materialImage: imagePaths,
         materialTechnicalSheet: technicalSheetPath,
-        materialQuotations,
       });
+
+      // Insertar cotizaciones en la tabla separada
+      const quotationFiles = req.files?.materialQuotation ?? [];
+      if (quotationFiles.length > 0) {
+        await Promise.all(
+          quotationFiles.map((f) =>
+            quotationsRepository.add({
+              materialType:    "returnable",
+              materialId:      material.returnable_material_id,
+              filePath:        `uploads/returnable/${f.filename}`,
+              fileName:        f.originalname,
+              uploadedByEmail: req.user?.email ?? null,
+            })
+          )
+        );
+      }
 
       res.status(201).json({
         message: "Material devolutivo creado correctamente",
@@ -64,19 +76,10 @@ export const returnableMaterialController = {
         ? `uploads/returnable/${req.files.materialTechnicalSheet[0].filename}`
         : null;
 
-      const keptQuotations = req.body.keepQuotations
-        ? JSON.parse(req.body.keepQuotations)
-        : [];
-      const newQuotationPaths = (req.files?.materialQuotation ?? [])
-        .map((f) => `uploads/returnable/${f.filename}`);
-      const allQuotations = [...keptQuotations, ...newQuotationPaths];
-      const materialQuotations = allQuotations.length ? JSON.stringify(allQuotations) : null;
-
       const material = await returnableMaterialService.updateReturnableMaterial(req.params.id, {
         ...req.body,
         materialImage: imagePaths,
         materialTechnicalSheet: technicalSheetPath,
-        materialQuotations,
         isEnabled: req.body.isEnabled === "true" || req.body.isEnabled === true,
       });
 

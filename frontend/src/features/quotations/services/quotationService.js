@@ -41,11 +41,11 @@ export async function addQuotation(materialType, materialId, file) {
     return data;
 }
 
-export async function removeQuotation(materialType, materialId, filePath) {
+export async function removeQuotation(quotationId) {
     const res = await fetch(API_URL, {
         method: "DELETE",
         headers: { ...getAuthHeaders(), "Content-Type": "application/json" },
-        body: JSON.stringify({ materialType, materialId, filePath }),
+        body: JSON.stringify({ quotationId }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Error al eliminar cotización");

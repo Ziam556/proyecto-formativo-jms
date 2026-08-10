@@ -80,7 +80,7 @@ export default function CreateLoans2({ formData, onNext, onBack }) {
 
   return (
     <div className="w-full flex flex-col items-center">
-      <div className="w-full max-w-[600px]">
+      <div className="w-full max-w-2xl">
 
         {/* HEADER */}
         <div className="flex items-center gap-3 mb-7">

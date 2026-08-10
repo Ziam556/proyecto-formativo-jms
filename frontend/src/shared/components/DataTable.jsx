@@ -20,6 +20,7 @@ export default function DataTable({
     onRowSelectionChange: externalOnRowSelectionChange,
     initialPageSize = 5,
     onReportColsChange,
+    onRowClick,
 }) {
     const [reportCols, setReportColsInternal] = useState(
         Object.fromEntries(colDefs.map((c) => [c.id, true]))
@@ -164,15 +165,23 @@ export default function DataTable({
                             table.getRowModel().rows.map((row, i) => (
                                 <tr
                                     key={row.id}
-                                    className={`hover:bg-[#dcd6f0] transition-colors duration-100 ${i % 2 === 0 ? "bg-[#E9E9E9]" : "bg-[#f0f0f0]"}`}
+                                    onClick={() => onRowClick?.(row.original)}
+                                    className={`transition-colors duration-100 ${i % 2 === 0 ? "bg-[#E9E9E9]" : "bg-[#f0f0f0]"} ${onRowClick ? "cursor-pointer hover:bg-[#c9c0e8]" : "hover:bg-[#dcd6f0]"}`}
                                 >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <td key={cell.id} className="p-[8px_10px] text-[0.82rem] text-[#3D3D3D] border-b border-[#d5d5d5]">
-                                            <div className="truncate" style={{ maxWidth: "100%" }} title={typeof cell.getValue() === "string" ? cell.getValue() : undefined}>
-                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                            </div>
-                                        </td>
-                                    ))}
+                                    {row.getVisibleCells().map((cell) => {
+                                        const isInteractive = cell.column.id === "select" || cell.column.id === "actions";
+                                        return (
+                                            <td
+                                                key={cell.id}
+                                                onClick={isInteractive ? (e) => e.stopPropagation() : undefined}
+                                                className="p-[8px_10px] text-[0.82rem] text-[#3D3D3D] border-b border-[#d5d5d5]"
+                                            >
+                                                <div className="truncate" style={{ maxWidth: "100%" }} title={typeof cell.getValue() === "string" ? cell.getValue() : undefined}>
+                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                </div>
+                                            </td>
+                                        );
+                                    })}
                                 </tr>
                             ))
                         )}

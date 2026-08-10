@@ -47,7 +47,7 @@ export default function CreateReturnable3({ formData, onNext, onBack }) {
   };
 
   return (
-    <div className="grid grid-cols-[320px_320px] gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-2xl mx-auto">
       <Input labelVariant="light"
         label="Cuentadante (Nombre y apellido)"
         name="materialStoryTeller"

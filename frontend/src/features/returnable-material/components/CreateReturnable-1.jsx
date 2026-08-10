@@ -87,7 +87,7 @@ export default function CreateReturnable1({ formData, onNext, onCancel }) {
   };
 
   return (
-    <div className="grid grid-cols-[320px_320px] gap-6 mx-auto">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-2xl mx-auto">
       <Input labelVariant="light"
         label="Número de serie (SN) (opcional)"
         name="returnableMaterialId"

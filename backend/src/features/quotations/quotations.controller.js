@@ -26,10 +26,19 @@ export const quotationsController = {
                 return res.status(400).json({ error: "Se requiere un archivo PDF." });
             }
 
-            const filePath = `uploads/quotations/${req.file.filename}`;
-            await quotationsService.add({ materialType, materialId, filePath });
+            const filePath       = `uploads/quotations/${req.file.filename}`;
+            const fileName       = req.file.originalname;
+            const uploadedByEmail = req.user?.email ?? null;
 
-            res.status(201).json({ message: "Cotización agregada correctamente.", filePath });
+            const quotation = await quotationsService.add({
+                materialType,
+                materialId,
+                filePath,
+                fileName,
+                uploadedByEmail,
+            });
+
+            res.status(201).json({ message: "Cotización agregada correctamente.", quotation });
         } catch (err) {
             console.error("ERROR add quotation:", err);
             res.status(500).json({ error: err.message });
@@ -38,13 +47,13 @@ export const quotationsController = {
 
     async remove(req, res) {
         try {
-            const { materialType, materialId, filePath } = req.body;
+            const { quotationId } = req.body;
 
-            if (!materialType || !materialId || !filePath) {
-                return res.status(400).json({ error: "Faltan datos: materialType, materialId o filePath." });
+            if (!quotationId) {
+                return res.status(400).json({ error: "Se requiere quotationId." });
             }
 
-            await quotationsService.remove({ materialType, materialId, filePath });
+            await quotationsService.remove({ quotationId: Number(quotationId) });
             res.json({ message: "Cotización eliminada correctamente." });
         } catch (err) {
             console.error("ERROR remove quotation:", err);

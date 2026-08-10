@@ -160,7 +160,7 @@ export default function EditReturnableMaterialPage() {
     ];
 
     return (
-        <div className="px-4 sm:px-16 py-3 sm:py-4 min-h-full flex flex-col justify-center">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 min-h-full flex flex-col justify-center">
 
             <h1 className="text-white text-sm font-semibold mb-4">
                 Editar material devolutivo
@@ -180,7 +180,7 @@ export default function EditReturnableMaterialPage() {
                 />
 
                 {/* ── CONTENIDO ── */}
-                <div className="flex-1 bg-white/10 rounded-2xl m-3 py-4 sm:py-5 px-4 sm:px-10 transition-all duration-300 flex flex-col items-center justify-center gap-6">
+                <div className="flex-1 bg-white/10 rounded-2xl m-3 py-4 sm:py-5 px-4 sm:px-8 transition-all duration-300 flex flex-col items-center justify-center gap-6">
                     <h2 className="text-white text-center text-[1rem] font-medium m-0">
                         Edite la información correspondiente
                     </h2>

@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
-import { Plus, Pencil, List, ArrowLeft } from "lucide-react";
+import { Plus, Pencil, List, Eye, ArrowLeft } from "lucide-react";
 import { MenuButton } from "@/shared";
 
-// Acciones disponibles dentro del módulo de material devolutivo
+// Acciones disponibles dentro del módulo de usuarios
 const menuItems = [
-    { label: "Crear",  icon: Plus,   to: "/dashboard/userpage/create" },
-    { label: "Editar", icon: Pencil, to: "/dashboard/userpage/edit" },
-    { label: "Listar", icon: List,   to: "/dashboard/userpage/list" },
-
+    { label: "Crear",      icon: Plus,   to: "/dashboard/userpage/create"    },
+    { label: "Editar",     icon: Pencil, to: "/dashboard/userpage/edit"      },
+    { label: "Listar",     icon: List,   to: "/dashboard/userpage/list"      },
+    { label: "Visualizar", icon: Eye,    to: "/dashboard/userpage/visualize" },
 ];
 
 export default function UserPage() {
@@ -31,8 +31,10 @@ export default function UserPage() {
                         <MenuButton key={item.to} label={item.label} icon={item.icon} to={item.to} />
                     ))}
 
-                    {/* Vuelve al home */}
-                    <MenuButton label="Regresar" icon={ArrowLeft} onClick={() => navigate("/dashboard/home")} />
+                    {/* Vuelve al home — centrado igual que en materiales */}
+                    <div className="sm:col-span-2 flex justify-center">
+                        <MenuButton label="Regresar" className="w-full sm:w-70" icon={ArrowLeft} onClick={() => navigate("/dashboard/home")} />
+                    </div>
                 </div>
 
             </div>

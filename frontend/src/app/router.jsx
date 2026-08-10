@@ -46,12 +46,13 @@ const router = createBrowserRouter([
             { path: "home",              element: <HomePage /> },
             { path: "userpage/profile",  element: <UserProfilePage /> },
             { path: "mis-tareas",        element: <MisTareasPage /> },
-            { path: "quotations",        element: <QuotationsPage /> },
+            { path: "quotations",        element: p(["list_quotation","create_quotation","delete_quotation"], <QuotationsPage />) },
 
             // ── Gestión de usuarios ───────────────────────────────────────────
             { path: "userpage",             element: p(["list_user","create_user","edit_user","toggle_user","report_user"], <UserPage />) },
             { path: "userpage/create",      element: p("create_user",  <CreateUserPage />) },
             { path: "userpage/list",        element: p("list_user",    <ListUserPage />) },
+            { path: "userpage/visualize",   element: p("list_user",    <ViewUserPage />) },
             { path: "userpage/:id/view",    element: p("list_user",    <ViewUserPage />) },
             { path: "userpage/edit",        element: p("edit_user",    <EditUserPage />) },
 
@@ -81,20 +82,21 @@ const router = createBrowserRouter([
             // Marcas: accesible con permiso de marcas (o admin)
             { path: "brands",        element: p(["list_brand","create_brand","edit_brand","toggle_brand","delete_brand"], <BrandsPage />) },
             { path: "config/brands", element: p(["list_brand","create_brand","edit_brand","toggle_brand","delete_brand"], <CreateBrandPage />) },
-            // Categorías: admin
-            { path: "categories",          element: adm(<CategoriesPage />) },
-            { path: "config/categories",   element: adm(<CreateCategoryPage />) },
-            // Inventarios: admin
-            { path: "inventories",         element: adm(<InventoriesPage />) },
-            { path: "config/inventories",  element: adm(<CreateInventoryPage />) },
-            // Hub de configuración: admin O permisos de marcas
-            { path: "config", element: p(["list_brand","create_brand","edit_brand","toggle_brand","delete_brand"], <ConfigPage />) },
-            // Solo Administrador
-            { path: "config/groups",                element: adm(<GroupsListPage />) },
-            { path: "config/groups/create",         element: adm(<CreateGroupPage />) },
-            { path: "config/groups/edit/:id",       element: adm(<EditGroupPage />) },
-            { path: "config/groups/:id/add-users",  element: adm(<AddUsersToGroupPage />) },
-            { path: "config/tasks",                 element: adm(<TasksPage />) },
+            // Categorías
+            { path: "categories",          element: p(["list_category","create_category","edit_category","toggle_category","delete_category"], <CategoriesPage />) },
+            { path: "config/categories",   element: p(["create_category","edit_category","toggle_category","delete_category"], <CreateCategoryPage />) },
+            // Inventarios
+            { path: "inventories",         element: p(["list_inventory","create_inventory","edit_inventory","toggle_inventory","delete_inventory"], <InventoriesPage />) },
+            { path: "config/inventories",  element: p(["create_inventory","edit_inventory","toggle_inventory","delete_inventory"], <CreateInventoryPage />) },
+            // Hub de configuración
+            { path: "config", element: p(["list_brand","create_brand","edit_brand","toggle_brand","delete_brand","list_category","create_category","list_inventory","create_inventory","list_group","create_group","list_task","create_task"], <ConfigPage />) },
+            // Grupos (solo admin o permisos de grupo)
+            { path: "config/groups",                element: p(["list_group","create_group","edit_group","delete_group","toggle_group","add_users_group"], <GroupsListPage />) },
+            { path: "config/groups/create",         element: p(["create_group"], <CreateGroupPage />) },
+            { path: "config/groups/edit/:id",       element: p(["edit_group"], <EditGroupPage />) },
+            { path: "config/groups/:id/add-users",  element: p(["add_users_group"], <AddUsersToGroupPage />) },
+            // Tareas
+            { path: "config/tasks",                 element: p(["list_task","create_task","view_task","complete_task","verify_task","delete_task"], <TasksPage />) },
         ],
     },
 ]);

@@ -61,7 +61,7 @@ export default function ViewLoans({ loan: initialLoan, onCancel, onEdit }) {
   };
 
   return (
-    <div className="w-full max-w-[960px] mx-auto rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md shadow-2xl p-6">
+    <div className="w-full max-w-5xl mx-auto rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md shadow-2xl p-6">
 
       {/* HEADER */}
       <div className="flex items-center gap-3 mb-6">
@@ -144,9 +144,7 @@ export default function ViewLoans({ loan: initialLoan, onCancel, onEdit }) {
             <div className="flex-1 h-px bg-white/20" />
           </div>
           <div className="flex flex-wrap gap-4 mb-8">
-            <div className="w-full sm:w-[280px]">
-              <Field label="Usuario solicitante" value={loan.user} />
-            </div>
+            <Field label="Usuario solicitante" value={loan.user} />
           </div>
 
           {/* BOTONES */}

@@ -17,8 +17,8 @@ const steps = [
 
 const stepPaddingXClass = [
   "px-3 sm:px-[28px]",
-  "px-4 sm:px-[18%]",
-  "px-4 sm:px-[22%]",
+  "px-4 sm:px-8",
+  "px-4 sm:px-10",
 ];
 
 export default function CreateLoansPage() {
@@ -140,7 +140,7 @@ export default function CreateLoansPage() {
   // ── Pantalla de confirmación post-guardado ────────────────────────────────
   if (savedLoanId !== null) {
     return (
-      <div className="px-4 sm:px-16 py-6 sm:py-10 min-h-full flex items-center justify-center">
+      <div className="px-4 sm:px-6 py-6 sm:py-10 min-h-full flex items-center justify-center">
         <div className="w-full max-w-[480px] bg-white/10 rounded-2xl p-10 flex flex-col items-center text-center gap-5">
 
           {/* Ícono éxito */}
@@ -188,7 +188,7 @@ export default function CreateLoansPage() {
 
   if (usersBlocked) {
     return (
-      <div className="px-4 sm:px-16 py-6 sm:py-10 min-h-full flex items-center justify-center">
+      <div className="px-4 sm:px-6 py-6 sm:py-10 min-h-full flex items-center justify-center">
         <div className="bg-white/10 rounded-2xl p-8 max-w-md text-center">
           <p className="text-white text-2xl font-bold mb-3">⚠️ Usuarios insuficientes</p>
           <p className="text-white/70 text-sm">
@@ -201,7 +201,7 @@ export default function CreateLoansPage() {
   }
 
   return (
-    <div className="px-4 sm:px-16 py-6 sm:py-10 min-h-full">
+    <div className="px-4 sm:px-6 py-6 sm:py-10 min-h-full">
 
       <h1 className="text-white text-sm font-semibold mb-4">
         Registro de préstamo

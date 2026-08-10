@@ -127,35 +127,46 @@ export const loansRepository = {
 
     // ── Gestión de inventario ─────────────────────────────────────────────────
 
-    /** Descuenta `amount` unidades de un consumible al crear el préstamo. */
+    /**
+     * Descuenta `amount` unidades de un consumible al crear el préstamo.
+     * Si la cantidad resultante llega a 0, el estado pasa a 'N.D' (No Disponible).
+     */
     async decrementConsumableStock(materialId, amount) {
         await pool.query(
             `UPDATE public.consumable_material
-             SET material_amount = GREATEST(material_amount - $2, 0)
+             SET material_amount = GREATEST(material_amount - $2, 0),
+                 material_state  = CASE
+                                     WHEN material_amount - $2 <= 0 THEN 'N.D'
+                                     ELSE material_state
+                                   END
              WHERE consumable_material_id = $1`,
             [materialId, amount]
         );
     },
 
-    /** Marca un devolutivo como no disponible al salir en préstamo. */
+    /**
+     * Marca un devolutivo como "En préstamo" al salir en un préstamo activo.
+     */
     async disableReturnableMaterial(materialId) {
         await pool.query(
             `UPDATE public.returnable_material
-             SET enabled = false
+             SET enabled        = false,
+                 material_state = 'En préstamo'
              WHERE returnable_material_id = $1`,
             [materialId]
         );
     },
 
     /**
-     * Restaura unidades al devolver un consumible.
+     * Restaura unidades al devolver un consumible y marca como disponible.
      * `amount` es la cantidad sobrante (leftover) reportada por el usuario.
      */
     async restoreConsumableStock(materialId, amount) {
         if (!amount || amount <= 0) return;
         await pool.query(
             `UPDATE public.consumable_material
-             SET material_amount = material_amount + $2
+             SET material_amount = material_amount + $2,
+                 material_state  = 'D'
              WHERE consumable_material_id = $1`,
             [materialId, amount]
         );
@@ -163,12 +174,13 @@ export const loansRepository = {
 
     /**
      * Actualiza el estado de un devolutivo tras su devolución física.
-     * - "Bueno" / "Dañado" → se re-habilita con el nuevo estado
-     * - "Pérdida"          → queda deshabilitado permanentemente
+     * - "Bueno" / "Dañado" → vuelve a estar Disponible (enabled = true)
+     * - "Pérdida"          → pasa a Baja y queda deshabilitado permanentemente
      */
     async restoreReturnableMaterial(materialId, state) {
-        const enabled      = state !== "Pérdida";
-        const materialState = ["Bueno", "Dañado", "Pérdida"].includes(state) ? state : "Bueno";
+        const isPerdida     = state === "Pérdida";
+        const enabled       = !isPerdida;
+        const materialState = isPerdida ? "Baja" : "Disponible";
         await pool.query(
             `UPDATE public.returnable_material
              SET enabled        = $2,
@@ -178,11 +190,15 @@ export const loansRepository = {
         );
     },
 
-    /** Vuelve a habilitar un devolutivo sin cambiar su estado (usado al cancelar). */
+    /**
+     * Vuelve a habilitar un devolutivo al cancelar el préstamo.
+     * El estado regresa a "Disponible".
+     */
     async enableReturnableMaterial(materialId) {
         await pool.query(
             `UPDATE public.returnable_material
-             SET enabled = true
+             SET enabled        = true,
+                 material_state = 'Disponible'
              WHERE returnable_material_id = $1`,
             [materialId]
         );

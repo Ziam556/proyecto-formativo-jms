@@ -226,24 +226,24 @@ export default function EditGroupPage() {
     }
 
     return (
-        <div className="min-h-full flex items-center justify-center p-4 sm:p-6">
-            <div className="bg-[linear-gradient(135deg,#700D7C_0%,#88A3C7_50%,#50E5F9_100%)] rounded-[20px] shadow-[0_8px_40px_rgba(0,0,0,0.3)] py-9 px-5 sm:px-10 w-full max-w-[1100px] relative">
+        <div className="min-h-full px-4 sm:px-6 py-5">
+            <div className="bg-[linear-gradient(135deg,#700D7C_0%,#88A3C7_50%,#50E5F9_100%)] rounded-[20px] shadow-[0_8px_40px_rgba(0,0,0,0.3)] py-7 px-5 sm:px-8 w-full max-w-[1400px] mx-auto relative">
 
                 {/* Flecha regresar */}
                 <div className="absolute top-5 left-5">
                     <BackButton to="/dashboard/config/groups" />
                 </div>
 
-                <h2 className="text-center text-white text-[1.1rem] sm:text-[1.3rem] font-bold mb-7">
+                <h2 className="text-center text-white text-[1.1rem] sm:text-[1.3rem] font-bold mb-6">
                     {activeUser
                         ? `Permiso individual — ${activeUser.user_name ?? activeUser.user_document_number}`
                         : "Editar grupo"}
                 </h2>
 
-                <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
+                <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 lg:items-start">
 
-                    {/* ── Panel izquierdo: nombre + usuarios ── */}
-                    <div className="w-full lg:w-[320px] lg:shrink-0 flex flex-col gap-4">
+                    {/* ── Panel izquierdo: nombre + usuarios (sticky en desktop) ── */}
+                    <div className="w-full lg:w-[300px] lg:shrink-0 lg:sticky lg:top-4 flex flex-col gap-4">
 
                         {/* Nombre + botón guardar */}
                         <div className="bg-[rgba(80,40,110,0.55)] rounded-[14px] p-5 flex flex-col gap-4">
@@ -332,7 +332,7 @@ export default function EditGroupPage() {
                     </div>
 
                     {/* ── Panel derecho: permisos del grupo O permisos individuales ── */}
-                    <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 content-start">
+                    <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 content-start">
                         {permModules.map(({ module, perms }) => (
                             <div key={module} className="bg-[rgba(100,80,160,0.5)] rounded-[10px] p-[14px_16px]">
                                 <p className="text-white font-bold text-[0.9rem] mb-[10px] pb-[6px] border-b border-white/20">

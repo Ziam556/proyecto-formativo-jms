@@ -23,6 +23,14 @@ const TYPE_BADGE = {
     consumable:  "bg-amber-600 text-white",
 };
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function formatDate(iso) {
+    if (!iso) return "—";
+    const d = new Date(iso);
+    return d.toLocaleDateString("es-CO", { day: "2-digit", month: "short", year: "numeric" });
+}
+
 // ── Card de cotización ────────────────────────────────────────────────────────
 
 function QuotationCard({ quotation, onDelete }) {
@@ -113,6 +121,16 @@ function QuotationCard({ quotation, onDelete }) {
             <span className={`self-start text-[0.68rem] font-semibold px-2 py-[2px] rounded-full ${TYPE_BADGE[quotation.materialType] ?? "bg-white/10 text-white/60"}`}>
                 {TYPE_LABELS[quotation.materialType] ?? quotation.materialType}
             </span>
+
+            {/* Metadatos */}
+            <div className="flex flex-col gap-[2px] mt-1 border-t border-white/10 pt-2">
+                <p className="text-white/45 text-[0.69rem] truncate">
+                    <span className="text-white/60">Subido:</span> {formatDate(quotation.uploadedAt)}
+                </p>
+                <p className="text-white/45 text-[0.69rem] truncate" title={quotation.uploadedByEmail}>
+                    <span className="text-white/60">Por:</span> {quotation.uploadedByEmail ?? "—"}
+                </p>
+            </div>
         </div>
     );
 }
@@ -363,8 +381,8 @@ export default function QuotationsPage() {
 
     // ── Eliminar cotización ────────────────────────────────────────────────
     const handleDelete = async (q) => {
-        await removeQuotation(q.materialType, q.materialId, q.filePath);
-        setQuotations((prev) => prev.filter((x) => x.id !== q.id));
+        await removeQuotation(q.quotationId);
+        setQuotations((prev) => prev.filter((x) => x.quotationId !== q.quotationId));
     };
 
     // ── Filtrado y paginación ──────────────────────────────────────────────
@@ -496,7 +514,7 @@ export default function QuotationsPage() {
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
                         {current.map((q) => (
-                            <QuotationCard key={q.id} quotation={q} onDelete={handleDelete} />
+                            <QuotationCard key={q.quotationId} quotation={q} onDelete={handleDelete} />
                         ))}
                     </div>
                 )}

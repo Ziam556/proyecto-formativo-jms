@@ -27,7 +27,7 @@ export default function ViewConsumableMaterial({ material, onCancel }) {
   const imageUrl = material.image ? `${API_BASE}/${material.image}` : null;
 
   return (
-    <div className="w-full max-w-[900px] mx-auto rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md shadow-2xl p-6">
+    <div className="w-full max-w-5xl mx-auto rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md shadow-2xl p-6">
 
       {/* HEADER */}
       <div className="flex items-center gap-3 mb-6">
