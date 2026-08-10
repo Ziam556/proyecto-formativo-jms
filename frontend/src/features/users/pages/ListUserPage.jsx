@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { getUsers, toggleUser } from "../services/userService.js";
 import { normalizeUsers } from "../utils/normalizeUser.js";
 import { ClearFiltersButton, DataTable, StatsPills, ReportDropdown, BackButton, Input, Select, BulkActionBar, alertConfirm, alertSuccess, alertError } from "@/shared";
@@ -8,6 +9,7 @@ import { generateUserReport } from "../reports/services/generateUserReport.js";
 
 // ─── Page ──────────────────────────────────────────────────────────────────
 export default function ListUserPage() {
+    const navigate = useNavigate();
 
     // Datos del backend
     const [users, setUsers]       = useState([]);
@@ -244,6 +246,7 @@ export default function ListUserPage() {
                     rowSelection={rowSelection}
                     onRowSelectionChange={setRowSelection}
                     onReportColsChange={setReportCols}
+                    onRowClick={(user) => navigate("/dashboard/userpage/visualize", { state: { user } })}
                 />
             )}
 

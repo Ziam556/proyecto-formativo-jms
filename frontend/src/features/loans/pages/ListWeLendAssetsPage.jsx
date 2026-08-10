@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { ClipboardList, Info } from "lucide-react";
 
 import {
@@ -25,6 +26,7 @@ const STATUS_OPTIONS = [
 ];
 
 export default function ListWeLendAssetsPage() {
+  const navigate = useNavigate();
 
   const [loans, setLoans]           = useState([]);
   const [loading, setLoading]       = useState(true);
@@ -227,6 +229,7 @@ export default function ListWeLendAssetsPage() {
               columns={getListLoansColumns(loadLoans)}
               rowSelection={rowSelection}
               onRowSelectionChange={setRowSelection}
+              onRowClick={(loan) => navigate("/dashboard/loans/visualize", { state: { loan } })}
             />
           </div>
         )}

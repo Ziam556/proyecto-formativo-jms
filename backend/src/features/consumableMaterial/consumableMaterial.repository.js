@@ -20,7 +20,6 @@ export const consumableMaterialRepository = {
       materialTechnicalSheet,
       materialEntryDate,
       materialInventory,
-      materialQuotations,
     } = consumableMaterialData;
 
     const query = `
@@ -40,10 +39,9 @@ export const consumableMaterialRepository = {
         material_location,
         material_technical_sheet,
         material_entry_date,
-        material_inventory,
-        material_quotations
+        material_inventory
       )
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
       RETURNING *;
     `;
 
@@ -64,7 +62,6 @@ export const consumableMaterialRepository = {
       materialTechnicalSheet ?? null,
       materialEntryDate ?? null,
       materialInventory ?? null,
-      materialQuotations ?? null,
     ];
 
     const result = await pool.query(query, values);
@@ -105,7 +102,6 @@ export const consumableMaterialRepository = {
         cm.material_technical_sheet,
         cm.material_entry_date,
         cm.material_inventory,
-        cm.material_quotations,
         cm.enabled,
         COALESCE(
           json_agg(
@@ -146,7 +142,6 @@ export const consumableMaterialRepository = {
         cm.material_technical_sheet,
         cm.material_entry_date,
         cm.material_inventory,
-        cm.material_quotations,
         cm.enabled,
         COALESCE(
           json_agg(
@@ -186,7 +181,6 @@ export const consumableMaterialRepository = {
       materialTechnicalSheet,
       materialEntryDate,
       materialInventory,
-      materialQuotations,
     } = consumableMaterialData;
 
     const sheetExpr = materialTechnicalSheet === undefined
@@ -213,8 +207,7 @@ export const consumableMaterialRepository = {
         enabled                  = $13,
         material_entry_date      = $14,
         material_technical_sheet = ${sheetExpr},
-        material_inventory       = $17,
-        material_quotations      = COALESCE($18, material_quotations)
+        material_inventory       = $17
       WHERE consumable_material_id = $16
       RETURNING consumable_material_id;
     `;
@@ -237,7 +230,6 @@ export const consumableMaterialRepository = {
       materialTechnicalSheet !== "" ? (materialTechnicalSheet ?? null) : null,
       id,
       materialInventory ?? null,
-      materialQuotations ?? null,
     ];
 
     const result = await pool.query(query, values);

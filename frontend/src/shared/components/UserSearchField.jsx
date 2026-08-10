@@ -25,6 +25,7 @@ export default function UserSearchField({
     error,
     placeholder  = "Buscar por nombre o documento...",
     labelVariant = "light",
+    fieldVariant = "dark",
 }) {
     const [users, setUsers] = useState([]);
 
@@ -44,6 +45,7 @@ export default function UserSearchField({
             error={error}
             placeholder={placeholder}
             labelVariant={labelVariant}
+            fieldVariant={fieldVariant}
         />
     );
 }

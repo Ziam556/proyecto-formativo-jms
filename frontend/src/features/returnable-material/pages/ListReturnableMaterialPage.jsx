@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { getReturnableMaterials, toggleReturnableMaterial } from "../services/returnableMaterialService.js";
 import { normalizeReturnableMaterials } from "../utils/normalizeReturnableMaterial.js";
 import { translateStatesInList } from "@/shared/utils/stateLabels.js";
@@ -22,6 +23,7 @@ const STATE_DOT = {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function ListReturnableMaterialPage() {
+  const navigate = useNavigate();
 
   // Datos del backend
   const [returnableMaterials, setReturnableMaterials] = useState([]);
@@ -323,6 +325,7 @@ export default function ListReturnableMaterialPage() {
           rowSelection={rowSelection}
           onRowSelectionChange={setRowSelection}
           onReportColsChange={setReportCols}
+          onRowClick={(material) => navigate("/dashboard/returnable-material/visualize", { state: { material } })}
         />
       )}
 

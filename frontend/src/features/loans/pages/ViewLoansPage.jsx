@@ -8,7 +8,7 @@ export default function ViewLoansPage() {
   const loan      = location.state?.loan ?? null;
 
   return (
-    <div className="min-h-full px-6 py-5">
+    <div className="min-h-full px-6 py-3">
       <ViewLoans
         loan={loan}
         onCancel={() => navigate("/dashboard/loans")}

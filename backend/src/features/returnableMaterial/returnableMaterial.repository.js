@@ -25,7 +25,6 @@ export const returnableMaterialRepository = {
       materialDepth,
       materialEntryDate,
       materialInventory,
-      materialQuotations,
     } = data;
 
     const query = `
@@ -50,10 +49,9 @@ export const returnableMaterialRepository = {
         material_length,
         material_depth,
         material_entry_date,
-        material_inventory,
-        material_quotations
+        material_inventory
       )
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21)
       RETURNING returnable_material_id, material_element_name;
     `;
 
@@ -66,7 +64,6 @@ export const returnableMaterialRepository = {
       materialWidth, materialLength, materialDepth,
       materialEntryDate ?? null,
       materialInventory ?? null,
-      materialQuotations ?? null,
     ];
 
     const result = await pool.query(query, values);
@@ -113,7 +110,6 @@ export const returnableMaterialRepository = {
         rm.material_purchase_date,
         rm.material_entry_date,
         rm.material_inventory,
-        rm.material_quotations,
         rm.enabled,
         COALESCE(
           json_agg(
@@ -160,7 +156,6 @@ export const returnableMaterialRepository = {
         rm.material_purchase_date,
         rm.material_entry_date,
         rm.material_inventory,
-        rm.material_quotations,
         rm.enabled,
         COALESCE(
           json_agg(
@@ -211,7 +206,7 @@ export const returnableMaterialRepository = {
       materialAmount, materialUnitValue, materialTotalValue,
       materialState, materialDescription, materialLocation,
       materialWidth, materialLength, materialDepth, isEnabled,
-      materialInventory, materialQuotations,
+      materialInventory,
     } = data;
 
     const query = `
@@ -236,8 +231,7 @@ export const returnableMaterialRepository = {
         enabled                  = $18,
         material_purchase_date   = $19,
         material_entry_date      = $20,
-        material_inventory       = $22,
-        material_quotations      = COALESCE($23, material_quotations)
+        material_inventory       = $22
       WHERE returnable_material_id = $21
       RETURNING returnable_material_id;
     `;
@@ -253,7 +247,6 @@ export const returnableMaterialRepository = {
       materialPurchaseDate || null, materialEntryDate || null,
       id,
       materialInventory ?? null,
-      materialQuotations ?? null,
     ];
 
     const result = await pool.query(query, values);

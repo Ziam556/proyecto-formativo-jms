@@ -79,13 +79,8 @@ export default function ViewConsumableMaterial({ material: initialMaterial, onCa
     : "";
 
   return (
-    <div className="min-h-full px-6 py-5">
-    <div className="
-      w-full max-w-[900px] mx-auto
-      rounded-2xl border border-white/10
-      bg-white/10 backdrop-blur-md
-      shadow-2xl p-6
-    ">
+    <div className="min-h-full px-6 py-3">
+    <div className="w-full max-w-5xl mx-auto rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md shadow-2xl p-6">
 
       {/* HEADER */}
       <div className="flex items-center gap-3 mb-6">
@@ -166,46 +161,57 @@ export default function ViewConsumableMaterial({ material: initialMaterial, onCa
 
           <div className="w-full h-px bg-white/20 mb-5" />
 
-          {/* IDENTIFICACIÓN */}
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-white font-semibold">IDENTIFICACIÓN</span>
-            <div className="flex-1 h-px bg-white/20" />
-          </div>
-          <div className="flex flex-wrap gap-4 mb-6">
-            <Field label="SN"         value={material.id} />
-            <Field label="Placa SENA" value={material.plateSena} />
-          </div>
+          {/* SECCIONES EN 2 COLUMNAS EN DESKTOP */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8">
 
-          {/* PRODUCTO */}
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-white font-semibold">Producto</span>
-            <div className="flex-1 h-px bg-white/20" />
-          </div>
-          <div className="flex flex-wrap gap-4 mb-6">
-            <Field label="Marca"        value={material.brand} />
-            <Field label="Cantidad"     value={`${material.amount} und`} />
-            <Field label="Fecha compra" value={formatDate(material.purchaseDate)} />
-          </div>
+            {/* COLUMNA IZQUIERDA */}
+            <div>
+              {/* IDENTIFICACIÓN */}
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-white font-semibold">IDENTIFICACIÓN</span>
+                <div className="flex-1 h-px bg-white/20" />
+              </div>
+              <div className="flex flex-wrap gap-3 mb-5">
+                <Field label="SN"         value={material.id} />
+                <Field label="Placa SENA" value={material.plateSena} />
+              </div>
 
-          {/* VALORACIÓN */}
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-white font-semibold">Valoración</span>
-            <div className="flex-1 h-px bg-white/20" />
-          </div>
-          <div className="flex flex-wrap gap-4 mb-6">
-            <Field label="Valor unitario" value={unitValue} />
-            <Field label="Valor total"    value={totalValue} />
-          </div>
+              {/* PRODUCTO */}
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-white font-semibold">PRODUCTO</span>
+                <div className="flex-1 h-px bg-white/20" />
+              </div>
+              <div className="flex flex-wrap gap-3 mb-5">
+                <Field label="Marca"        value={material.brand} />
+                <Field label="Cantidad"     value={`${material.amount} und`} />
+                <Field label="Fecha compra" value={formatDate(material.purchaseDate)} />
+              </div>
+            </div>
 
-          {/* ASIGNACIÓN Y UBICACIÓN */}
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-white font-semibold">Asignación y Ubicación</span>
-            <div className="flex-1 h-px bg-white/20" />
-          </div>
-          <div className="flex flex-wrap gap-4 mb-8">
-            <Field label="Estado"      value={material.state} />
-            <Field label="Cuentadante" value={material.accountHolder} />
-            <Field label="Ubicación"   value={material.location} />
+            {/* COLUMNA DERECHA */}
+            <div>
+              {/* VALORACIÓN */}
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-white font-semibold">VALORACIÓN</span>
+                <div className="flex-1 h-px bg-white/20" />
+              </div>
+              <div className="flex flex-wrap gap-3 mb-5">
+                <Field label="Valor unitario" value={unitValue} />
+                <Field label="Valor total"    value={totalValue} />
+              </div>
+
+              {/* ASIGNACIÓN Y UBICACIÓN */}
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-white font-semibold">ASIGNACIÓN Y UBICACIÓN</span>
+                <div className="flex-1 h-px bg-white/20" />
+              </div>
+              <div className="flex flex-wrap gap-3 mb-5">
+                <Field label="Estado"      value={material.state} />
+                <Field label="Cuentadante" value={material.accountHolder} />
+                <Field label="Ubicación"   value={material.location} />
+              </div>
+            </div>
+
           </div>
 
           {/* BOTÓN EDITAR */}

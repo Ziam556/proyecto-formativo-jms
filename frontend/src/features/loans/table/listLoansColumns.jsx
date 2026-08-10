@@ -172,14 +172,6 @@ function AccionesCell({ row, onRefresh }) {
             </DropdownItem>
           )}
 
-          {activo && (
-            <DropdownItem onClick={handleCancel} className="text-red-400 hover:text-red-300">
-              <span className="inline-flex items-center gap-[5px]">
-                <Ban size={13} />
-                Cancelar
-              </span>
-            </DropdownItem>
-          )}
         </DropdownContent>
       </Dropdown>
     </div>

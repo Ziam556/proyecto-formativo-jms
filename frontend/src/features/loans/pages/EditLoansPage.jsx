@@ -30,14 +30,21 @@ export default function EditLoansPage() {
     materiales:      src?.materiales    ?? [],
   });
 
-  const [formData, setFormData] = useState(() => buildFormData(loanState));
-  const [loading, setLoading]   = useState(false);
+  const [formData,    setFormData]    = useState(null);
+  const [loading,     setLoading]     = useState(false);
+  const [dataReady,   setDataReady]   = useState(false);
 
   useEffect(() => {
-    if (!loanId) return;
+    if (!loanId) { setDataReady(false); return; }
     setLoading(true);
+    setDataReady(false);
     getLoanById(loanId)
       .then((loan) => {
+        if (!loan || !loan.id) {
+          alertError("No encontrado", `No se encontró ningún préstamo con ID "${loanId}".`);
+          setLoanId(null);
+          return;
+        }
         if (loan.status === "devuelto" || loan.status === "cancelado") {
           alertError(
             "Préstamo no editable",
@@ -59,6 +66,7 @@ export default function EditLoansPage() {
             ? loan.materiales
             : (loanState?.materiales ?? []),
         });
+        setDataReady(true);
       })
       .catch(() => {
         alertError("No encontrado", `No se encontró ningún préstamo con ID "${loanId}".`);
@@ -128,6 +136,15 @@ export default function EditLoansPage() {
             </Button>
           </div>
         </div>
+      </div>
+    );
+  }
+
+  // Mientras el fetch corre (loanId está puesto pero datos aún no listos)
+  if (loanId && (loading || !dataReady)) {
+    return (
+      <div className="min-h-full flex items-center justify-center">
+        <p className="text-white/60 text-sm animate-pulse">Cargando préstamo #{loanId}…</p>
       </div>
     );
   }

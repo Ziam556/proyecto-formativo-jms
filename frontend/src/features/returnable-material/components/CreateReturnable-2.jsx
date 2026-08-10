@@ -35,7 +35,7 @@ export default function CreateReturnable2({ formData, onNext, onBack }) {
   };
 
   return (
-    <div className="grid grid-cols-[320px_320px] gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-2xl mx-auto">
       <BrandSearchField
         label="Marca (opcional)"
         value={fields.materialBrand}

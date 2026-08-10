@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { getConsumableMaterials, toggleConsumableMaterial } from "../services/consumableMaterialService.js";
 import { normalizeConsumableMaterials } from "../utils/normalizeConsumableMaterial.js";
@@ -38,6 +39,7 @@ const STATE_DOT = {
 };
 
 export default function ListConsumableMaterialPage() {
+  const navigate = useNavigate();
 
   // 📦 DATOS REALES (antes: import { consumableMaterials } from "../data/ConsumableMaterials.js")
   const [consumableMaterials, setConsumableMaterials] = useState([]);
@@ -383,6 +385,7 @@ export default function ListConsumableMaterialPage() {
               rowSelection={rowSelection}
               onRowSelectionChange={setRowSelection}
               onReportColsChange={setReportCols}
+              onRowClick={(material) => navigate("/dashboard/consumable-material/visualize", { state: { material } })}
             />
           )}
 
