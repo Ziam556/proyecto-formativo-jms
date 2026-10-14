@@ -19,6 +19,10 @@ export const userService = {
     const existing = await userRepository.findByEmail(data.userEmail);
     if (existing) throw new Error(`El correo ${data.userEmail} ya está registrado`);
 
+    // Validar que el número de documento no esté ya registrado
+    const existingDoc = await userRepository.findUserIdByDocument(data.userDocumentNumber);
+    if (existingDoc) throw new Error(`El número de documento ${data.userDocumentNumber} ya está registrado`);
+
     const plainPassword = data.userPassword; // guardar antes de hashear para el correo
     const hashedPassword = await bcrypt.hash(plainPassword, 10);
     const userData = { ...data, userPassword: hashedPassword };
@@ -137,7 +141,9 @@ export const userService = {
     const updated = await userRepository.update(documentNumber, updateData);
     if (!updated) throw new Error("Usuario no encontrado");
 
-    const userId = await userRepository.findUserIdByDocument(documentNumber);
+    // Usar el nuevo número de documento (puede haber cambiado en el formulario)
+    const newDocumentNumber = updateData.userDocumentNumber || documentNumber;
+    const userId = await userRepository.findUserIdByDocument(newDocumentNumber);
     if (userId) {
       // ── Sincronizar teléfonos ────────────────────────────────────────────
       const phones = [

@@ -70,7 +70,7 @@ export function generateLoansExcelReport({
   XLSX.utils.book_append_sheet(
     workbook,
     worksheet,
-    "Prestamos"
+    "Préstamos"
   );
 
   // Descargar archivo

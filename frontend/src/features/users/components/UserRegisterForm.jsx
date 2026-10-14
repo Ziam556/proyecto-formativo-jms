@@ -71,7 +71,11 @@ export default function UserRegisterForm({ onCancel }) {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        // El campo de nombre solo acepta letras (incluyendo tildes) y espacios
+        const cleaned = name === "userName"
+            ? value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]/g, "")
+            : value;
+        setFormData((prev) => ({ ...prev, [name]: cleaned }));
     };
 
     const handleImageChange = (file) => {
@@ -203,7 +207,7 @@ export default function UserRegisterForm({ onCancel }) {
                 <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="w-full">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 
-                        <Input labelVariant="dark" label="Nombre" name="userName" placeholder="Ingresar su nombre" value={formData.userName} onChange={handleChange} error={errors.userName} required />
+                        <Input labelVariant="dark" label="Nombre" name="userName" placeholder="Ingrese su nombre" value={formData.userName} onChange={handleChange} error={errors.userName} required />
 
                         <Select labelVariant="dark" label="Tipo de documento" name="userDocumentType" value={formData.userDocumentType} options={documentTypes} onChange={handleChange} error={errors.userDocumentType} placeholder="Tipo de documento" required />
                         <Input labelVariant="dark" label="Correo electrónico" name="userEmail" type="email" placeholder="Ingrese su correo" value={formData.userEmail} onChange={handleChange} error={errors.userEmail} required />

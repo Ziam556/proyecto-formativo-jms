@@ -97,7 +97,7 @@ export default function ListUserPage() {
         const count = targets.length;
         const confirm = await alertConfirm(
             `¿${accion.charAt(0).toUpperCase() + accion.slice(1)} ${count} usuario(s)?`,
-            `Se ${accion}n ${count} usuario(s) seleccionado(s).`
+            `Se ${targetEnabled ? "habilitarán" : "deshabilitarán"} ${count} usuario(s) seleccionado(s).`
         );
         if (!confirm.isConfirmed) return;
         try {

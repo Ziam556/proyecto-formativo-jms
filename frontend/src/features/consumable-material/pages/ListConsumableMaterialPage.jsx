@@ -193,7 +193,7 @@ export default function ListConsumableMaterialPage() {
     const count = targets.length;
     const confirm = await alertConfirm(
       `¿${accion.charAt(0).toUpperCase() + accion.slice(1)} ${count} material(es)?`,
-      `Se ${accion}n ${count} material(es) de consumo seleccionado(s).`
+      `Se ${targetEnabled ? "habilitarán" : "deshabilitarán"} ${count} material(es) de consumo seleccionado(s).`
     );
     if (!confirm.isConfirmed) return;
     try {
