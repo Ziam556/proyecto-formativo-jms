@@ -71,7 +71,11 @@ export default function UserEditForm({ initialUser, userImage, isEnabled, onCanc
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        // El campo de nombre solo acepta letras (incluyendo tildes) y espacios
+        const cleaned = name === "userName"
+            ? value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]/g, "")
+            : value;
+        setFormData((prev) => ({ ...prev, [name]: cleaned }));
     };
 
     const handleGroupConfirm = (groupId) => {
@@ -182,7 +186,7 @@ export default function UserEditForm({ initialUser, userImage, isEnabled, onCanc
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="w-full">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 
-                    <Input labelVariant="light" label="Nombre" name="userName" placeholder="Ingresar nombre" value={formData.userName} onChange={handleChange} error={errors.userName} required />
+                    <Input labelVariant="light" label="Nombre" name="userName" placeholder="Ingrese su nombre" value={formData.userName} onChange={handleChange} error={errors.userName} required />
                     <Input labelVariant="light" label="Confirmación de correo electrónico" name="userEmailVerification" type="email" placeholder="Confirme su correo" value={formData.userEmailVerification} onChange={handleChange} error={errors.userEmailVerification} required />
 
                     <Select labelVariant="light" label="Tipo de documento" name="userDocumentType" value={formData.userDocumentType} options={documentTypes} onChange={handleChange} error={errors.userDocumentType} placeholder="Tipo de documento" required />

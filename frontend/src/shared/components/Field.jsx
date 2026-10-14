@@ -6,7 +6,7 @@ export default function Field({ label, value }) {
             <span className="text-black/50 text-xs font-semibold uppercase tracking-wide">
                 {label}
             </span>
-            <p className="text-black font-medium mt-[2px]">{value ?? "—"}</p>
+            <p className="text-black font-medium mt-[2px] break-all">{value ?? "—"}</p>
         </div>
     );
 }

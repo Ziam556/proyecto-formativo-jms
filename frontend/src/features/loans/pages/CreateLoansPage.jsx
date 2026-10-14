@@ -70,7 +70,7 @@ export default function CreateLoansPage() {
         materialType: m.materialtype,
         amount:       m.materialtype === "M.C"
           ? (parseInt(details.amount) || 1)
-          : null,
+          : 1,
         deliveryDate: m.materialtype === "M.D" && details.deliveryDate
           ? new Date(details.deliveryDate).toISOString().split("T")[0]
           : null,
@@ -207,7 +207,7 @@ export default function CreateLoansPage() {
         Registro de préstamo
       </h1>
 
-      <div className="flex flex-col sm:flex-row bg-white/10 rounded-2xl overflow-hidden">
+      <div className="flex flex-col sm:flex-row bg-white/10 rounded-2xl">
 
         {/* ── STEPPER ─────────────────────────────────────────── */}
         <div className="sm:w-[280px] flex-shrink-0 p-4 sm:p-8 flex flex-col">

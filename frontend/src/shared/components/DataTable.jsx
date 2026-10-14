@@ -13,6 +13,98 @@ import { formatDate } from "../utils/formatDate";
 const formatCurrency = (v) =>
     Number(v).toLocaleString("es-CO", { minimumFractionDigits: 0 });
 
+function formatCellValue(col, row) {
+    const value = col.accessor ? row[col.accessor] : null;
+    if (col.format === "currency") return formatCurrency(value);
+    if (col.format === "date")     return formatDate(value);
+    if (col.format === "state")    return <StateChip value={value} />;
+    if (col.format === "link") {
+        if (!value) return <span className="text-[0.78rem] text-[#9ca3af]">—</span>;
+        const href = value.startsWith("http") ? value : `http://localhost:4000/${value}`;
+        return (
+            <a href={href} target="_blank" rel="noreferrer"
+               className="text-[#2563eb] underline text-[0.82rem]" onClick={(e) => e.stopPropagation()}>
+                Ver ficha
+            </a>
+        );
+    }
+    if (col.renderCell) return col.renderCell(row);
+    return value ?? "—";
+}
+
+// ── Vista móvil: tarjeta por fila ───────────────────────────────────────────
+function MobileCards({ data, colDefs, pageRows, rowSelection, onRowSelectionChange, onRowClick }) {
+    const dataCols  = colDefs.filter((c) => c.id !== "actions");
+    const actionCol = colDefs.find((c) => c.id === "actions");
+
+    // Primera columna de texto = título de la card
+    const titleCol  = dataCols.find((c) => !c.format) ?? dataCols[0];
+    // Columna de estado
+    const stateCol  = dataCols.find((c) => c.format === "state");
+    // Resto de columnas (sin título ni estado)
+    const restCols  = dataCols.filter((c) => c.id !== titleCol?.id && c.id !== stateCol?.id);
+
+    return (
+        <div className="flex flex-col gap-3">
+            {pageRows.length === 0 && (
+                <p className="text-center text-[0.85rem] text-[#9ca3af] py-6">Sin resultados</p>
+            )}
+            {pageRows.map((row, i) => {
+                const original = row.original;
+                const isSelected = rowSelection[row.id] ?? false;
+                return (
+                    <div
+                        key={row.id}
+                        onClick={() => onRowClick?.(original)}
+                        className={`rounded-xl border border-[#bdbdbd] bg-[#E9E9E9] p-3 shadow-sm transition-colors ${onRowClick ? "cursor-pointer active:bg-[#c9c0e8]" : ""} ${isSelected ? "ring-2 ring-[#7c3aed]" : ""}`}
+                    >
+                        {/* Cabecera de la card: checkbox + título + estado */}
+                        <div className="flex items-start gap-2 mb-2">
+                            <div onClick={(e) => e.stopPropagation()}>
+                                <Checkbox
+                                    checked={isSelected}
+                                    onChange={row.getToggleSelectedHandler()}
+                                />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="font-semibold text-[0.85rem] text-[#1e1b4b] truncate">
+                                    {titleCol ? formatCellValue(titleCol, original) : "—"}
+                                </p>
+                            </div>
+                            {stateCol && (
+                                <div className="shrink-0">
+                                    {formatCellValue(stateCol, original)}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Campos en grid 2 columnas */}
+                        <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-[0.78rem]">
+                            {restCols.map((col) => (
+                                <div key={col.id} className="min-w-0">
+                                    <span className="text-[#6b7280] font-medium">{col.label}: </span>
+                                    <span className="text-[#3D3D3D] break-words">
+                                        {formatCellValue(col, original)}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Acciones al pie */}
+                        {actionCol && (
+                            <div className="mt-2 pt-2 border-t border-[#d5d5d5] flex justify-end"
+                                 onClick={(e) => e.stopPropagation()}>
+                                {actionCol.renderCell(original)}
+                            </div>
+                        )}
+                    </div>
+                );
+            })}
+        </div>
+    );
+}
+
+// ── Componente principal ─────────────────────────────────────────────────────
 export default function DataTable({
     data = [],
     columns: colDefs = [],
@@ -37,14 +129,9 @@ export default function DataTable({
     const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: initialPageSize });
     const [internalRowSelection, setInternalRowSelection] = useState({});
 
-    const rowSelection = externalRowSelection ?? internalRowSelection;
+    const rowSelection        = externalRowSelection        ?? internalRowSelection;
     const onRowSelectionChange = externalOnRowSelectionChange ?? setInternalRowSelection;
 
-    // Normaliza los anchos declarados en % para que, junto con la columna de
-    // selección, nunca sumen más del 100% del contenedor. Así ningún módulo
-    // (usuarios, préstamos, consumibles, devolutivos...) fuerza scroll
-    // horizontal solo por tener más columnas o por definir porcentajes que,
-    // sumados, se pasaban del ancho disponible.
     const SELECT_WIDTH_PERCENT = 4;
     const definedPercents = colDefs
         .map((c) => (typeof c.width === "string" && c.width.trim().endsWith("%") ? parseFloat(c.width) : null))
@@ -77,39 +164,39 @@ export default function DataTable({
                 ? `${(parseFloat(col.width) * scale).toFixed(2)}%`
                 : col.width;
             return {
-            id: col.id,
-            accessorKey: col.accessor ?? undefined,
-            size: col.width ? undefined : undefined,
-            meta: { width: normalizedWidth },
-            header: () => col.noToggle
-                ? <span style={{ fontSize: "0.8rem", fontWeight: 600 }}>{col.label}</span>
-                : (
-                <ColumnToggle
-                    label={col.label}
-                    active={reportCols[col.id]}
-                    onChange={(val) =>
-                        setReportCols((prev) => ({ ...prev, [col.id]: val }))
+                id: col.id,
+                accessorKey: col.accessor ?? undefined,
+                meta: { width: normalizedWidth },
+                header: () => col.noToggle
+                    ? <span style={{ fontSize: "0.8rem", fontWeight: 600 }}>{col.label}</span>
+                    : (
+                        <ColumnToggle
+                            label={col.label}
+                            active={reportCols[col.id]}
+                            onChange={(val) =>
+                                setReportCols((prev) => ({ ...prev, [col.id]: val }))
+                            }
+                        />
+                    ),
+                cell: ({ row }) => {
+                    if (col.renderCell) return col.renderCell(row.original);
+                    const value = col.accessor ? row.original[col.accessor] : null;
+                    if (col.format === "currency") return formatCurrency(value);
+                    if (col.format === "state")    return <StateChip value={value} />;
+                    if (col.format === "date")     return formatDate(value);
+                    if (col.format === "link") {
+                        if (!value) return <span className="text-[0.78rem] text-[#9ca3af]">—</span>;
+                        const href = value.startsWith("http") ? value : `http://localhost:4000/${value}`;
+                        return (
+                            <a href={href} target="_blank" rel="noreferrer"
+                               className="text-[#93c5fd] underline text-[0.82rem]">
+                                Ver ficha
+                            </a>
+                        );
                     }
-                />
-            ),
-            cell: ({ row }) => {
-                if (col.renderCell) return col.renderCell(row.original);
-                const value = col.accessor ? row.original[col.accessor] : null;
-                if (col.format === "currency") return formatCurrency(value);
-                if (col.format === "state")    return <StateChip value={value} />;
-                if (col.format === "date")     return formatDate(value);
-                if (col.format === "link") {
-                    if (!value) return <span className="text-[0.78rem] text-[#9ca3af]">—</span>;
-                    const href = value.startsWith("http") ? value : `http://localhost:4000/${value}`;
-                    return (
-                        <a href={href} target="_blank" rel="noreferrer" className="text-[#93c5fd] underline text-[0.82rem]">
-                            Ver ficha
-                        </a>
-                    );
-                }
-                return value ?? "—";
-            },
-        };
+                    return value ?? "—";
+                },
+            };
         }),
     ], [colDefs, reportCols, scale]);
 
@@ -126,12 +213,13 @@ export default function DataTable({
 
     const { pageIndex, pageSize } = table.getState().pagination;
     const totalRows = data.length;
-    const fromRow = totalRows === 0 ? 0 : pageIndex * pageSize + 1;
-    const toRow   = Math.min((pageIndex + 1) * pageSize, totalRows);
+    const fromRow   = totalRows === 0 ? 0 : pageIndex * pageSize + 1;
+    const toRow     = Math.min((pageIndex + 1) * pageSize, totalRows);
 
     return (
         <>
-            <div className="overflow-x-auto rounded-xl border border-[#bdbdbd] bg-[#E9E9E9] -mx-1 sm:mx-0">
+            {/* ── Vista DESKTOP: tabla ── */}
+            <div className="hidden md:block overflow-x-auto rounded-xl border border-[#bdbdbd] bg-[#E9E9E9]">
                 <table className="border-collapse w-full table-fixed">
                     <thead>
                         {table.getHeaderGroups().map((hg) => (
@@ -176,7 +264,8 @@ export default function DataTable({
                                                 onClick={isInteractive ? (e) => e.stopPropagation() : undefined}
                                                 className="p-[8px_10px] text-[0.82rem] text-[#3D3D3D] border-b border-[#d5d5d5]"
                                             >
-                                                <div className="truncate" style={{ maxWidth: "100%" }} title={typeof cell.getValue() === "string" ? cell.getValue() : undefined}>
+                                                <div className="truncate" style={{ maxWidth: "100%" }}
+                                                     title={typeof cell.getValue() === "string" ? cell.getValue() : undefined}>
                                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                                 </div>
                                             </td>
@@ -189,7 +278,20 @@ export default function DataTable({
                 </table>
             </div>
 
-            <div className="flex items-center justify-center gap-3 mt-4 text-[#e2e8f0] text-[0.85rem]">
+            {/* ── Vista MÓVIL: cards ── */}
+            <div className="md:hidden">
+                <MobileCards
+                    data={data}
+                    colDefs={colDefs}
+                    pageRows={table.getRowModel().rows}
+                    rowSelection={rowSelection}
+                    onRowSelectionChange={onRowSelectionChange}
+                    onRowClick={onRowClick}
+                />
+            </div>
+
+            {/* ── Paginación ── */}
+            <div className="flex items-center justify-center gap-3 mt-4 text-[#e2e8f0] text-[0.85rem] flex-wrap">
                 <span>Página</span>
                 <select
                     value={pageSize}

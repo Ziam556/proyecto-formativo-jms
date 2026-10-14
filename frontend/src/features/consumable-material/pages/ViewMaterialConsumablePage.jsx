@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { BackButton, Field, Input, Button } from "@/shared";
 import { formatDate } from "@/shared/utils/formatDate";
 import { getConsumableMaterials } from "../services/consumableMaterialService";
@@ -11,7 +11,7 @@ const API_BASE = "http://localhost:4000";
 const STATE_CLASS = {
   Disponible:      "bg-green-600",
   "No disponible": "bg-yellow-600",
-  Prestamo:        "bg-blue-600",
+  "En préstamo":   "bg-blue-600",
   Baja:            "bg-red-600",
   Traslado:        "bg-purple-600",
   Mantenimiento:   "bg-gray-500",
@@ -21,6 +21,7 @@ const STATE_CLASS = {
 export default function ViewConsumableMaterial({ material: initialMaterial, onCancel }) {
 
   const { state } = useLocation();
+  const navigate  = useNavigate();
   const [searchId, setSearchId]         = useState("");
   const [material, setMaterial]         = useState(initialMaterial ?? state?.material ?? null);
   const [notFound, setNotFound]         = useState(false);
@@ -216,7 +217,11 @@ export default function ViewConsumableMaterial({ material: initialMaterial, onCa
 
           {/* BOTÓN EDITAR */}
           <div className="flex justify-end">
-            <Button variant="secondary" size="sm" onClick={onCancel}>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => navigate("/dashboard/consumable-material/edit", { state: { materialId: material.id } })}
+            >
               Editar
             </Button>
           </div>
