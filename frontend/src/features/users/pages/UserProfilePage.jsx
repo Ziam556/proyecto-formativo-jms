@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import ChangePasswordModal from "../components/ChangePasswordModal";
 import { useNavigate } from "react-router-dom";
 import {
   User,
@@ -51,9 +52,10 @@ function InfoRow({ icon: Icon, value }) {
 export default function UserProfilePage() {
   const navigate = useNavigate();
 
-  const [user, setUser]       = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState(null);
+  const [user, setUser]           = useState(null);
+  const [loading, setLoading]     = useState(true);
+  const [error, setError]         = useState(null);
+  const [showChangePass, setShowChangePass] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -124,9 +126,9 @@ export default function UserProfilePage() {
 
               {/* Botones de acción (2 × 2) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-                <ActionBtn icon={Lock}     label="Cambiar contraseña" onClick={() => {}} />
+                <ActionBtn icon={Lock}     label="Cambiar contraseña" onClick={() => setShowChangePass(true)} />
                 <ActionBtn icon={Settings} label="Configuración"      onClick={() => navigate("/dashboard/config")} />
-                <ActionBtn icon={Pencil}   label="Editar perfil"      onClick={() => navigate("/dashboard/userpage/edit", { state: { user } })} />
+                <ActionBtn icon={Pencil}   label="Editar perfil"      onClick={() => navigate("/dashboard/userpage/profile/edit")} />
                 <ActionBtn icon={LogOut}   label="Cerrar sesión"      onClick={() => handleLogout(navigate)} danger />
               </div>
 
@@ -148,6 +150,13 @@ export default function UserProfilePage() {
         </div>{/* fin capa 2 */}
       </div>{/* fin capa 1 */}
 
+      {/* Modal cambiar contraseña */}
+      {showChangePass && user && (
+        <ChangePasswordModal
+          email={user.user_email}
+          onClose={() => setShowChangePass(false)}
+        />
+      )}
     </div>
   );
 }

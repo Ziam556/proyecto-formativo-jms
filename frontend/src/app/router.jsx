@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { AuthLayout, DashboardLayout, ProtectedRoute, PermissionRoute } from "@/shared";
 import { Login, ForgotPasswordPage, ForceChangePasswordPage } from "@/features/auth";
-import { UserPage, CreateUserPage, ListUserPage, ViewUserPage, EditUserPage, UserProfilePage } from "@/features/users";
+import { UserPage, CreateUserPage, ListUserPage, ViewUserPage, EditUserPage, UserProfilePage, EditProfilePage } from "@/features/users";
 import { HomePage } from "@/features/home";
 import { ConfigPage } from "@/features/config";
 import { GroupsListPage, CreateGroupPage, EditGroupPage, AddUsersToGroupPage } from "@/features/groups";
@@ -44,7 +44,8 @@ const router = createBrowserRouter([
         children: [
             { index: true, element: <Navigate to="/dashboard/home" replace /> },
             { path: "home",              element: <HomePage /> },
-            { path: "userpage/profile",  element: <UserProfilePage /> },
+            { path: "userpage/profile",        element: <UserProfilePage /> },
+            { path: "userpage/profile/edit",   element: <EditProfilePage /> },
             { path: "mis-tareas",        element: <MisTareasPage /> },
             { path: "quotations",        element: p(["list_quotation","create_quotation","delete_quotation"], <QuotationsPage />) },
 

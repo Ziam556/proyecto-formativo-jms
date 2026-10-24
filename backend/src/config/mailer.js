@@ -1,8 +1,9 @@
 // Configuración compartida de Nodemailer (Gmail App Password)
+// Las credenciales se leen desde variables de entorno (.env) — nunca hardcodear aquí.
 import nodemailer from "nodemailer";
 
-export const MAIL_USER = "sc876858@gmail.com";
-const MAIL_PASS = "jhqocfbwjqxxdgnq";
+export const MAIL_USER = process.env.MAIL_USER;
+const MAIL_PASS        = process.env.MAIL_PASS;
 
 export const transporter = nodemailer.createTransport({
     service: "gmail",
