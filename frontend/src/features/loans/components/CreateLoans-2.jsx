@@ -104,7 +104,7 @@ export default function CreateLoans2({ formData, onNext, onBack }) {
           />
 
           <Select
-            label="Tipo de préstamo *"
+            label="Tipo de préstamo"
             name="loanType"
             value={fields.loanType}
             options={LOAN_TYPE_OPTIONS}
@@ -215,11 +215,12 @@ export default function CreateLoans2({ formData, onNext, onBack }) {
         {/* JUSTIFICACIÓN */}
         <div className="mb-8">
           <Textarea
-            label="Justificación de uso *"
+            label="Justificación de uso"
             placeholder="Describe el uso que se dará a los materiales"
             rows={4}
             value={fields.justificationForUse}
             onChange={(e) => setFields((p) => ({ ...p, justificationForUse: e.target.value }))}
+            required
           />
         </div>
 
