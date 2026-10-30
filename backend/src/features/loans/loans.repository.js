@@ -11,14 +11,15 @@ export const loansRepository = {
             requestingUser,
             verificationCode,
             loanType,
+            notificationEmail,
         } = loanData;
 
         const result = await pool.query(
             `INSERT INTO public.loans
-                (file_group, amount, departure_date, delivery_date, justification, requesting_user, verification_code, loan_type)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                (file_group, amount, departure_date, delivery_date, justification, requesting_user, verification_code, loan_type, notification_email)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
              RETURNING *`,
-            [fileGroup, amount, departureDate, deliveryDate, justification, requestingUser, verificationCode, loanType ?? "interno"]
+            [fileGroup, amount, departureDate, deliveryDate, justification, requestingUser, verificationCode, loanType ?? "interno", notificationEmail ?? null]
         );
 
         return result.rows[0];
@@ -59,6 +60,7 @@ export const loansRepository = {
         const result = await pool.query(
             `SELECT
                 l.*,
+                u.user_document_number,
                 COALESCE(
                     JSON_AGG(
                         JSON_BUILD_OBJECT(
@@ -71,7 +73,10 @@ export const loansRepository = {
                 ) AS materiales
              FROM public.loans l
              LEFT JOIN public.loan_items li ON li.loan_id = l.loan_id
-             GROUP BY l.loan_id
+             LEFT JOIN public.users u
+                ON u.user_name = l.requesting_user
+                OR u.user_document_number::text = l.requesting_user
+             GROUP BY l.loan_id, u.user_document_number
              ORDER BY l.created_at DESC`
         );
         return result.rows;
@@ -79,7 +84,12 @@ export const loansRepository = {
 
     async findById(loanId) {
         const loan = await pool.query(
-            `SELECT * FROM public.loans WHERE loan_id = $1`,
+            `SELECT l.*, u.user_document_number
+             FROM public.loans l
+             LEFT JOIN public.users u
+                ON u.user_name = l.requesting_user
+                OR u.user_document_number::text = l.requesting_user
+             WHERE l.loan_id = $1`,
             [loanId]
         );
         const items = await pool.query(
@@ -166,7 +176,10 @@ export const loansRepository = {
         await pool.query(
             `UPDATE public.consumable_material
              SET material_amount = material_amount + $2,
-                 material_state  = 'D'
+                 material_state  = CASE
+                                     WHEN material_amount + $2 > 0 THEN 'Disponible'
+                                     ELSE material_state
+                                   END
              WHERE consumable_material_id = $1`,
             [materialId, amount]
         );

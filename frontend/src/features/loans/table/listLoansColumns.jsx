@@ -190,7 +190,17 @@ const baseLoansColumns = [
     id: "user",
     label: "Usuario",
     accessor: "user",
+    width: "13%",
+  },
+  {
+    id: "userIdentifier",
+    label: "Documento / Email",
+    accessor: "userDocument",
     width: "14%",
+    renderCell: (row) => {
+      const value = row.userDocument ?? row.notificationEmail ?? "—";
+      return <span className="text-[0.82rem]">{value}</span>;
+    },
   },
   {
     id: "materiales",

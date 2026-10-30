@@ -56,7 +56,7 @@ export function generateLoansReport({
   // =========================
   if (format === "excel") {
 
-    generateLoansExcelReport({
+    return generateLoansExcelReport({
 
       headers,
 

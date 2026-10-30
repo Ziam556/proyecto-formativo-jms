@@ -199,7 +199,7 @@ export default function UserEditForm({ initialUser, userImage, isEnabled, onCanc
                             onClick={() => setShowPhoneModal(true)}
                             className={`absolute right-[10px] ${errors.userPhone ? "bottom-[26px]" : "bottom-[13px]"} w-[22px] h-[22px] rounded border-0 cursor-pointer flex items-center justify-center z-[2] ${formData.userSecondaryPhone ? "bg-[#50E5F9]" : "bg-[rgba(80,80,180,0.25)]"}`}
                         >
-                            <Plus size={14} color="#fff" />
+                            <Plus size={14} color="#000" />
                         </button>
                     </div>
 

@@ -16,6 +16,7 @@ import notificationsRoutes from "./features/notifications/notifications.routes.j
 import categoriesRoutes from "./features/categories/categories.routes.js";
 import inventoriesRoutes  from "./features/inventories/inventories.routes.js";
 import quotationsRoutes   from "./features/quotations/quotations.routes.js";
+import settingsRoutes     from "./features/settings/settings.routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
@@ -47,6 +48,7 @@ app.use("/api/notifications", notificationsRoutes);
 app.use("/api/categories",   categoriesRoutes);
 app.use("/api/inventories",  inventoriesRoutes);
 app.use("/api/quotations",   quotationsRoutes);
+app.use("/api/settings",    settingsRoutes);
 
 // Manejador de errores global — siempre devuelve JSON
 app.use((err, req, res, next) => {

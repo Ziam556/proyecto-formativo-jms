@@ -31,6 +31,6 @@ export function generateUserReport({ format, activeFields, scope, selectedIds, u
     }
 
     if (format === "excel") {
-        generateUserExcelReport({ headers, rows, fileName: `usuarios-${timestamp}.xlsx` });
+        return generateUserExcelReport({ headers, rows, fileName: `usuarios-${timestamp}.xlsx` });
     }
 }

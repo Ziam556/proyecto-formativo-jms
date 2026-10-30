@@ -7,9 +7,9 @@ import CreateReturnable2 from "../components/CreateReturnable-2";
 import CreateReturnable4 from "../components/CreateReturnable-4";
 
 const steps = [
-    { num: 1, title: "Identificación",    sub: "ID · Placa · Categoría · Nombre · Cuentadante" },
-    { num: 2, title: "Características",   sub: "Marca · Modelo · Serial · Imagen"          },
-    { num: 3, title: "Estado y detalles", sub: "Estado · Ficha · Descripción · Ubicación"  },
+    { num: 1, title: "Identificación",    sub: "SN · Placa · Categoría · Elemento · Cuentadante · Inventario" },
+    { num: 2, title: "Características",   sub: "Marca · Modelo · Serial · F. compra · F. ingreso · Imagen"    },
+    { num: 3, title: "Estado y detalles", sub: "Ficha técnica · Cotizaciones · Estado · Ubicación · Descripción" },
 ];
 
 export default function CreateReturnableMaterialPage() {
@@ -76,7 +76,7 @@ export default function CreateReturnableMaterialPage() {
                 />
 
                 {/* ── CONTENIDO ── */}
-                <div className="flex-1 bg-white/10 rounded-2xl m-3 py-4 sm:py-5 px-4 sm:px-8 transition-all duration-300 flex flex-col items-center justify-center gap-6">
+                <div className="@container flex-1 bg-white/10 rounded-2xl m-3 py-4 sm:py-5 px-4 sm:px-8 transition-all duration-300 flex flex-col items-center justify-center gap-6">
                     <h2 className="text-white text-center text-[1rem] font-medium m-0">
                         Ingrese la información correspondiente
                     </h2>

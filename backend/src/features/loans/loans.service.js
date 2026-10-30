@@ -56,15 +56,21 @@ async function sendLoanUpdatedEmail(loan, recipientEmail) {
 export const loansService = {
     async create(loanData) {
         const { items = [], notificationEmail, ...loanFields } = loanData;
-        const loan = await loansRepository.create(loanFields);
+        const loan = await loansRepository.create({ ...loanFields, notificationEmail });
         await loansRepository.createItems(loan.loan_id, items);
 
         // Actualizar inventario: descontar stock al salir el préstamo
+        console.log(`[Préstamo #${loan.loan_id}] Items recibidos para descontar:`, JSON.stringify(items));
         for (const item of items) {
-            if (!item.materialId) continue;
+            if (!item.materialId) {
+                console.warn(`[Préstamo #${loan.loan_id}] Item SIN materialId — skipped:`, item);
+                continue;
+            }
             if (item.materialType === "M.C") {
+                console.log(`[Préstamo #${loan.loan_id}] Descontando ${item.amount} de consumible ${item.materialId}`);
                 await loansRepository.decrementConsumableStock(item.materialId, item.amount ?? 1);
             } else if (item.materialType === "M.D") {
+                console.log(`[Préstamo #${loan.loan_id}] Deshabilitando devolutivo ${item.materialId}`);
                 await loansRepository.disableReturnableMaterial(item.materialId);
             }
         }
@@ -97,13 +103,16 @@ export const loansService = {
     },
 
     async updateStatus(loanId, status) {
-        // Al cancelar un préstamo, restaurar el inventario de cada ítem
+        // Al cancelar un préstamo, restaurar el inventario solo de ítems NO devueltos
         if (status === "cancelado") {
             const loan = await loansRepository.findById(loanId);
             if (loan?.items?.length) {
                 for (const item of loan.items) {
+                    // Si el ítem ya fue devuelto, su stock se restauró en registerReturn → omitir
+                    if (item.returned_at) continue;
+
                     if (item.material_type === "M.C" && item.consumable_material_id) {
-                        // Devolver la cantidad completa (nada se consumió físicamente)
+                        // Devolver la cantidad completa prestada (nada físicamente consumido)
                         await loansRepository.restoreConsumableStock(
                             item.consumable_material_id,
                             item.amount
@@ -124,6 +133,9 @@ export const loansService = {
 
         if (loan.items?.length) {
             for (const item of loan.items) {
+                // Si el ítem ya fue devuelto, su stock se restauró en registerReturn → omitir
+                if (item.returned_at) continue;
+
                 if (item.material_type === "M.C" && item.consumable_material_id) {
                     await loansRepository.restoreConsumableStock(item.consumable_material_id, item.amount);
                 } else if (item.material_type === "M.D" && item.returnable_material_id) {

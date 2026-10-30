@@ -112,4 +112,31 @@ export const returnableMaterialController = {
     }
   },
 
+  // GET /api/returnableMaterial/next-id?prefix=HE
+  async getNextId(req, res) {
+    try {
+      const { prefix } = req.query;
+      if (!prefix) return res.status(400).json({ error: "Se requiere el parámetro prefix." });
+
+      const { rows } = await import("../../config/db.js").then(({ pool }) =>
+        pool.query(
+          `SELECT returnable_material_id FROM public.returnable_material
+           WHERE returnable_material_id LIKE $1`,
+          [`${prefix}-%`]
+        )
+      );
+
+      const nums = rows
+        .map((r) => parseInt(r.returnable_material_id.split("-").pop(), 10))
+        .filter((n) => !isNaN(n));
+      const max  = nums.length > 0 ? Math.max(...nums) : 0;
+      const next = `${prefix}-${String(max + 1).padStart(3, "0")}`;
+
+      res.json({ nextId: next });
+    } catch (err) {
+      console.error("ERROR getNextId:", err);
+      res.status(500).json({ error: err.message });
+    }
+  },
+
 };

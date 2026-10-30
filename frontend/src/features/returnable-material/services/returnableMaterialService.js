@@ -11,6 +11,15 @@ export async function getReturnableMaterials() {
   return response.json();
 }
 
+export async function getNextReturnableId(prefix) {
+  const res = await fetch(`${API_URL}/next-id?prefix=${encodeURIComponent(prefix)}`, {
+    headers: getAuthHeaders(),
+  });
+  if (!res.ok) throw new Error("Error al obtener el siguiente ID");
+  const data = await res.json();
+  return data.nextId;
+}
+
 export async function getReturnableMaterialById(id) {
   const response = await fetch(`${API_URL}/${id}`, { headers: getAuthHeaders() });
   if (!response.ok) throw new Error("Error al obtener el material devolutivo");

@@ -121,7 +121,7 @@ export default function EditReturnableMaterial4({ formData = {}, onSave, onBack 
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
+    <div className="grid grid-cols-1 @[500px]:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
       <Select labelVariant="light"
         label="Estado"
         name="materialState"
@@ -185,7 +185,7 @@ export default function EditReturnableMaterial4({ formData = {}, onSave, onBack 
       </div>
 
       {/* COTIZACIONES */}
-      <div className="flex flex-col gap-2 col-span-2">
+      <div className="flex flex-col gap-2 @[500px]:col-span-2">
         <label className="text-sm font-semibold text-white">
           Cotizaciones
           <span className="text-xs text-white/50 ml-1 font-normal">(1–3 PDFs · máx 3MB c/u)</span>
@@ -266,7 +266,7 @@ export default function EditReturnableMaterial4({ formData = {}, onSave, onBack 
         </>
       )}
 
-      <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-4">
+      <div className="@[500px]:col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-4">
         <Button variant="secondary" size="sm" onClick={onBack}>Atrás</Button>
         <Button variant="primary"   size="md" onClick={handleSave}>Guardar cambios</Button>
       </div>

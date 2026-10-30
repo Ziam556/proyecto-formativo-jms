@@ -24,7 +24,7 @@ export default function CategoryTable({ categories = [], onUpdate, onToggle }) {
     return (
         <div className="rounded-xl overflow-hidden flex-1 bg-white min-w-0">
             <div className="flex justify-between px-4 py-2 bg-gray-200 font-semibold text-sm">
-                <span>Categorías registradas</span>
+                <span>Tipos de material registrados</span>
                 <span>Estado</span>
             </div>
             {categories.map((cat) => (
@@ -79,7 +79,7 @@ export default function CategoryTable({ categories = [], onUpdate, onToggle }) {
                 </div>
             ))}
             {categories.length === 0 && (
-                <div className="px-4 py-3 text-sm text-gray-400 italic">Sin categorías</div>
+                <div className="px-4 py-3 text-sm text-gray-400 italic">Sin tipos de material</div>
             )}
         </div>
     );

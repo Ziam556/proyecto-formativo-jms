@@ -10,6 +10,9 @@ router.use(authenticateToken);
 // GET /api/returnableMaterial → listar todos
 router.get("/", returnableMaterialController.getAll);
 
+// GET /api/returnableMaterial/next-id?prefix=HE → siguiente ID disponible
+router.get("/next-id", returnableMaterialController.getNextId);
+
 // GET /api/returnableMaterial/:id → obtener uno por id
 router.get("/:id", returnableMaterialController.getById);
 

@@ -92,11 +92,11 @@ export default function CategoryRegisterForm() {
 
                 <BackButton />
 
-                <div className="text-white font-bold mt-2">Agregar categorías</div>
+                <div className="text-white font-bold mt-2">Agregar tipo de material</div>
 
                 <Input
                     placeholder="Escribe el nombre"
-                    label="Nombre de la categoría"
+                    label="Nombre"
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleAdd()}
@@ -124,14 +124,14 @@ export default function CategoryRegisterForm() {
             <div className="flex flex-col p-4 sm:p-6 gap-4 flex-1 min-w-0">
 
                 <SearchField
-                    placeholder="Buscar categoría..."
+                    placeholder="Buscar tipo de material..."
                     value={search}
                     onChange={(val) => { setSearch(val); setPage(1); }}
                     fullWidth
                 />
 
                 {loading ? (
-                    <p className="text-white text-center py-8">Cargando categorías...</p>
+                    <p className="text-white text-center py-8">Cargando tipos de material...</p>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         <CategoryTable categories={col1} onUpdate={handleUpdate} onToggle={handleToggle} />

@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-import { Input, Button, BrandSearchField, Select, alertSuccess, alertError, alertWarning } from "@/shared";
-import { getCategories } from "@/features/categories/services/categoryService";
-import { getInventories } from "@/features/inventories/services/inventoryService";
+import { Input, Button, BrandSearchField, Select, InventorySelectField, CategorySelectField, alertSuccess, alertError, alertWarning } from "@/shared";
 import { consumableStep1Schema } from "../schemas/consumableStep1Schema";
 import { getConsumableMaterials } from "../services/consumableMaterialService";
 
@@ -20,9 +18,6 @@ export default function CreateConsumable1({
     onNext,
     onCancel,
 }) {
-    const [categoryOptions, setCategoryOptions]   = useState([]);
-    const [inventoryOptions, setInventoryOptions] = useState([]);
-
     const [fields, setFields] = useState({
         consumableMaterialId: formData?.consumableMaterialId || "",
         materialPlate:        formData?.materialPlate        || "",
@@ -33,27 +28,6 @@ export default function CreateConsumable1({
     });
 
     const [errors, setErrors] = useState({});
-
-    useEffect(() => {
-        getCategories()
-            .then((cats) =>
-                setCategoryOptions(
-                    cats
-                        .filter((c) => c.enabled)
-                        .map((c) => ({ id: c.name, label: c.name }))
-                )
-            )
-            .catch(() => {});
-        getInventories()
-            .then((invs) =>
-                setInventoryOptions(
-                    invs
-                        .filter((i) => i.enabled)
-                        .map((i) => ({ id: i.name, label: i.name }))
-                )
-            )
-            .catch(() => {});
-    }, []);
 
     // Generar ID automático al montar (solo si no hay ID previo)
     useEffect(() => {
@@ -98,7 +72,7 @@ export default function CreateConsumable1({
     };
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
+        <div className="grid grid-cols-1 @[500px]:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
 
             <Input labelVariant="light"
                 label="Número de serie (SN) (opcional)"
@@ -128,14 +102,14 @@ export default function CreateConsumable1({
                 required
             />
 
-            <Select labelVariant="light"
-                label="Categoría (opcional)"
+            <CategorySelectField
+                labelVariant="light"
+                label="Tipo de material"
                 name="materialCategory"
                 value={fields.materialCategory}
-                options={categoryOptions}
                 onChange={handleChange}
                 error={errors.materialCategory}
-                placeholder="Selecciona una categoría"
+                required
             />
 
             <BrandSearchField
@@ -148,18 +122,16 @@ export default function CreateConsumable1({
                 error={errors.materialBrand}
             />
 
-            <Select labelVariant="light"
-                label="Nombre de inventario (opcional)"
-                name="materialInventory"
+            <InventorySelectField
+                labelVariant="light"
                 value={fields.materialInventory}
-                options={inventoryOptions}
                 onChange={handleChange}
+                name="materialInventory"
                 error={errors.materialInventory}
-                placeholder="Selecciona un inventario"
             />
 
             {/* BOTONES */}
-            <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-4">
+            <div className="@[500px]:col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-4">
                 <Button
                     variant="secondary"
                     size="sm"

@@ -10,9 +10,9 @@ import { getUsers } from "@/features/users/services/userService";
 import { useNavigate } from "react-router-dom";
 
 const steps = [
-  { num: 1, title: "Materiales a prestar",  sub: "Búsqueda y selección"      },
-  { num: 2, title: "Datos del préstamo",    sub: "Fechas y autenticación"     },
-  { num: 3, title: "Justificación de uso",  sub: "Solicitudes y verificación" },
+  { num: 1, title: "Materiales a prestar",  sub: "Filtro y selección de materiales"                      },
+  { num: 2, title: "Datos del préstamo",    sub: "Ficha · Tipo · Fechas · Cantidades · Justificación"    },
+  { num: 3, title: "Usuario y verificación", sub: "Usuario solicitante · Código de verificación"         },
 ];
 
 const stepPaddingXClass = [
@@ -108,6 +108,8 @@ export default function CreateLoansPage() {
       setSavedLoanId(loanId);
       setFormData({});
       setCurrentStep(0);
+      // Recargar materiales para reflejar el stock actualizado tras el préstamo
+      getMaterialsForLoan().then(setMaterials).catch(() => {});
     } catch (error) {
       await alertError("Error al guardar", error.message || "Ocurrió un error inesperado.");
     } finally {
@@ -307,7 +309,7 @@ export default function CreateLoansPage() {
 
         {/* ── CONTENIDO ───────────────────────────────────────── */}
         <div
-          className={`flex-1 bg-white/10 rounded-2xl m-3 py-8 transition-all duration-300 ${stepPaddingXClass[currentStep]}`}
+          className={`@container flex-1 bg-white/10 rounded-2xl m-3 py-8 transition-all duration-300 ${stepPaddingXClass[currentStep]}`}
         >
           {stepComponents[currentStep]}
         </div>

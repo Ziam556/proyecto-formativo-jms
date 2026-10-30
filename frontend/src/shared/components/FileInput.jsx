@@ -114,7 +114,7 @@ export default function FileInput ({
                     />
 
                 ) : (
-                        <span className="text-blue-500 text-sm">Seleccionar</span>
+                        <span className="text-white text-sm">Seleccionar</span>
                 )}
             </div>
 

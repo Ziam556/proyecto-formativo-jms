@@ -1,6 +1,4 @@
 const API_URL = "/api/quotations";
-const CONSUMABLE_URL = "/api/consumableMaterial";
-const RETURNABLE_URL = "/api/returnableMaterial";
 
 function getAuthHeaders() {
     const token = sessionStorage.getItem("token");
@@ -13,22 +11,11 @@ export async function getQuotations() {
     return res.json();
 }
 
-export async function getConsumableMaterials() {
-    const res = await fetch(CONSUMABLE_URL, { headers: getAuthHeaders() });
-    if (!res.ok) throw new Error("Error al obtener materiales de consumo");
-    return res.json();
-}
-
-export async function getReturnableMaterials() {
-    const res = await fetch(RETURNABLE_URL, { headers: getAuthHeaders() });
-    if (!res.ok) throw new Error("Error al obtener materiales devolutivos");
-    return res.json();
-}
-
-export async function addQuotation(materialType, materialId, file) {
+export async function addQuotation({ referenceId, itemName, inventoryName, file }) {
     const formData = new FormData();
-    formData.append("materialType", materialType);
-    formData.append("materialId", String(materialId));
+    if (referenceId)   formData.append("referenceId",   referenceId);
+    if (itemName)      formData.append("itemName",       itemName);
+    if (inventoryName) formData.append("inventoryName",  inventoryName);
     formData.append("quotationFile", file);
 
     const res = await fetch(API_URL, {

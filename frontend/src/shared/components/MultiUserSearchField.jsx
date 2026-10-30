@@ -93,7 +93,7 @@ export default function MultiUserSearchField({
                     {value.map((u) => (
                         <span
                             key={u.document}
-                            className="flex items-center gap-1 px-2 py-1 rounded-full bg-purple-600/80 text-white text-[0.75rem] font-medium"
+                            className="flex items-center gap-1 px-2 py-1 rounded-full text-white text-[0.75rem] font-medium" style={{ backgroundColor: "#71277A" }}
                         >
                             {u.name}
                             <button

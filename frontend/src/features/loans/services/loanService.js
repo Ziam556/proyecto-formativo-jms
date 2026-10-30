@@ -28,6 +28,8 @@ function mapLoan(l) {
         deliveryDateRaw:  l.delivery_date  ? l.delivery_date.split("T")[0]  : "",
         justification:    l.justification,
         user:             l.requesting_user,
+        userDocument:     l.user_document_number ?? null,
+        notificationEmail: l.notification_email ?? null,
         status:           l.loan_status,
         loanType:         l.loan_type ?? "interno",
         materiales:      (l.materiales || []).map((m) => ({

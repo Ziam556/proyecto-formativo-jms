@@ -151,7 +151,7 @@ export default function ReturnLoans({ loan: initialLoan }) {
   };
 
   return (
-    <div className="w-full max-w-[1000px] mx-auto rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md shadow-2xl p-4">
+    <div className="@container w-full max-w-[1000px] mx-auto rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md shadow-2xl p-4">
       <div className="bg-white/10 rounded-2xl border border-white/20 backdrop-blur-xl px-4 py-4">
 
         {/* HEADER */}
@@ -161,7 +161,7 @@ export default function ReturnLoans({ loan: initialLoan }) {
         </div>
 
         {/* BUSCADOR */}
-        <div className="flex flex-col sm:flex-row items-end gap-3 mb-4">
+        <div className="flex flex-col @[420px]:flex-row items-end gap-3 mb-4">
           <div className="w-full sm:w-auto flex-1 sm:max-w-[360px]">
             <Input
               label="ID Préstamo"
@@ -207,7 +207,7 @@ export default function ReturnLoans({ loan: initialLoan }) {
             </div>
 
             {/* DOS COLUMNAS */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 @[580px]:grid-cols-2 gap-3">
 
               {/* IZQUIERDA — materiales del préstamo */}
               <div className="bg-white/6 border border-white/12 rounded-xl p-3">
@@ -256,7 +256,7 @@ export default function ReturnLoans({ loan: initialLoan }) {
                 ))}
 
                 <p className="text-white text-[10px] text-center mt-3">
-                  Toca + para agregar a la devolución →
+                  Toca + para agregar a la devolución
                 </p>
               </div>
 
@@ -370,11 +370,11 @@ export default function ReturnLoans({ loan: initialLoan }) {
             </div>
 
             {/* ACCIONES */}
-            <div className="flex flex-col sm:flex-row justify-end gap-4 mt-8">
+            <div className="flex flex-col @[420px]:flex-row justify-end gap-4 mt-8">
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={() => { setToReturn([]); setSuccess(false); }}
+                onClick={() => setToReturn([])}
                 disabled={saving}
               >
                 Cancelar

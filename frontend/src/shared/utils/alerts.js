@@ -72,10 +72,10 @@ export const alertConfirm = (title, text) =>
     });
 
 // ─── Modal de contacto / soporte ─────────────────────────────────────────────
-export const alertContact = () =>
+export const alertContact = (email = "sc876858@gmail.com") =>
     Swal.fire({
         title:             "¿Necesitas ayuda?",
-        html:              `Escríbenos a <a href="https://mail.google.com/mail/?view=cm&to=sc876858@gmail.com" target="_blank" rel="noopener noreferrer" style="color:#50E5F9;font-weight:600;">sc876858@gmail.com</a>`,
+        html:              `Escríbenos a <a href="https://mail.google.com/mail/?view=cm&to=${email}" target="_blank" rel="noopener noreferrer" style="color:#50E5F9;font-weight:600;">${email}</a>`,
         confirmButtonText: "Cerrar",
         showCloseButton:   true,
         background:        "#1e1230",
@@ -83,6 +83,36 @@ export const alertContact = () =>
         confirmButtonColor:"#71277A",
         iconColor:         "#50E5F9",
     });
+
+// ─── Modal de edición del correo de contacto (solo SuperAdministrador) ────────
+export const alertEditContactEmail = async (currentEmail = "") => {
+    const { value: newEmail, isConfirmed } = await Swal.fire({
+        title:              "Editar correo de contacto",
+        html:               `<p style="color:rgba(255,255,255,0.65);font-size:0.85rem;margin-bottom:12px;">
+                                Este correo se muestra en la pantalla de inicio de sesión y en el menú de soporte.
+                             </p>`,
+        input:              "email",
+        inputLabel:         "Nuevo correo de soporte",
+        inputValue:         currentEmail,
+        inputPlaceholder:   "correo@ejemplo.com",
+        showCancelButton:   true,
+        confirmButtonText:  "Guardar",
+        cancelButtonText:   "Cancelar",
+        confirmButtonColor: "#71277A",
+        cancelButtonColor:  "#4b5563",
+        background:         "#1e1230",
+        color:              "#ffffff",
+        inputAttributes:    { autocomplete: "email" },
+        inputValidator:     (value) => {
+            if (!value) return "El correo es requerido";
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "Ingresa un correo válido";
+        },
+        customClass: {
+            input: "swal2-input",
+        },
+    });
+    return isConfirmed ? newEmail : null;
+};
 
 // ─── Confirmación de eliminación (botón rojo) ─────────────────────────────────
 export const alertDeleteConfirm = (entityName) =>

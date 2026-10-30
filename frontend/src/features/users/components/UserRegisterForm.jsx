@@ -99,7 +99,6 @@ export default function UserRegisterForm({ onCancel }) {
 
     const handleSubmit = async () => {
         // ── 1. Campos requeridos vacíos ───────────────────────────────────────
-        const requieresFechas = formData.userGroup === "Invitado";
         const requiredFields = {
             userName:              "El nombre es requerido",
             userEmail:             "El correo es requerido",
@@ -109,10 +108,8 @@ export default function UserRegisterForm({ onCancel }) {
             userDocumentNumber:    "El número de documento es requerido",
             userAddress:           "La dirección es requerida",
             userPassword:          "La contraseña es requerida",
-            ...(requieresFechas && {
-                startDate: "La fecha de inicio es requerida",
-                endDate:   "La fecha de finalización es requerida",
-            }),
+            startDate:             "La fecha de inicio es requerida",
+            endDate:               "La fecha de finalización es requerida",
         };
 
         const emptyErrors = {};
@@ -198,7 +195,7 @@ export default function UserRegisterForm({ onCancel }) {
                         onChange={handleImageChange}
                     />
                     {errors.userImage && (
-                        <p className="text-red-500 text-[0.75rem] font-medium">{errors.userImage}</p>
+                        <p className="text-red-500 text-[0.75rem] font-medium text-center w-full">{errors.userImage}</p>
                     )}
                 </div>
 
@@ -229,7 +226,7 @@ export default function UserRegisterForm({ onCancel }) {
 
                         <Input labelVariant="dark" label="Correo institucional (opcional)" name="userEmailInstitutional" type="email" placeholder="Ingrese su correo institucional" value={formData.userEmailInstitutional} onChange={handleChange} error={errors.userEmailInstitutional} />
 
-                        <DatePicker labelVariant="dark" label="Fecha inicio (automática)" name="startDate" value={formData.startDate} onChange={() => {}} disabled />
+                        <DatePicker labelVariant="dark" label="Fecha inicio (automática)" name="startDate" value={formData.startDate} onChange={() => {}} disabled error={errors.startDate} />
                         {/* ── Contraseña auto-generada con ojo ── */}
                         <div className="relative">
                             <Input
@@ -257,7 +254,7 @@ export default function UserRegisterForm({ onCancel }) {
                             </button>
                         </div>
 
-                        <DatePicker labelVariant="dark" label="Fecha finalización" name="endDate" placeholder="Fecha finalización" value={formData.endDate} onChange={handleChange} error={errors.endDate} />
+                        <DatePicker labelVariant="dark" label="Fecha finalización" name="endDate" placeholder="Fecha finalización" value={formData.endDate} onChange={handleChange} error={errors.endDate} required />
 
                         {/* ── Autorización tratamiento de datos — ocupa toda la fila ── */}
                         <div className="sm:col-span-2 flex items-start gap-3 bg-black/10 border border-black/20 rounded-xl px-4 py-3 mt-1">

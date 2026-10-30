@@ -29,8 +29,7 @@ export const consumableStep1Schema = z.object({
     materialCategory: z
         .string()
         .trim()
-        .optional()
-        .or(z.literal("")),
+        .min(1, "El tipo de material es requerido"),
 
     materialBrand: z
         .string()

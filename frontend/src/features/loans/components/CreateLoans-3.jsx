@@ -247,7 +247,7 @@ export default function CreateLoans3({ onSave, onBack }) {
             <p className="text-white/70 text-xs mb-3">
               Se envió un código a <span className="text-white font-semibold">{fields.userEmail}</span>. Pídele al usuario que te lo diga e ingrésalo abajo.
             </p>
-            <div className="flex gap-3 items-end">
+            <div className="flex flex-col @[380px]:flex-row gap-3 @[380px]:items-end">
               <div className="flex-1">
                 <Input
                   label="Código de verificación *"
@@ -264,7 +264,7 @@ export default function CreateLoans3({ onSave, onBack }) {
               <Button
                 variant="primary"
                 size="md"
-                className="!min-w-0 px-6 shrink-0"
+                className="w-full @[380px]:w-auto !min-w-0 px-6 shrink-0"
                 onClick={handleVerify}
                 disabled={verifying}
               >
