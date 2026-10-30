@@ -39,7 +39,8 @@ export async function handleLogout(navigate) {
 
     // Paso 5 — Eliminar datos de sesión en el cliente
     sessionStorage.removeItem("token");
-    localStorage.removeItem("jms_active_user");
+    localStorage.removeItem("jms_active_user");  // legacy
+    localStorage.removeItem("jms_tab_alive");     // heartbeat
 
     // Paso 6 — Redirigir al login
     navigate("/auth", { replace: true });

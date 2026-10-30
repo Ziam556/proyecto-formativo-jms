@@ -50,7 +50,7 @@ export default function EditConsumableMaterial2({
     };
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-[600px] mx-auto">
+        <div className="grid grid-cols-1 @[500px]:grid-cols-2 gap-6 w-full max-w-[600px] mx-auto">
 
             {/* IMAGEN */}
             <div className="flex flex-col gap-1">
@@ -117,7 +117,7 @@ export default function EditConsumableMaterial2({
             />
 
             {/* BOTONES */}
-            <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-4">
+            <div className="@[500px]:col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-4">
                 <Button variant="secondary" size="sm" onClick={onBack}>
                     Atrás
                 </Button>

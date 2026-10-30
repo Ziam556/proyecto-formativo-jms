@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { IconButton, Dropdown, DropdownTrigger, DropdownContent, DropdownItem, alertContact } from "@/shared";
+import { IconButton, Dropdown, DropdownTrigger, DropdownContent, DropdownItem, alertContact, alertEditContactEmail, alertSuccess, alertError } from "@/shared";
+import { getContactEmail, updateContactEmail } from "@/features/settings/services/settingsService";
 import logo from "@/assets/images/logo-1.png";
 import { CircleUserRound, Bell, House } from "lucide-react";
 import { handleLogout } from "@/features/auth/services/logoutService";
@@ -144,10 +145,28 @@ function NotificationPanel({ notifications, recentLoans, onMarkAll, onMarkOne, o
 
 // ── Header ────────────────────────────────────────────────────────────────────
 
+/** Decodifica el payload del JWT sin librería externa. */
+function getTokenPayload() {
+  try {
+    const token = sessionStorage.getItem("token");
+    return JSON.parse(atob(token.split(".")[1]));
+  } catch {
+    return null;
+  }
+}
+
 export default function Header() {
   const navigate      = useNavigate();
   const { isAdmin, hasPermission } = usePermissions();
   const showConfig = isAdmin || hasPermission(["create_brand","list_brand","edit_brand","toggle_brand","delete_brand"]);
+
+  // Correo de contacto dinámico
+  const [contactEmail, setContactEmail] = useState("sc876858@gmail.com");
+  const isSuperAdmin = getTokenPayload()?.userGroup === "SuperAdministrador";
+
+  useEffect(() => {
+    getContactEmail().then((email) => { if (email) setContactEmail(email); });
+  }, []);
 
   const [showNotifs, setShowNotifs]       = useState(false);
   const [notifications, setNotifications] = useState([]);
@@ -287,12 +306,32 @@ export default function Header() {
               )}
               <DropdownItem>
                 <button
-                  onClick={() => alertContact()}
+                  onClick={() => alertContact(contactEmail)}
                   className="block w-full text-left"
                 >
                   Contáctanos
                 </button>
               </DropdownItem>
+              {isSuperAdmin && (
+                <DropdownItem>
+                  <button
+                    onClick={async () => {
+                      const newEmail = await alertEditContactEmail(contactEmail);
+                      if (!newEmail) return;
+                      try {
+                        await updateContactEmail(newEmail);
+                        setContactEmail(newEmail);
+                        await alertSuccess("Correo actualizado", `El correo de contacto ahora es ${newEmail}`);
+                      } catch (err) {
+                        await alertError("Error", err.message);
+                      }
+                    }}
+                    className="block w-full text-left"
+                  >
+                    Editar correo de contacto
+                  </button>
+                </DropdownItem>
+              )}
               <DropdownItem>
                 <button
                   onClick={() => handleLogout(navigate)}

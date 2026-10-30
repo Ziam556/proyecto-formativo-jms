@@ -10,9 +10,9 @@ import EditConsumableMaterial2 from "../components/EditConsumableMaterial-2";
 import EditConsumableMaterial3 from "../components/EditConsumableMaterial-3";
 
 const steps = [
-    { num: 1, title: "Identificación",    sub: "ID · Placa · Nombre · Marca"              },
-    { num: 2, title: "Información",       sub: "Imagen · Cuentadante · Cantidad · Valores" },
-    { num: 3, title: "Estado y detalles", sub: "Estado · Descripción · Fecha · Ubicación · Ficha Técnica" },
+    { num: 1, title: "Identificación",    sub: "SN · Placa · Elemento · Categoría · Marca · Inventario"                  },
+    { num: 2, title: "Información",       sub: "Cuentadante · Cantidad · Valor unitario · Valor total · Imagen"           },
+    { num: 3, title: "Estado y detalles", sub: "Estado · F. compra · F. ingreso · Ubicación · Ficha técnica · Cotizaciones" },
 ];
 
 function toWizardFields(row) {
@@ -182,7 +182,7 @@ export default function EditConsumableMaterialPage() {
                 />
 
                 {/* ── CONTENIDO ── */}
-                <div className="flex-1 bg-white/10 rounded-2xl m-3 py-4 sm:py-5 px-4 sm:px-8 transition-all duration-300 flex flex-col items-center justify-center gap-6">
+                <div className="@container flex-1 bg-white/10 rounded-2xl m-3 py-4 sm:py-5 px-4 sm:px-8 transition-all duration-300 flex flex-col items-center justify-center gap-6">
                     <h2 className="text-white text-center text-[1rem] font-medium m-0">
                         Edite la información correspondiente
                     </h2>

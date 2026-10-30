@@ -29,7 +29,7 @@ export function generateConsumableMaterialReport({
   const timestamp = new Date().toISOString().slice(0, 10);
 
   if (format === "excel") {
-    generateConsumableMaterialExcelReport({
+    return generateConsumableMaterialExcelReport({
       headers,
       rows,
       fileName: `material-consumo-${timestamp}.xlsx`,

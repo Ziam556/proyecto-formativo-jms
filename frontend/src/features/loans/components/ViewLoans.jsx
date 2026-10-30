@@ -145,6 +145,10 @@ export default function ViewLoans({ loan: initialLoan, onCancel, onEdit }) {
           </div>
           <div className="flex flex-wrap gap-4 mb-8">
             <Field label="Usuario solicitante" value={loan.user} />
+            <Field
+              label="Documento / Email"
+              value={loan.userDocument ?? loan.notificationEmail ?? "—"}
+            />
           </div>
 
           {/* BOTONES */}

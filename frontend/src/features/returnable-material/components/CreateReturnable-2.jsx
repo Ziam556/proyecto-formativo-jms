@@ -35,7 +35,7 @@ export default function CreateReturnable2({ formData, onNext, onBack }) {
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-2xl mx-auto">
+    <div className="grid grid-cols-1 @[500px]:grid-cols-2 gap-6 w-full max-w-2xl mx-auto">
       <BrandSearchField
         label="Marca (opcional)"
         value={fields.materialBrand}
@@ -61,12 +61,13 @@ export default function CreateReturnable2({ formData, onNext, onBack }) {
       />
 
       <DatePicker labelVariant="light"
-        label="Fecha de compra (opcional)"
+        label="Fecha de compra"
         name="materialPurchaseDate"
         value={fields.materialPurchaseDate}
         onChange={handleChange}
         error={errors.materialPurchaseDate}
         maxDate={new Date()}
+        required
       />
 
       <DatePicker labelVariant="light"
@@ -98,7 +99,7 @@ export default function CreateReturnable2({ formData, onNext, onBack }) {
         )}
       </div>
 
-      <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-2">
+      <div className="@[500px]:col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-2">
         <Button variant="secondary" size="sm" onClick={onBack}>Atrás</Button>
         <Button variant="primary"   size="md" onClick={handleNext}>Siguiente</Button>
       </div>

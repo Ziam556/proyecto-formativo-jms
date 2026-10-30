@@ -19,7 +19,7 @@ export const returnableStep1Schema = z.object({
 
     materialCategory: z
         .string()
-        .min(1, "La categoría es requerida"),
+        .min(1, "El tipo de material es requerido"),
 
     materialElementName: z
         .string()

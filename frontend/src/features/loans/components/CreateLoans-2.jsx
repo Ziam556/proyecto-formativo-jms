@@ -126,8 +126,8 @@ export default function CreateLoans2({ formData, onNext, onBack }) {
         {hasConsumables && (
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-3">
-              <Package size={15} className="text-cyan-300 flex-shrink-0" />
-              <span className="text-cyan-200 font-semibold text-sm">
+              <Package size={15} style={{ color: "#00C8DC" }} className="flex-shrink-0" />
+              <span className="font-semibold text-sm" style={{ color: "#00C8DC" }}>
                 Cantidad a prestar — materiales de consumo
               </span>
             </div>
@@ -137,14 +137,15 @@ export default function CreateLoans2({ formData, onNext, onBack }) {
                 return (
                   <div
                     key={i}
-                    className="flex flex-wrap items-center gap-3 px-4 py-3 rounded-xl bg-white/6 border border-cyan-400/20"
+                    className="flex flex-wrap items-center gap-3 px-4 py-3 rounded-xl bg-white/6"
+                    style={{ border: "1px solid rgba(0,200,220,0.3)" }}
                   >
                     <span
                       className="text-[10px] font-semibold px-2 py-[2px] rounded-full whitespace-nowrap flex-shrink-0"
                       style={{
-                        background: "rgba(6,182,212,0.18)",
-                        color: "#a5f3fc",
-                        border: "1px solid rgba(6,182,212,0.3)",
+                        background: "rgba(0,200,220,0.18)",
+                        color: "#00C8DC",
+                        border: "1px solid rgba(0,200,220,0.4)",
                       }}
                     >
                       Consumo

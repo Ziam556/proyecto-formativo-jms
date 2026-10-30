@@ -21,3 +21,11 @@ export const authenticateToken = (req, res, next) => {
         return res.status(401).json({ message: "Token invalido o expirado" });
     }
 };
+
+/** Solo permite el acceso si el usuario pertenece al grupo SuperAdministrador. */
+export const requireSuperAdmin = (req, res, next) => {
+    if (req.user?.userGroup !== "SuperAdministrador") {
+        return res.status(403).json({ message: "Se requiere rol SuperAdministrador" });
+    }
+    next();
+};

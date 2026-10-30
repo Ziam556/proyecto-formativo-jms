@@ -1,25 +1,11 @@
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import { generateStyledPdf } from "@/shared/utils/reports/generateStyledPdf";
 
 export function generateUserPdfReport({ headers, rows, fileName = "usuarios.pdf" }) {
-    const doc = new jsPDF({ orientation: "landscape" });
-
-    doc.setFontSize(16);
-    doc.text("Reporte de Usuarios", 14, 20);
-
-    autoTable(doc, {
-        startY: 30,
-        head: [headers],
-        body: rows,
-        theme: "grid",
-        headStyles: {
-            fillColor: [124, 58, 237],
-            textColor: 255,
-            fontSize: 9,
-        },
-        styles: { fontSize: 8 },
-        margin: { left: 14, right: 14 },
+    generateStyledPdf({
+        title:    "Reporte de Usuarios",
+        headers,
+        rows,
+        fileName,
+        orientation: "landscape",
     });
-
-    doc.save(fileName);
 }

@@ -38,10 +38,9 @@ export const returnableStep2Schema = z.object({
 
     materialPurchaseDate: z
         .string()
-        .refine((v) => !v || !isNaN(Date.parse(v)), "La fecha de compra no es válida")
-        .refine((v) => !v || new Date(v) <= new Date(), "La fecha de compra no puede ser futura")
-        .optional()
-        .or(z.literal("")),
+        .min(1, "La fecha de compra es requerida")
+        .refine((v) => !isNaN(Date.parse(v)), "La fecha de compra no es válida")
+        .refine((v) => new Date(v) <= new Date(), "La fecha de compra no puede ser futura"),
 
     materialEntryDate: z
         .string()

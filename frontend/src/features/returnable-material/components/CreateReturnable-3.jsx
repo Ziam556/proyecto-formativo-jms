@@ -47,7 +47,7 @@ export default function CreateReturnable3({ formData, onNext, onBack }) {
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-2xl mx-auto">
+    <div className="grid grid-cols-1 @[500px]:grid-cols-2 gap-6 w-full max-w-2xl mx-auto">
       <Input labelVariant="light"
         label="Cuentadante (Nombre y apellido)"
         name="materialStoryTeller"
@@ -90,7 +90,7 @@ export default function CreateReturnable3({ formData, onNext, onBack }) {
         error={errors.materialTotalValue}
       />
 
-      <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-2">
+      <div className="@[500px]:col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-2">
         <Button variant="secondary" size="sm" onClick={onBack}>Atrás</Button>
         <Button variant="primary"   size="md" onClick={handleNext}>Siguiente</Button>
       </div>

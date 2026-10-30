@@ -127,7 +127,7 @@ export default function CreateConsumable3({ formData, onSave, onBack }) {
     };
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
+        <div className="grid grid-cols-1 @[500px]:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
 
             <Select labelVariant="light"
                 label="Estado"
@@ -212,7 +212,7 @@ export default function CreateConsumable3({ formData, onSave, onBack }) {
             </div>
 
             {/* Cotizaciones — 1 a 3 PDFs, opcionales */}
-            <div className="flex flex-col gap-2 col-span-2">
+            <div className="flex flex-col gap-2 @[500px]:col-span-2">
                 <label className="text-sm font-semibold text-white">
                     Cotizaciones
                     <span className="text-xs text-white/50 ml-1 font-normal">(opcional · 1–3 PDFs · máx 3MB c/u)</span>
@@ -248,7 +248,7 @@ export default function CreateConsumable3({ formData, onSave, onBack }) {
                 )}
             </div>
 
-            <div className="col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-2">
+            <div className="@[500px]:col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-2">
                 <Button variant="secondary" size="sm" onClick={onBack}>
                     Atrás
                 </Button>

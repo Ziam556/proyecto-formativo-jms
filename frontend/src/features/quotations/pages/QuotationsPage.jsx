@@ -1,10 +1,8 @@
-import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import { FileText, MoreVertical, UploadCloud, X } from "lucide-react";
-import { SearchField, BackButton, Button, alertConfirm, alertSuccess, alertError } from "@/shared";
+import { SearchField, BackButton, Button, alertConfirm, alertSuccess, alertError, InventorySelectField } from "@/shared";
 import {
     getQuotations,
-    getConsumableMaterials,
-    getReturnableMaterials,
     addQuotation,
     removeQuotation,
 } from "../services/quotationService";
@@ -12,16 +10,6 @@ import {
 // ── Constantes ────────────────────────────────────────────────────────────────
 
 const PAGE_SIZE = 12;
-
-const TYPE_LABELS = {
-    returnable: "Devolutivo",
-    consumable:  "Consumo",
-};
-
-const TYPE_BADGE = {
-    returnable: "bg-blue-600 text-white",
-    consumable:  "bg-amber-600 text-white",
-};
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -74,8 +62,8 @@ function QuotationCard({ quotation, onDelete }) {
                     <p className="text-white text-[0.82rem] font-semibold leading-snug truncate" title={quotation.fileName}>
                         {quotation.fileName}
                     </p>
-                    <p className="text-white/60 text-[0.74rem] truncate mt-[2px]" title={quotation.materialName}>
-                        {quotation.materialName}
+                    <p className="text-white/60 text-[0.74rem] truncate mt-[2px]" title={quotation.itemName ?? quotation.materialName}>
+                        {quotation.itemName ?? quotation.materialName ?? "—"}
                     </p>
                 </div>
 
@@ -117,13 +105,25 @@ function QuotationCard({ quotation, onDelete }) {
                 </div>
             </div>
 
-            {/* Badge de tipo */}
-            <span className={`self-start text-[0.68rem] font-semibold px-2 py-[2px] rounded-full ${TYPE_BADGE[quotation.materialType] ?? "bg-white/10 text-white/60"}`}>
-                {TYPE_LABELS[quotation.materialType] ?? quotation.materialType}
-            </span>
+            {/* ID de referencia como badge */}
+            {quotation.referenceId && (
+                <span className="self-start text-[0.68rem] font-semibold px-2 py-[2px] rounded-full bg-white/10 text-white/60">
+                    ID: {quotation.referenceId}
+                </span>
+            )}
 
             {/* Metadatos */}
             <div className="flex flex-col gap-[2px] mt-1 border-t border-white/10 pt-2">
+                {quotation.inventoryName && (
+                    <p className="text-white/45 text-[0.69rem] truncate">
+                        <span className="text-white/60">Inventario:</span> {quotation.inventoryName}
+                    </p>
+                )}
+                {quotation.quotationDate && (
+                    <p className="text-white/45 text-[0.69rem] truncate">
+                        <span className="text-white/60">Fecha:</span> {formatDate(quotation.quotationDate)}
+                    </p>
+                )}
                 <p className="text-white/45 text-[0.69rem] truncate">
                     <span className="text-white/60">Subido:</span> {formatDate(quotation.uploadedAt)}
                 </p>
@@ -131,110 +131,6 @@ function QuotationCard({ quotation, onDelete }) {
                     <span className="text-white/60">Por:</span> {quotation.uploadedByEmail ?? "—"}
                 </p>
             </div>
-        </div>
-    );
-}
-
-// ── Selector de material con búsqueda ────────────────────────────────────────
-
-function MaterialSearchSelect({ materials, idField, value, onChange, loading }) {
-    const [query, setQuery]   = useState("");
-    const [open, setOpen]     = useState(false);
-    const containerRef        = useRef(null);
-
-    const selected = materials.find((m) => String(m[idField]) === String(value));
-
-    useEffect(() => {
-        const handler = (e) => {
-            if (containerRef.current && !containerRef.current.contains(e.target)) {
-                setOpen(false);
-                setQuery("");
-            }
-        };
-        document.addEventListener("mousedown", handler);
-        return () => document.removeEventListener("mousedown", handler);
-    }, []);
-
-    const filtered = materials.filter((m) =>
-        m.material_element_name?.toLowerCase().includes(query.toLowerCase())
-    );
-
-    const handleSelect = (m) => {
-        onChange(String(m[idField]));
-        setOpen(false);
-        setQuery("");
-    };
-
-    const handleClear = (e) => {
-        e.stopPropagation();
-        onChange("");
-        setQuery("");
-    };
-
-    return (
-        <div className="flex flex-col gap-1 relative" ref={containerRef}>
-            <label className="text-white/70 text-[0.78rem] font-medium">Material</label>
-
-            {/* Campo principal */}
-            <div
-                onClick={() => !loading && setOpen(true)}
-                className={`w-full h-11 px-3 flex items-center justify-between gap-2 rounded-xl border cursor-text transition-colors
-                    ${open ? "border-purple-400 bg-white/15" : "border-white/20 bg-white/10 hover:border-white/40"}
-                    ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-            >
-                {open ? (
-                    <input
-                        autoFocus
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        placeholder={selected ? selected.material_element_name : "Buscar material..."}
-                        className="flex-1 bg-transparent outline-none text-[0.85rem] text-white placeholder-white/40 min-w-0"
-                    />
-                ) : (
-                    <span className={`flex-1 text-[0.85rem] truncate ${selected ? "text-white" : "text-white/80"}`}>
-                        {loading ? "Cargando..." : selected ? selected.material_element_name : "Selecciona un material"}
-                    </span>
-                )}
-
-                {selected && !open ? (
-                    <button
-                        type="button"
-                        onClick={handleClear}
-                        className="text-white/40 hover:text-white bg-transparent border-0 cursor-pointer text-[0.85rem] shrink-0 leading-none"
-                    >
-                        ✕
-                    </button>
-                ) : (
-                    <span className="text-white/40 text-[0.75rem] shrink-0">▾</span>
-                )}
-            </div>
-
-            {/* Dropdown */}
-            {open && (
-                <div className="absolute top-[calc(100%+4px)] z-[9999] w-full bg-[#1e1535] border border-white/15 rounded-xl shadow-xl overflow-hidden">
-                    <div className="overflow-y-auto" style={{ maxHeight: "200px" }}>
-                        {filtered.length === 0 ? (
-                            <p className="px-4 py-3 text-[0.82rem] text-white/40 text-center">Sin resultados</p>
-                        ) : (
-                            filtered.map((m) => (
-                                <div
-                                    key={m[idField]}
-                                    onClick={() => handleSelect(m)}
-                                    className={`px-4 py-2.5 cursor-pointer border-b border-white/8 last:border-0 hover:bg-purple-600/30 transition-colors
-                                        ${String(m[idField]) === String(value) ? "bg-purple-600/20" : ""}`}
-                                >
-                                    <span className="text-[0.84rem] font-medium text-white truncate block">
-                                        {m.material_element_name}
-                                    </span>
-                                    <span className="text-[0.72rem] text-white/45">
-                                        ID: {m[idField]}
-                                    </span>
-                                </div>
-                            ))
-                        )}
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
@@ -307,13 +203,12 @@ export default function QuotationsPage() {
     const [loading, setLoading]       = useState(true);
 
     // Form añadir
-    const [matType, setMatType]     = useState("");
-    const [materials, setMaterials] = useState([]);
-    const [matId, setMatId]         = useState("");
-    const [pdfFile, setPdfFile]     = useState(null);
-    const [saving, setSaving]       = useState(false);
-    const [formErr, setFormErr]     = useState(null);
-    const [matLoading, setMatLoading] = useState(false);
+    const [referenceId, setReferenceId]     = useState("");
+    const [itemName, setItemName]           = useState("");
+    const [inventoryName, setInventoryName] = useState("");
+    const [pdfFile, setPdfFile]             = useState(null);
+    const [saving, setSaving]               = useState(false);
+    const [formErr, setFormErr]             = useState(null);
 
     // Lista derecha
     const [search, setSearch]         = useState("");
@@ -335,42 +230,21 @@ export default function QuotationsPage() {
 
     useEffect(() => { loadQuotations(); }, [loadQuotations]);
 
-    // ── Cargar materiales según tipo ───────────────────────────────────────
-    useEffect(() => {
-        if (!matType) { setMaterials([]); setMatId(""); return; }
-        const fetch = async () => {
-            setMatLoading(true);
-            setMatId("");
-            setMaterials([]);
-            try {
-                const data = matType === "returnable"
-                    ? await getReturnableMaterials()
-                    : await getConsumableMaterials();
-                setMaterials(data);
-            } catch {
-                setMaterials([]);
-            } finally {
-                setMatLoading(false);
-            }
-        };
-        fetch();
-    }, [matType]);
-
     // ── Enviar cotización ──────────────────────────────────────────────────
     const handleSubmit = async (e) => {
         e.preventDefault();
         setFormErr(null);
 
-        if (!matType) return setFormErr("Selecciona el tipo de material.");
-        if (!matId)   return setFormErr("Selecciona un material.");
         if (!pdfFile) return setFormErr("Adjunta un archivo PDF.");
 
         try {
             setSaving(true);
-            await addQuotation(matType, matId, pdfFile);
+            await addQuotation({ referenceId, itemName, inventoryName, file: pdfFile });
             alertSuccess("Cotización agregada correctamente.");
             setPdfFile(null);
-            setMatId("");
+            setReferenceId("");
+            setItemName("");
+            setInventoryName("");
             await loadQuotations();
         } catch (err) {
             setFormErr(err.message);
@@ -390,9 +264,11 @@ export default function QuotationsPage() {
         return quotations.filter((q) => {
             const matchType = filterType === "all" || q.materialType === filterType;
             const term = search.trim().toLowerCase();
+            const name = (q.itemName ?? q.materialName ?? "").toLowerCase();
             const matchSearch = !term
                 || q.fileName.toLowerCase().includes(term)
-                || q.materialName.toLowerCase().includes(term);
+                || name.includes(term)
+                || (q.referenceId ?? "").toLowerCase().includes(term);
             return matchType && matchSearch;
         });
     }, [quotations, search, filterType]);
@@ -405,10 +281,6 @@ export default function QuotationsPage() {
     const handleSearch = (val) => { setSearch(val); setPage(1); };
     const handleFilter = (type) => { setFilterType(type); setPage(1); };
 
-    // Helper para nombre de campo de ID según tipo
-    const idField = matType === "consumable"
-        ? "consumable_material_id"
-        : "returnable_material_id";
 
     return (
         <div className="mt-4 border border-white bg-app-gradient w-full rounded-3xl grid grid-cols-1 lg:grid-cols-[280px_1fr] overflow-hidden">
@@ -422,28 +294,37 @@ export default function QuotationsPage() {
 
                 <div className="text-white font-bold mt-2 text-[0.95rem]">Agregar cotización</div>
 
-                {/* Tipo de material */}
+                {/* ID */}
                 <div className="flex flex-col gap-1">
-                    <label className="text-white/70 text-[0.78rem] font-medium">Tipo de material</label>
-                    <select
-                        value={matType}
-                        onChange={(e) => setMatType(e.target.value)}
-                        className="w-full rounded-xl bg-white/10 border border-white/20 text-[0.85rem] px-3 py-2.5 outline-none focus:border-purple-400 transition-colors"
-                        style={{ color: matType ? "white" : "rgba(255,255,255,0.6)" }}
-                    >
-                        <option value="" disabled className="bg-[#1e1535] text-white/60">Selecciona el tipo de material</option>
-                        <option value="returnable" className="bg-[#1e1535] text-white">Devolutivo</option>
-                        <option value="consumable"  className="bg-[#1e1535] text-white">Consumo</option>
-                    </select>
+                    <label className="text-white/70 text-[0.78rem] font-medium">ID</label>
+                    <input
+                        type="text"
+                        value={referenceId}
+                        onChange={(e) => setReferenceId(e.target.value)}
+                        placeholder="Ej. COT-001"
+                        className="w-full h-11 px-3 rounded-xl bg-white/10 border border-white/20 text-[0.85rem] text-white placeholder-white/40 outline-none focus:border-purple-400 transition-colors"
+                    />
                 </div>
 
-                {/* Selector de material con búsqueda */}
-                <MaterialSearchSelect
-                    materials={materials}
-                    idField={idField}
-                    value={matId}
-                    onChange={setMatId}
-                    loading={matLoading}
+                {/* Nombre */}
+                <div className="flex flex-col gap-1">
+                    <label className="text-white/70 text-[0.78rem] font-medium">Nombre</label>
+                    <input
+                        type="text"
+                        value={itemName}
+                        onChange={(e) => setItemName(e.target.value)}
+                        placeholder="Nombre (Ver el id)"
+                        className="w-full h-11 px-3 rounded-xl bg-white/10 border border-white/20 text-[0.85rem] text-white placeholder-white/40 outline-none focus:border-purple-400 transition-colors"
+                    />
+                </div>
+
+                {/* Inventario con opción de crear nuevo */}
+                <InventorySelectField
+                    label="Inventario (opcional)"
+                    name="inventoryName"
+                    value={inventoryName}
+                    onChange={(e) => setInventoryName(e.target.value)}
+                    labelVariant="light"
                 />
 
                 {/* Drop zone PDF */}

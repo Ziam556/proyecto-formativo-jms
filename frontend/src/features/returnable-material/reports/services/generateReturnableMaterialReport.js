@@ -21,7 +21,7 @@ export function generateReturnableMaterialReport({ format, selectedFields, scope
   const timestamp = new Date().toISOString().slice(0, 10);
 
   if (format === "excel") {
-    generateReturnableMaterialExcelReport({ headers, rows, fileName: `material-devolutivo-${timestamp}.xlsx` });
+    return generateReturnableMaterialExcelReport({ headers, rows, fileName: `material-devolutivo-${timestamp}.xlsx` });
   }
 
   if (format === "pdf") {

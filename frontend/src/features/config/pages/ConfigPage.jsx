@@ -14,7 +14,7 @@ export default function ConfigPage() {
 
     const menuItems = [
         hasPermission(BRAND_PERMS)                         && { label: "Marcas",           icon: Cylinder,    to: "/dashboard/config/brands"      },
-        (isAdmin || hasPermission(CATEGORY_PERMS))         && { label: "Categorías",        icon: Tag,         to: "/dashboard/config/categories"  },
+        (isAdmin || hasPermission(CATEGORY_PERMS))         && { label: "Tipo de material",        icon: Tag,         to: "/dashboard/config/categories"  },
         (isAdmin || hasPermission(INVENTORY_PERMS))        && { label: "Inventarios",       icon: Archive,     to: "/dashboard/config/inventories" },
         (isAdmin || hasPermission(GROUP_PERMS))            && { label: "Grupos",            icon: Users,       to: "/dashboard/config/groups"      },
         (isAdmin || hasPermission(TASK_PERMS))             && { label: "Gestión de tareas", icon: FileSliders, to: "/dashboard/config/tasks"       },

@@ -14,25 +14,20 @@ export const quotationsController = {
 
     async add(req, res) {
         try {
-            const { materialType, materialId } = req.body;
+            const { referenceId, itemName, inventoryName } = req.body;
 
-            if (!materialType || !materialId) {
-                return res.status(400).json({ error: "Se requiere materialType y materialId." });
-            }
-            if (!["returnable", "consumable"].includes(materialType)) {
-                return res.status(400).json({ error: "materialType debe ser 'returnable' o 'consumable'." });
-            }
             if (!req.file) {
                 return res.status(400).json({ error: "Se requiere un archivo PDF." });
             }
 
-            const filePath       = `uploads/quotations/${req.file.filename}`;
-            const fileName       = req.file.originalname;
+            const filePath        = `uploads/quotations/${req.file.filename}`;
+            const fileName        = req.file.originalname;
             const uploadedByEmail = req.user?.email ?? null;
 
             const quotation = await quotationsService.add({
-                materialType,
-                materialId,
+                referenceId:   referenceId   || null,
+                itemName:      itemName       || null,
+                inventoryName: inventoryName  || null,
                 filePath,
                 fileName,
                 uploadedByEmail,

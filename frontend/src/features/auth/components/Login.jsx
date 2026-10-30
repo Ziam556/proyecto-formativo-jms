@@ -2,29 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { User, Lock, Eye, EyeOff } from "lucide-react";
 import { login } from "../services/authService";
+import { getContactEmail } from "@/features/settings/services/settingsService";
+import { isTabAlive } from "@/shared/utils/sessionChannel";
 import Swal from "sweetalert2";
-
-const SESSION_KEY = "jms_active_user";
-const SESSION_TIMEOUT_MS = 8 * 60 * 60 * 1000; // 8 horas
-
-function getActiveSession() {
-    try {
-        const raw = localStorage.getItem(SESSION_KEY);
-        if (!raw) return null;
-        const session = JSON.parse(raw);
-        if (Date.now() - session.loggedAt > SESSION_TIMEOUT_MS) {
-            localStorage.removeItem(SESSION_KEY);
-            return null;
-        }
-        return session;
-    } catch {
-        return null;
-    }
-}
-
-function setActiveSession(email) {
-    localStorage.setItem(SESSION_KEY, JSON.stringify({ email, loggedAt: Date.now() }));
-}
 
 export default function LoginForm() {
     const navigate = useNavigate();
@@ -37,20 +17,22 @@ export default function LoginForm() {
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState({});
     const [serverError, setServerError] = useState("");
+    const [contactEmail, setContactEmail] = useState("sc876858@gmail.com");
 
-    // Al montar la página de login o cuando el navegador la restaura desde bfcache,
-    // limpiar la sesión para que el botón "adelante" no permita re-entrar sin autenticarse.
+    useEffect(() => {
+        getContactEmail().then((email) => { if (email) setContactEmail(email); });
+    }, []);
+
+    // Al montar el login, limpiar token para que el botón "adelante" del navegador
+    // no permita re-entrar sin autenticarse (bfcache fix incluido).
     useEffect(() => {
         const clearSession = () => {
             sessionStorage.removeItem("token");
             sessionStorage.removeItem("must_change_password");
-            localStorage.removeItem("jms_active_user");
         };
 
-        clearSession(); // limpieza en montaje normal
+        clearSession();
 
-        // Bug 2 fix — bfcache: el useEffect no se vuelve a ejecutar cuando el navegador
-        // restaura la página desde el caché; el evento pageshow sí se dispara.
         const handlePageShow = (e) => { if (e.persisted) clearSession(); };
         window.addEventListener("pageshow", handlePageShow);
         return () => window.removeEventListener("pageshow", handlePageShow);
@@ -77,12 +59,11 @@ export default function LoginForm() {
 
         setErrors({});
 
-        // Verificar si ya hay una sesión activa con el mismo correo
-        const activeSession = getActiveSession();
-        if (activeSession && activeSession.email === formData.userEmail.trim()) {
+        // Bloquear si hay una pestaña autenticada activa
+        if (isTabAlive()) {
             await Swal.fire({
                 title: "Sesión ya activa",
-                html: `La cuenta <b>${formData.userEmail}</b> ya tiene una sesión abierta en otra ventana o pestaña.<br/><br/>Cierra sesión allí antes de iniciar aquí.`,
+                html: `Ya hay una sesión abierta en otra pestaña.<br/><br/>Cierra sesión allí antes de iniciar aquí.`,
                 icon: "warning",
                 confirmButtonText: "Entendido",
                 confirmButtonColor: "#7e22ce",
@@ -96,7 +77,6 @@ export default function LoginForm() {
             const data = await login(formData);
             if (data.token) {
                 sessionStorage.setItem("token", data.token);
-                setActiveSession(formData.userEmail.trim());
             }
             if (data.mustChangePassword) {
                 sessionStorage.setItem("must_change_password", "true"); // legacy — la verificación real viene del JWT
@@ -181,12 +161,12 @@ export default function LoginForm() {
                     <p className="text-center text-[0.78rem] text-[#2a2a4a] font-semibold m-0">
                         ¿No tienes cuenta? Contacta a soporte:{" "}
                         <a
-                            href="https://mail.google.com/mail/?view=cm&to=sc876858@gmail.com"
+                            href={`https://mail.google.com/mail/?view=cm&to=${contactEmail}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="underline hover:opacity-75"
                         >
-                            sc876858@gmail.com
+                            {contactEmail}
                         </a>
                     </p>
 
